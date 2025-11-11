@@ -45,4 +45,4 @@ Map App is a full-stack MERN application with **Admin** and **User** roles, desi
 
 1. Clone the repository:  
 ```bash
-[git clone https://github.com/your-username/map-app.git](https://github.com/Dayapal/DedicatedBlog-App.git)
+(https://github.com/Dayapal/DedicatedBlog-App.git)
