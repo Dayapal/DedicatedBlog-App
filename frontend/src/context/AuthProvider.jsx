@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.log("Profile fetch error:", error);
         setIsAuthenticated(false);
-        setProfile(null);
+        setProfile(null)
       }
     };
 
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         console.log("All Blogs:", data);
         setBlogs(data);
       } catch (error) {
-        console.log("Blogs fetch error:", error);
+        console.log("Blogs fetch error:", error)
       }
     };
 
