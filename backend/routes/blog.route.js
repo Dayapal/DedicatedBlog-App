@@ -14,7 +14,7 @@ const router = express.Router();
 // Routes
 router.delete("/delete/:id", isAuthenticated, isAdmin("admin"), deleteBlog);
 router.get("/all-blogs", getAllBlogs);
-router.get("/single-blog/:id", isAuthenticated, getSingleBlogs);
+router.get("/single-blog/:id",  getSingleBlogs);
 router.get("/my-blog", isAuthenticated, isAdmin("admin"), getMyBlogs);
 router.post("/create", isAuthenticated, isAdmin("admin"), createBlog);
 router.put("/update/:id", isAuthenticated, isAdmin("admin"), updateBlog);
