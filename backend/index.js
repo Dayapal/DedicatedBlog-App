@@ -17,6 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "https://dedicatedblog12-c6306a.netlify.app",
       "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
       "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
       "https://dedicatedblog-app-1.onrender.com", // optional if frontend hosted there too
