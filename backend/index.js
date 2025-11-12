@@ -22,6 +22,9 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running successfully!");
+});
 app.use(
   cors({
     origin: "http://localhost:5173",
