@@ -11,7 +11,7 @@ function MyProfile() {
         const token = localStorage.getItem("jwt");
         console.log("Token:", token);
 
-        const { data } = await axios.get("http://localhost:4001/api/user/my-profile", {
+        const { data } = await axios.get("https://dedicatedblog-app-1.onrender.com/api/user/my-profile", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

@@ -36,7 +36,7 @@ function CreateBlog() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:4001/api/blogs/create",
+        "https://dedicatedblog-app-1.onrender.com/api/blogs/create",
         formData,
         {
           withCredentials: true,

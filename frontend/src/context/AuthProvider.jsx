@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
         if (token) {
           const { data } = await axios.get(
-            "http://localhost:4001/api/user/my-profile",
+            "https://dedicatedblog-app-1.onrender.com/api/user/my-profile",
             {
               headers: {
                 "Content-Type": "application/json",
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4001/api/blogs/all-blogs"
+          "https://dedicatedblog-app-1.onrender.com/api/blogs/all-blogs"
         );
         console.log("All Blogs:", data);
         setBlogs(data);

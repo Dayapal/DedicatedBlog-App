@@ -51,7 +51,7 @@ function Register() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:4001/api/user/register",
+        "https://dedicatedblog-app-1.onrender.com/api/user/register",
         formData,
         {
           withCredentials: true,

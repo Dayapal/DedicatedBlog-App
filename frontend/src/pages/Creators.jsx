@@ -9,7 +9,7 @@ function Creators() {
     const fetchCreators = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4001/api/user/admins",
+          "https://dedicatedblog-app-1.onrender.com/api/user/admins",
           { withCredentials: true }
         );
         setCreators(data.admins);

@@ -18,7 +18,7 @@ function Sidebar({ setComponent }) {
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4001/api/user/my-profile",
+          "https://dedicatedblog-app-1.onrender.com/api/user/my-profile",
           { withCredentials: true }
         );
         setProfile(data);
@@ -38,7 +38,7 @@ function Sidebar({ setComponent }) {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.get("http://localhost:4001/api/user/logout", {
+      const { data } = await axios.get("https://dedicatedblog-app-1.onrender.com/api/user/logout", {
         withCredentials: true,
       });
       toast.success(data.message);

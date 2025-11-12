@@ -32,7 +32,7 @@ function UpdateBlog() {
     const fetchBlog = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:4001/api/blogs/single-blog/${id}`,
+          `https://dedicatedblog-app-1.onrender.com/api/blogs/single-blog/${id}`,
           {
             withCredentials: true,
             headers: { "Content-Type": "multipart/form-data" },
@@ -76,7 +76,7 @@ function UpdateBlog() {
 
     try {
       const { data } = await axios.put(
-        `http://localhost:4001/api/blogs/update/${id}`,
+        `https://dedicatedblog-app-1.onrender.com/api/blogs/update/${id}`,
         formData,
         {
           withCredentials: true,
