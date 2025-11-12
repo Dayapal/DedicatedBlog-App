@@ -13,7 +13,21 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
+      "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
+      "https://dedicatedblog-app-1.onrender.com", // optional if frontend hosted there too
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  })
+);
+
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
@@ -25,17 +39,7 @@ app.use(
 app.get("/", (req, res) => {
   res.send("✅ Backend is running successfully!hello");
 });
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
-      "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app"
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+;
 
 // MongoDB connection
 mongoose
