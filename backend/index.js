@@ -27,14 +27,18 @@ app.get("/", (req, res) => {
 });
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URL)
+mongoose
+  .connect(process.env.MONGODB_URL)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
