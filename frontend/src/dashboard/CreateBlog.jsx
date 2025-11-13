@@ -35,12 +35,16 @@ function CreateBlog() {
     formData.append("blogImage", blogImage);
 
     try {
+      const token = localStorage.getItem("jwt");
       const { data } = await axios.post(
         "https://dedicatedblog-app-1.onrender.com/api/blogs/create",
         formData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -53,7 +57,7 @@ function CreateBlog() {
     } catch (error) {
       toast.error(error.response?.data?.message || "Please fill all fields");
     } finally {
-    
+
       setLoading(false);
     }
   };
@@ -134,10 +138,9 @@ function CreateBlog() {
             type="submit"
             disabled={loading}
             className={`w-full py-3 px-4 font-semibold rounded-lg transition-all duration-300 
-              ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              ${loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
               }`}
           >
             {loading ? (
