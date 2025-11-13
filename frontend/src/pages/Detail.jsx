@@ -12,13 +12,16 @@ function Detail() {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
+        const token = localStorage.getItem("jwt");
         const { data } = await axios.get(
           `https://dedicatedblog-app-1.onrender.com/api/blogs/single-blog/${id}`,
           {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
+
         setBlog(data);
       } catch (error) {
         toast.error("Failed to load blog details.");

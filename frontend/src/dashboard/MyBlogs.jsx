@@ -9,24 +9,29 @@ function MyBlogs() {
   const [myBlogs, setMyBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchMyBlogs = async () => {
-      try {
-        const { data } = await axios.get(
-          "https://dedicatedblog-app-1.onrender.com/api/blogs/my-blog",
-          { withCredentials: true }
-        );
-        setMyBlogs(data);
-      } catch (error) {
-        console.log(error);
-        toast.error("Failed to load your blogs.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMyBlogs();
-  }, []);
-
+ useEffect(() => {
+  const fetchMyBlogs = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const { data } = await axios.get(
+        "https://dedicatedblog-app-1.onrender.com/api/blogs/my-blog",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMyBlogs(data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to load your blogs.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchMyBlogs();
+}, []);
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(

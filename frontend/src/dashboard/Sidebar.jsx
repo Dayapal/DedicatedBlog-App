@@ -17,9 +17,20 @@ function Sidebar({ setComponent }) {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        const token = localStorage.getItem("jwt");
+        if (!token) {
+          toast.error("Please log in first");
+          return;
+        }
+
         const { data } = await axios.get(
           "https://dedicatedblog-app-1.onrender.com/api/user/my-profile",
-          { withCredentials: true }
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setProfile(data);
         setLoading(false);
@@ -31,7 +42,6 @@ function Sidebar({ setComponent }) {
     };
     fetchProfile();
   }, []);
-
   const handleComponents = (value) => setComponent(value);
   const gotoHome = () => navigateTo("/");
 
@@ -63,9 +73,8 @@ function Sidebar({ setComponent }) {
 
       {/* Sidebar */}
       <div
-        className={`w-60 h-full shadow-lg fixed top-0 left-0 bg-linear-to-b from-gray-50 to-gray-100 border-r border-gray-200 transition-transform duration-300 transform sm:translate-x-0 ${
-          show ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`w-60 h-full shadow-lg fixed top-0 left-0 bg-linear-to-b from-gray-50 to-gray-100 border-r border-gray-200 transition-transform duration-300 transform sm:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Close Button for Mobile */}
         <div

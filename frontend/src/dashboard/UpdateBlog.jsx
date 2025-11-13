@@ -31,13 +31,16 @@ function UpdateBlog() {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
+        const token = localStorage.getItem("jwt");
         const { data } = await axios.get(
           `https://dedicatedblog-app-1.onrender.com/api/blogs/single-blog/${id}`,
           {
-            withCredentials: true,
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
+
         setTitle(data?.title || "");
         setCategory(data?.category || "");
         setAbout(data?.about || "");
@@ -75,12 +78,15 @@ function UpdateBlog() {
     }
 
     try {
+      const token = localStorage.getItem("jwt")
       const { data } = await axios.put(
         `https://dedicatedblog-app-1.onrender.com/api/blogs/update/${id}`,
         formData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
+           },
         }
       );
       toast.success(data.message || "Blog updated successfully!");
@@ -117,6 +123,7 @@ function UpdateBlog() {
               <option value="Business">Business</option>
               <option value="Tourism">Tourism</option>
               <option value="Technology">Technology</option>
+              <option value="Health">Health</option>
             </select>
           </div>
 

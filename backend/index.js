@@ -15,13 +15,21 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://dedicatedblog12-c6306a.netlify.app",
-      "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
-      "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
-      "https://dedicatedblog-app-1.onrender.com", // optional if frontend hosted there too
-    ],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "https://dedicatedblog12-c6306a.netlify.app",
+        "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
+        "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
+        "https://dedicatedblog-app-1.onrender.com",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("❌ Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
@@ -40,8 +48,6 @@ app.use(
 app.get("/", (req, res) => {
   res.send("✅ Backend is running successfully!hello");
 });
-;
-
 // MongoDB connection
 mongoose
   .connect(process.env.MONGODB_URL)
