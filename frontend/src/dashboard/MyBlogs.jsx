@@ -9,34 +9,41 @@ function MyBlogs() {
   const [myBlogs, setMyBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
-  const fetchMyBlogs = async () => {
-    try {
-      const token = localStorage.getItem("jwt");
-      const { data } = await axios.get(
-        "https://dedicatedblog-app-1.onrender.com/api/blogs/my-blog",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setMyBlogs(data);
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to load your blogs.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchMyBlogs();
-}, []);
+  useEffect(() => {
+    const fetchMyBlogs = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const { data } = await axios.get(
+          "https://dedicatedblog-app-1.onrender.com/api/blogs/my-blog",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMyBlogs(data);
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to load your blogs.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMyBlogs();
+  }, []);
   const handleDelete = async (id) => {
     try {
+      const token = localStorage.getItem("jwt")
       const res = await axios.delete(
         `https://dedicatedblog-app-1.onrender.com/api/blogs/delete/${id}`,
-        { withCredentials: true }
+        {
+          headers: {
+            withCredentials: true,
+            Authorization: `Bearer ${token}`
+          },
+        }
+
       );
       toast.success(res.data.message || "Blog deleted successfully");
       setMyBlogs((prev) => prev.filter((blog) => blog._id !== id));
