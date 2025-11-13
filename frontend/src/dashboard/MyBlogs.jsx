@@ -39,9 +39,10 @@ function MyBlogs() {
         `https://dedicatedblog-app-1.onrender.com/api/blogs/delete/${id}`,
         {
           headers: {
-            withCredentials: true,
             Authorization: `Bearer ${token}`
           },
+          withCredentials: true,
+
         }
 
       );

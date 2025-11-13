@@ -13,24 +13,35 @@ import contactRouter from "./routes/contact.route.js";
 dotenv.config();
 const app = express();
 
-// Middleware
+// ✅ CORS configuration
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://dedicatedblog12-c6306a.netlify.app",
+  "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
+  "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
+  "https://dedicatedblog-app-1.onrender.com",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://dedicatedblog12-c6306a.netlify.app",
-      "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
-      "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
-      "https://dedicatedblog-app-1.onrender.com",
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.use(express.json());
+// ✅ Handle OPTIONS requests globally (for DELETE, PUT, etc.)
+app.options("*", cors());
 
+// Middleware
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
@@ -39,9 +50,12 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
+
+// Root route
 app.get("/", (req, res) => {
-  res.send("✅ Backend is running successfully!hello");
+  res.send("✅ Backend is running successfully! hello");
 });
+
 // MongoDB connection
 mongoose
   .connect(process.env.MONGODB_URL)
@@ -62,4 +76,4 @@ app.use("/api/contact", contactRouter);
 
 // Start server
 const port = process.env.PORT || 4001;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(port, () => console.log(`✅ Server running on port ${port}`));
