@@ -38,7 +38,7 @@ app.use(
 );
 
 // ✅ Handle OPTIONS requests globally (for DELETE, PUT, etc.)
-app.options("*", cors());
+app.options(/.*/, cors());
 
 // Middleware
 app.use(express.json());
