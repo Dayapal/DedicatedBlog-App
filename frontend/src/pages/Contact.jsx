@@ -9,22 +9,28 @@ function Contact() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
-  const onSubmit = async (data) => {
-    const userInfo = {
-      access_key: "c660c9ce-c6f9-41f7-aa0f-8a24ea887b94",
+const onSubmit = async (data) => {
+  try {
+    const response = await axios.post("https://dedicatedblog-app-1.onrender.com/api/contact", {
       name: data.username,
       email: data.email,
       message: data.message,
-    };
-    try {
-      await axios.post("https://api.web3forms.com/submit", userInfo);
+    });
+
+    if (response.data.success) {
       toast.success("Message sent successfully!");
-    } catch (error) {
-      toast.error("Failed to send message. Try again later.");
+      reset();
+    } else {
+      toast.error("Failed to send message.");
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong. Please try again!");
+  }
+};
 
   return (
     <div className="bg-gray-50 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
