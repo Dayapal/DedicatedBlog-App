@@ -4,6 +4,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CiMenuBurger } from "react-icons/ci";
 import { BiSolidLeftArrowAlt } from "react-icons/bi";
+import {
+  FaUserCircle,
+  FaSignOutAlt,
+  FaHome,
+  FaPenFancy,
+  FaBookOpen,
+} from "react-icons/fa";
 import toast from "react-hot-toast";
 
 function Sidebar({ setComponent }) {
@@ -13,15 +20,11 @@ function Sidebar({ setComponent }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch user profile from API
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        if (!token) {
-          toast.error("Please log in first");
-          return;
-        }
+        if (!token) return toast.error("Please log in first");
 
         const { data } = await axios.get(
           "https://dedicatedblog-app-1.onrender.com/api/user/my-profile",
@@ -32,110 +35,156 @@ function Sidebar({ setComponent }) {
             },
           }
         );
+
         setProfile(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching profile:", error);
         toast.error("Failed to load profile");
         setLoading(false);
       }
     };
+
     fetchProfile();
   }, []);
-  const handleComponents = (value) => setComponent(value);
-  const gotoHome = () => navigateTo("/");
 
-  const handleLogout = async (e) => {
-    e.preventDefault();
+  const navItems = [
+    {
+      label: "My Blogs",
+      icon: FaBookOpen,
+      action: () => setComponent("My Blogs"),
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      label: "Create Blog",
+      icon: FaPenFancy,
+      action: () => setComponent("Create Blog"),
+      color: "from-blue-600 to-blue-700",
+    },
+    {
+      label: "My Profile",
+      icon: FaUserCircle,
+      action: () => setComponent("My Profile"),
+      color: "from-blue-700 to-blue-800",
+    },
+    {
+      label: "Home",
+      icon: FaHome,
+      action: () => navigateTo("/"),
+      color: "from-gray-600 to-gray-700",
+    },
+  ];
+
+  const handleLogout = async () => {
     try {
-      const { data } = await axios.get("https://dedicatedblog-app-1.onrender.com/api/user/logout", {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(
+        "https://dedicatedblog-app-1.onrender.com/api/user/logout",
+        { withCredentials: true }
+      );
+
       toast.success(data.message);
       localStorage.removeItem("jwt");
       setIsAuthenticated(false);
       navigateTo("/login");
     } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Failed to logout");
+      toast.error("Logout failed");
     }
   };
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Mobile menu trigger */}
       <div
-        className="sm:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-md shadow-md cursor-pointer"
-        onClick={() => setShow(!show)}
+        className="sm:hidden fixed top-2 left-4 z-50 bg-blue-600 text-white p-2 rounded-2xl cursor-pointer"
+        onClick={() => setShow(true)}
       >
         <CiMenuBurger className="text-xl" />
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar container */}
       <div
-        className={`w-60 h-full shadow-lg fixed top-0 left-0 bg-linear-to-b from-gray-50 to-gray-100 border-r border-gray-200 transition-transform duration-300 transform sm:translate-x-0 ${show ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`
+    w-66 h-full fixed top-0 left-0
+    bg-white/70 backdrop-blur-xl
+    border-r border-gray-200 shadow-2xl
+    p-6 transition-transform duration-300
+    sm:translate-x-0 z-20
+
+    /* Prevent scroll on desktop */
+    sm:overflow-y-hidden
+
+    /* Allow scroll only on mobile */
+    overflow-y-auto
+
+    ${show ? "translate-x-0" : "-translate-x-full"}
+  `}
       >
-        {/* Close Button for Mobile */}
+        {/* Mobile close button */}
         <div
-          className="sm:hidden absolute top-4 right-4 text-gray-700 cursor-pointer"
-          onClick={() => setShow(!show)}
+          className="sm:hidden absolute top-3 right-4 text-gray-600 cursor-pointer"
+          onClick={() => setShow(false)}
         >
-          <BiSolidLeftArrowAlt className="text-2xl" />
+          <BiSolidLeftArrowAlt className="text-3xl" />
         </div>
 
         {/* Profile Section */}
-        <div className="text-center mt-10 mb-6">
+        <div className="text-center  mb-5">
           {loading ? (
             <p className="text-gray-500">Loading profile...</p>
           ) : (
             <>
               <img
-                className="w-20 h-20 rounded-full mx-auto border-2 border-gray-300 shadow-sm object-cover"
                 src={profile?.user?.photo?.url || "/default-avatar.png"}
-                alt="User"
+                className="w-16 h-16 mx-auto rounded-full border-4 border-blue-100 shadow-lg object-cover"
+                alt="Profile"
               />
-              <p className="text-lg font-semibold mt-2 text-gray-800">
-                {profile?.user?.name || "Unknown User"}
+
+              <h2 className="text-lg font-semibold mt-3 text-gray-900">
+                {profile?.user?.name}
+              </h2>
+
+              <p className="text-sm text-gray-500 break-all px-2">
+                {profile?.user?.email}
               </p>
-              <p className="text-sm text-gray-500">{profile?.user?.email}</p>
             </>
           )}
         </div>
 
-        {/* Buttons Section */}
-        <ul className="space-y-4 px-5">
-          <button
-            onClick={() => handleComponents("My Blogs")}
-            className="w-full py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition duration-300 font-medium"
-          >
-            My Blogs
-          </button>
-          <button
-            onClick={() => handleComponents("Create Blog")}
-            className="w-full py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition duration-300 font-medium"
-          >
-            Create Blog
-          </button>
-          <button
-            onClick={() => handleComponents("My Profile")}
-            className="w-full py-2 rounded-lg bg-pink-500 text-white hover:bg-pink-600 transition duration-300 font-medium"
-          >
-            My Profile
-          </button>
-          <button
-            onClick={gotoHome}
-            className="w-full py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-800 transition duration-300 font-medium"
-          >
-            Home
-          </button>
+        {/* Navigation Buttons */}
+        <div className="space-y-4 pb-10">
+          {navItems.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                item.action();
+                setShow(false);
+              }}
+              className={`
+                w-full flex items-center gap-3 px-5 py-3 rounded-xl
+                text-white font-medium shadow-sm
+                bg-linear-to-r ${item.color}
+                hover:shadow-md hover:scale-[1.02]
+                transition-all duration-200
+              `}
+            >
+              <item.icon className="text-lg" />
+              {item.label}
+            </button>
+          ))}
+
+          {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="w-full py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition duration-300 font-medium"
+            className="
+              w-full flex items-center gap-3 px-5 py-3 rounded-xl
+              font-medium text-white bg-red-500
+              hover:bg-red-600 hover:shadow-md hover:scale-[1.02]
+              transition-all duration-200
+            "
           >
+            <FaSignOutAlt className="text-lg" />
             Logout
           </button>
-        </ul>
+        </div>
       </div>
     </>
   );

@@ -7,14 +7,24 @@ export const AuthProvider = ({ children }) => {
   const [blogs, setBlogs] = useState([]);
   const [profile, setProfile] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    
+    // Simulate loading for demonstration
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+
     const fetchProfile = async () => {
       console.log("hlks")
       try {
         let token = localStorage.getItem("jwt");
-        console.log(localStorage.getItem("jwt" ));
+        console.log(localStorage.getItem("jwt"));
 
         if (token) {
           const { data } = await axios.get(
