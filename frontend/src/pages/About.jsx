@@ -53,7 +53,7 @@ function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Hero Section */}
         <motion.div 
@@ -62,11 +62,11 @@ function About() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl mb-6 shadow-lg">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-linear-to-br from-blue-500 to-purple-600 rounded-3xl mb-6 shadow-lg">
             <FaCode className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Hello, I'm <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Daya Pal</span>
+            Hello, I'm <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Daya Pal</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             A passionate <strong className="text-blue-600">Full-Stack Developer</strong> who crafts 
@@ -127,7 +127,7 @@ function About() {
               <div className="space-y-6">
                 {/* Current Role */}
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                  <div className="shrink-0 w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                     <FaRocket className="text-green-600 text-lg" />
                   </div>
                   <div>
@@ -143,7 +143,7 @@ function About() {
 
                 {/* Previous Role */}
                 <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <div className="shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                     <FaUsers className="text-blue-600 text-lg" />
                   </div>
                   <div>
@@ -171,7 +171,7 @@ function About() {
               </div>
 
               <div className="space-y-6">
-                <div className="p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
+                <div className="p-6 bg-linear-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
                   <h3 className="font-semibold text-gray-900 text-lg mb-2">Sattva Web Presence</h3>
                   <p className="text-gray-700 mb-3">
                     Built a modern React.js website with Tailwind CSS and lazy loading, 
@@ -184,7 +184,7 @@ function About() {
                   </div>
                 </div>
 
-                <div className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="p-6 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
                   <h3 className="font-semibold text-gray-900 text-lg mb-2">Employee Management System</h3>
                   <p className="text-gray-700 mb-3">
                     Designed a comprehensive CRUD application with local storage and 
@@ -223,7 +223,7 @@ function About() {
                     whileHover={{ scale: 1.02 }}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 bg-gradient-to-r ${skill.color} rounded-lg flex items-center justify-center`}>
+                      <div className={`w-10 h-10 bg-linear-to-r ${skill.color} rounded-lg flex items-center justify-center`}>
                         <skill.icon className="text-white text-sm" />
                       </div>
                       <div>
@@ -317,7 +317,7 @@ function About() {
 
         {/* Inspirational Quote */}
         <motion.div 
-          className="text-center mt-16 p-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl text-white"
+          className="text-center mt-16 p-8 bg-linear-to-r from-blue-600 to-purple-600 rounded-2xl text-white"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.8 }}
