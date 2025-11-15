@@ -93,7 +93,7 @@ const Contact = () => {
 
             <div className="space-y-6">
               <div className="flex items-start">
-                <div className="flex-shrink-0 bg-indigo-900/50 p-3 rounded-full mr-4">
+                <div className="shrink-0 bg-indigo-900/50 p-3 rounded-full mr-4">
                   <FaEnvelope className="w-6 h-6 text-indigo-400" />
                 </div>
                 <div>
@@ -105,7 +105,7 @@ const Contact = () => {
               </div>
 
               <div className="flex items-start">
-                <div className="flex-shrink-0 bg-indigo-900/50 p-3 rounded-full mr-4">
+                <div className="shrink-0 bg-indigo-900/50 p-3 rounded-full mr-4">
                   <FaPhone className="w-6 h-6 text-indigo-400" />
                 </div>
                 <div>
