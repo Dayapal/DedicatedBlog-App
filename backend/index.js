@@ -16,10 +16,12 @@ const app = express();
 // ✅ CORS configuration
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://dedicatedblog12-c6306a.netlify.app",
   "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
   "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
   "https://dedicatedblog-app-1.onrender.com",
+  "https://dayapal-portflio-21.netlify.app/",
 ];
 
 app.use(
