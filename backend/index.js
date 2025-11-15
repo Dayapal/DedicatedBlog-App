@@ -21,7 +21,7 @@ const allowedOrigins = [
   "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
   "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
   "https://dedicatedblog-app-1.onrender.com",
-  "https://dayapal-portflio-21.netlify.app/",
+  "https://dayapal-portflio-21.netlify.app",
 ];
 
 app.use(
