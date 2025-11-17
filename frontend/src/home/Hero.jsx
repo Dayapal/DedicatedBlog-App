@@ -26,17 +26,7 @@ function Hero() {
     }
   };
 
-  const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  };
+ 
 
   const cardVariants = {
     hidden: { scale: 0.9, opacity: 0 },
@@ -164,7 +154,7 @@ function Hero() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <motion.div
-            className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-blue-500 to-purple-600 rounded-2xl mb-6 shadow-lg"
+            className="inline-flex items-center justify-center mt-4 w-20 h-20 bg-linear-to-br from-blue-500 to-purple-600 rounded-2xl mb-6 shadow-lg"
             whileHover={{ scale: 1.05, rotate: 5 }}
             transition={{ duration: 0.3 }}
           >

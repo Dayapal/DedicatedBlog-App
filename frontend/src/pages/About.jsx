@@ -62,7 +62,7 @@ function About() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-linear-to-br from-blue-500 to-purple-600 rounded-3xl mb-6 shadow-lg">
+          <div className="inline-flex items-center justify-center w-22 h-22 bg-linear-to-br from-blue-500 to-purple-600 rounded-3xl my-8 shadow-lg">
             <FaCode className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
