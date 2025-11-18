@@ -1,8 +1,10 @@
 import express from "express";
 import { Resend } from "resend";
-
+import dotenv from "dotenv";
+dotenv.config();
 const router = express.Router();
 const resend = new Resend(process.env.RESEND_API_KEY);
+console.log("RESEND KEY =", process.env.RESEND_API_KEY);
 
 router.post("/", async (req, res) => {
   const { name, email, message } = req.body;
@@ -21,35 +23,87 @@ router.post("/", async (req, res) => {
       to: "dayapal235370@gmail.com", // ✅ Your inbox to receive messages
       subject: `📬 New Message from ${name}`,
       html: `
-        <div style="
-          font-family: Arial, sans-serif;
-          background-color: #f9f9f9;
-          padding: 20px;
-          border-radius: 10px;
-          border: 1px solid #e0e0e0;
+  <div style="
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: #f4f6f8;
+    padding: 40px 0;
+    width: 100%;
+  ">
+    <div style="
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+      border: 1px solid #e8e8e8;
+    ">
+      
+      <!-- HEADER -->
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="
+          font-size: 26px;
+          font-weight: 700;
+          color: #111827;
+          margin: 0;
         ">
-          <h2 style="color: #2c3e50;">New Contact Form Message</h2>
-          <p style="font-size: 16px; color: #333;">
-            You’ve received a new message from your website contact form.
-          </p>
+          📩 New Message Received
+        </h1>
+        <p style="color: #6b7280; margin-top: 8px; font-size: 15px;">
+          Someone contacted you through your website
+        </p>
+      </div>
 
-          <div style="
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-          ">
-            <p><strong style="color: #2c3e50;">Name:</strong> ${name}</p>
-            <p><strong style="color: #2c3e50;">Email:</strong> ${email}</p>
-            <p><strong style="color: #2c3e50;">Message:</strong></p>
-            <p style="white-space: pre-wrap; color: #555;">${message}</p>
-          </div>
+      <!-- DETAILS CARD -->
+      <div style="
+        background: #f9fafb;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 25px;
+      ">
+        <p style="margin: 0 0 12px;">
+          <strong style="color: #111827;">👤 Name:</strong>
+          <span style="color: #374151;">${name}</span>
+        </p>
 
-          <p style="margin-top: 20px; font-size: 14px; color: #999;">
-            📩 Sent automatically from your website contact form.
-          </p>
+        <p style="margin: 0 0 12px;">
+          <strong style="color: #111827;">📧 Email:</strong>
+          <span style="color: #374151;">${email}</span>
+        </p>
+
+        <p style="margin: 0;">
+          <strong style="color: #111827;">💬 Message:</strong>
+        </p>
+        <div style="
+          margin-top: 8px;
+          padding: 15px;
+          background: #ffffff;
+          border-radius: 8px;
+          border: 1px solid #e5e7eb;
+          color: #374151;
+          white-space: pre-wrap;
+          font-size: 15px;
+          line-height: 1.6;
+        ">
+          ${message}
         </div>
-      `,
+      </div>
+
+      <!-- FOOTER -->
+      <div style="text-align: center; margin-top: 30px;">
+        <p style="
+          font-size: 13px;
+          color: #9ca3af;
+          line-height: 1.5;
+        ">
+          This email was sent automatically from your website’s contact form.<br />
+          © ${new Date().getFullYear()} Your Website — All rights reserved.
+        </p>
+      </div>
+
+    </div>
+  </div>`,
     });
 
     if (error) {

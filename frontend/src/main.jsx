@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthProvider.jsx'
 import axios from 'axios'
 // ✅ Make axios send cookies (important for authentication)
+
 axios.defaults.withCredentials = true;
 
 // ✅ Also set your backend base URL here (optional but helpful)

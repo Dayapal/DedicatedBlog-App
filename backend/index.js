@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -10,7 +11,6 @@ import userRouter from "./routes/user.route.js";
 import blogRouter from "./routes/blog.route.js";
 import contactRouter from "./routes/contact.route.js";
 
-dotenv.config();
 const app = express();
 
 // ✅ CORS configuration
