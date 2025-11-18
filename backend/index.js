@@ -13,7 +13,6 @@ import contactRouter from "./routes/contact.route.js";
 
 const app = express();
 
-// ✅ CORS configuration
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
@@ -39,7 +38,7 @@ app.use(
   })
 );
 
-// ✅ Handle OPTIONS requests globally (for DELETE, PUT, etc.)
+
 app.options(/.*/, cors());
 
 // Middleware
