@@ -1,6 +1,8 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import toast from "react-hot-toast";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "./croptUtils";
 
 function CreateBlog() {
   const [title, setTitle] = useState("");
@@ -16,6 +18,24 @@ function CreateBlog() {
     image: false
   });
 
+  // --- New states for crop feature ---
+  const [cropModal, setCropModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null); // dataURL for cropper
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [aspectRatioKey, setAspectRatioKey] = useState("16:9"); // default ratio
+  const [rotation] = useState(0);
+
+  // Map keys to numeric aspect ratios. "free" -> undefined (no fixed aspect)
+  const aspectMap = {
+    "1:1": 1 / 1,
+    "4:5": 4 / 5,
+    "16:9": 16 / 9,
+    free: undefined
+  };
+  const aspect = aspectMap[aspectRatioKey];
+
   const changePhotoHandler = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -29,13 +49,56 @@ function CreateBlog() {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      setBlogImagePreview(reader.result);
-      setBlogImage(file);
+      // open crop modal with selected image for cropping
+      setSelectedImage(reader.result);
+      setCropModal(true);
+
+      // keep original preview as temporary placeholder (optional)
+      // setBlogImagePreview(reader.result);
+      // setBlogImage(file);
     };
-    
+
     reader.onerror = () => {
       toast.error("Failed to load image. Please try another file.");
     };
+  };
+
+  const onCropComplete = useCallback((croppedArea, croppedAreaPx) => {
+    setCroppedAreaPixels(croppedAreaPx);
+  }, []);
+
+  const applyCrop = async () => {
+    try {
+      if (!selectedImage || !croppedAreaPixels) {
+        toast.error("No image selected or no crop area chosen.");
+        return;
+      }
+
+      const croppedDataUrl = await getCroppedImg(selectedImage, croppedAreaPixels, rotation);
+
+      // Update preview
+      setBlogImagePreview(croppedDataUrl);
+
+      // Convert base64 to file object and set blogImage (for upload)
+      const res = await fetch(croppedDataUrl);
+      const blob = await res.blob();
+      const filename = `cropped_${Date.now()}.jpg`;
+      const file = new File([blob], filename, { type: "image/jpeg" });
+
+      setBlogImage(file);
+
+      // close modal
+      setCropModal(false);
+
+      // reset crop/zoom (optional)
+      setZoom(1);
+      setCrop({ x: 0, y: 0 });
+      setSelectedImage(null);
+      setCroppedAreaPixels(null);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to crop image. Try again.");
+    }
   };
 
   const handleFocus = (field) => {
@@ -297,6 +360,92 @@ function CreateBlog() {
           </p>
         </div>
       </div>
+
+      {/* ---------------- Crop Modal ---------------- */}
+      {cropModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-3xl rounded-2xl bg-white p-4 shadow-xl">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold">Crop & Resize Image</h3>
+              <div className="flex items-center gap-2">
+                {/* Ratio buttons */}
+                {["1:1","4:5","16:9","free"].map(key => (
+                  <button
+                    key={key}
+                    onClick={() => setAspectRatioKey(key)}
+                    className={`px-3 py-1 rounded-md text-sm border ${
+                      aspectRatioKey === key ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-200"
+                    }`}
+                  >
+                    {key === "free" ? "Free" : key}
+                  </button>
+                ))}
+                <button
+                  onClick={() => {
+                    setCropModal(false);
+                    // Keep selected image in case user wants to reopen
+                    setSelectedImage(null);
+                    setZoom(1);
+                    setCrop({ x: 0, y: 0 });
+                  }}
+                  className="ml-3 px-3 py-1 rounded-md bg-gray-100 text-gray-700 text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+            <div className="relative h-[400px] w-full bg-gray-100 rounded-lg overflow-hidden">
+              <Cropper
+                image={selectedImage}
+                crop={crop}
+                zoom={zoom}
+                aspect={aspect}
+                onCropChange={setCrop}
+                onZoomChange={(z) => setZoom(Number(z))}
+                onCropComplete={onCropComplete}
+                restrictPosition={false}
+                showGrid={true}
+              />
+            </div>
+
+            <div className="mt-4 flex items-center gap-4">
+              <div className="flex-1">
+                <label className="block text-sm text-gray-600 mb-1">Zoom</label>
+                <input
+                  type="range"
+                  min={1}
+                  max={3}
+                  step={0.01}
+                  value={zoom}
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+
+              <div className="w-48 flex items-end justify-end gap-3">
+                <button
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setCropModal(false);
+                    setZoom(1);
+                    setCrop({ x: 0, y: 0 });
+                  }}
+                  className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={applyCrop}
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+                >
+                  Apply Crop
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
