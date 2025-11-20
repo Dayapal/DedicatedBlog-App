@@ -90,6 +90,7 @@ function CreateBlog() {
       // close modal
       setCropModal(false);
 
+
       // reset crop/zoom (optional)
       setZoom(1);
       setCrop({ x: 0, y: 0 });
@@ -106,7 +107,7 @@ function CreateBlog() {
   };
 
   const handleBlur = (field) => {
-    setIsFocused(prev => ({ ...prev, [field]: false }));
+    setIsFocused(prev => ({ ...prev, [field]: false }))
   };
 
   const handleCreateBlog = async (e) => {
@@ -143,8 +144,7 @@ function CreateBlog() {
       );
 
       toast.success(data.message || "🎉 Blog published successfully!");
-      
-      // Reset form with smooth transition
+    
       setTimeout(() => {
         setTitle("");
         setCategory("");
