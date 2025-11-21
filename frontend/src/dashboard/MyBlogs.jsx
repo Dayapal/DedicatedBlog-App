@@ -10,6 +10,7 @@ function MyBlogs() {
   const [myBlogs, setMyBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
+  
 
   useEffect(() => {
     const fetchMyBlogs = async () => {
