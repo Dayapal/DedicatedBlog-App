@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import ImageCropper from "../components/ImageCropper";
+
 
 function UpdateBlog() {
   const navigate = useNavigate();
@@ -10,22 +12,13 @@ function UpdateBlog() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [about, setAbout] = useState("");
-  const [blogImage, setBlogImage] = useState("");
+  const [blogImage, setBlogImage] = useState(""); // can be file or URL string
   const [blogImagePreview, setBlogImagePreview] = useState("");
   const [loading, setLoading] = useState(false); // disable button during request
 
-  // Handle Image Upload Preview
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      setBlogImagePreview(reader.result);
-      setBlogImage(file);
-    };
-  };
+  // cropper modal states
+  const [openCrop, setOpenCrop] = useState(false);
+  const [tempImage, setTempImage] = useState(""); // dataURL for cropping
 
   // Fetch existing blog data
   useEffect(() => {
@@ -35,9 +28,7 @@ function UpdateBlog() {
         const { data } = await axios.get(
           `https://dedicatedblog-app-1.onrender.com/api/blogs/single-blog/${id}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
@@ -45,6 +36,7 @@ function UpdateBlog() {
         setCategory(data?.category || "");
         setAbout(data?.about || "");
         setBlogImage(data?.blogImage?.url || "");
+        setBlogImagePreview(data?.blogImage?.url || "");
       } catch (err) {
         console.error(err);
         toast.error("Failed to fetch blog data. Try again later.");
@@ -53,7 +45,29 @@ function UpdateBlog() {
     fetchBlog();
   }, [id]);
 
-  // Handle Blog Update with debounce
+  // Handle Image Upload Preview (open crop modal)
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setTempImage(reader.result);
+      setOpenCrop(true);
+    };
+  };
+
+  // callback from ImageCropper when user saves crop
+  const handleCropDone = (file, previewUrl) => {
+    // file is a File object ready to upload
+    setBlogImage(file);
+    setBlogImagePreview(previewUrl);
+    setTempImage("");
+    setOpenCrop(false);
+  };
+
+  // Handle Blog Update
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -74,19 +88,21 @@ function UpdateBlog() {
     if (blogImage instanceof File) {
       formData.append("blogImage", blogImage);
     } else if (typeof blogImage === "string") {
+      // If backend supports receiving URL instead of file:
       formData.append("blogImageURL", blogImage);
     }
 
     try {
-      const token = localStorage.getItem("jwt")
+      const token = localStorage.getItem("jwt");
       const { data } = await axios.put(
         `https://dedicatedblog-app-1.onrender.com/api/blogs/update/${id}`,
         formData,
         {
           withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`
-           },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       toast.success(data.message || "Blog updated successfully!");
@@ -101,6 +117,18 @@ function UpdateBlog() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-9">
+      {/* Crop modal */}
+      {openCrop && tempImage && (
+        <ImageCropper
+          imageSrc={tempImage}
+          onCancel={() => {
+            setTempImage("");
+            setOpenCrop(false);
+          }}
+          onCropDone={handleCropDone}
+        />
+      )}
+
       <section className="bg-white shadow-lg rounded-2xl max-w-2xl w-full p-8 space-y-6 animate-fade-in">
         <h1 className="text-3xl font-extrabold text-blue-700 text-center mb-6">
           Update Blog
@@ -155,6 +183,9 @@ function UpdateBlog() {
               onChange={handleImageChange}
               className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             />
+            <p className="text-sm text-gray-500 mt-2">
+              After selecting file you'll get options to crop, zoom, rotate, and save.
+            </p>
           </div>
 
           {/* About */}
