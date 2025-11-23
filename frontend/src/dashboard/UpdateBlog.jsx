@@ -41,7 +41,8 @@ function UpdateBlog() {
         console.error(err);
         toast.error("Failed to fetch blog data. Try again later.");
       }
-    };
+    }
+    
     fetchBlog();
   }, [id]);
 
