@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const Footer = () => {
   return (
     <footer className="relative overflow-hidden bg-linear-to-br from-blue-950 via-slate-900 to-blue-950 text-gray-300 pt-10 pb-4 mt-16">
-      {/* Subtle glow effect */}
+      
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.15),transparent_70%)]"></div>
 
       {/* Main Links */}
