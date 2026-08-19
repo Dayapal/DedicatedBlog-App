@@ -57,20 +57,20 @@ app.get("/", (req, res) => {
   res.send("✅ Backend is running successfully! hello");
 });
 
-// MongoDB connection
+
 mongoose
   .connect(process.env.MONGODB_URL)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
-// Cloudinary config
+
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
   api_secret: process.env.CLOUD_SECRET_KEY,
 });
 
-// Routes
+
 app.use("/api/user", userRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/contact", contactRouter);

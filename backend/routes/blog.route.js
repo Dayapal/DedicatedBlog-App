@@ -2,11 +2,7 @@ import express from "express";
 import {
   createBlog,
   deleteBlog,
-  getAllBlogs,
-  getMyBlogs,
-  getSingleBlogs,
-  updateBlog,
-} from "../controllers/blog.controller.js";
+  getAllBlogs, getMyBlogs,getSingleBlogs,updateBlog,} from "../controllers/blog.controller.js";
 import { isAdmin, isAuthenticated } from "../middleware/authUser.js";
 
 const router = express.Router();
