@@ -77,4 +77,6 @@ app.use("/api/contact", contactRouter);
 
 // Start server
 const port = process.env.PORT || 4001;
-app.listen(port, () => console.log(`✅ Server running on port ${port}`));
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
+});
