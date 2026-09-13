@@ -13,33 +13,35 @@ import contactRouter from "./routes/contact.route.js";
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "https://dedicatedblog12-c6306a.netlify.app",
-  "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
-  "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
-  "https://dedicatedblog-app-1.onrender.com",
-  "https://dayapal-portflio-21.netlify.app",
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "http://localhost:5174",
+//   "https://dedicatedblog12-c6306a.netlify.app",
+//   "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
+//   "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
+//   "https://dedicatedblog-app-1.onrender.com",
+//   "https://dayapal-portflio-21.netlify.app",
+// ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
+
+app.use(cors())
 
 
-app.options(/.*/, cors());
+// app.options(/.*/, cors());
 
 // Middleware
 app.use(express.json());
