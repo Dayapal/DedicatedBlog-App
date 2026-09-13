@@ -122,7 +122,7 @@ function CreateBlog() {
       const token = localStorage.getItem("jwt");
 
       const { data } = await axios.post(
-        "https://dedicatedblog-app-1.onrender.com/api/blogs/create",
+        "/api/blogs/create",
         formData,
         {
           withCredentials: true,

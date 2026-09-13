@@ -51,7 +51,7 @@ function Register() {
 
     try {
       const { data } = await axios.post(
-        "https://dedicatedblog-app-1.onrender.com/api/user/register",
+        "/api/user/register",
         formData,
         {
           withCredentials: true,
@@ -62,7 +62,7 @@ function Register() {
       localStorage.setItem("jwt", data.token);
       toast.success(data.message || "Welcome aboard! 🎉");
 
-      setProfile(data);
+      setProfile(data.user || data.newUser);
       setIsAuthenticated(true);
       navigateTo("/login");
     } catch (error) {

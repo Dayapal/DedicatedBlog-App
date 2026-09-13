@@ -60,9 +60,17 @@ export const register = async (req, res) => {
     await newUser.save();
     const token = await createTokenAndSaveCookies(newUser._id, res);
     if (newUser) {
-      res
-        .status(201)
-        .json({ message: "User register successfully", newUser, token: token });
+      res.status(201).json({
+        message: "User registered successfully",
+        user: {
+          _id: newUser._id,
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+        },
+        newUser,
+        token: token,
+      });
     }
     console.log(newUser, token);
   } catch (error) {
@@ -75,15 +83,18 @@ export const login = async (req, res) => {
   const { email, password, role } = req.body;
   try {
     if (!email || !password || !role) {
-      return res.status(400).json({ messgae: "Please fill required fileds " });
+      return res.status(400).json({ message: "Please fill required fields" });
     }
     const user = await User.findOne({ email }).select("+password");
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
     if (!user.password) {
       return res.status(400).json({ message: "User password is missing" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!user || !isMatch) {
-      return res.status(400).json({ message: "Invalied email or password" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
     if (user.role !== role) {
       return res.status(400).json({ message: `Given role ${role} not found` });
@@ -93,7 +104,7 @@ export const login = async (req, res) => {
     res.status(200).json({
       message: "User logged in successfully",
       user: {
-        _id: user._ic,
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,

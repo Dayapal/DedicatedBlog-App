@@ -17,7 +17,7 @@ function MyBlogs() {
       try {
         const token = localStorage.getItem("jwt");
         const { data } = await axios.get(
-          "https://dedicatedblog-app-1.onrender.com/api/blogs/my-blog",
+          "/api/blogs/my-blog",
           {
             headers: {
               "Content-Type": "application/json",
@@ -45,7 +45,7 @@ function MyBlogs() {
     try {
       const token = localStorage.getItem("jwt")
       const res = await axios.delete(
-        `https://dedicatedblog-app-1.onrender.com/api/blogs/delete/${id}`,
+        `/api/blogs/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

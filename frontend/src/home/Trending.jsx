@@ -65,12 +65,12 @@ function Trending() {
                     {/* Blog Image */}
                     <div className="relative">
                       <img
-                        src={element.blogImage.url}
-                        alt={element.title}
+                        src={element?.blogImage?.url}
+                        alt={element?.title}
                         className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 text-sm font-semibold rounded-full shadow-sm">
-                        {element.category}
+                        {element?.category}
                       </div>
                     </div>
 
@@ -78,13 +78,13 @@ function Trending() {
                     <div className="p-6 bg-gray-50">
                       <h2
                         className="text-xl font-bold text-gray-800 mb-3 truncate group-hover:text-blue-600 transition-colors duration-300"
-                        title={element.title}
+                        title={element?.title}
                       >
-                        {element.title}
+                        {element?.title}
                       </h2>
 
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                        {element.description?.slice(0, 90) || "Discover trending insights and ideas."}
+                        {element?.about?.slice(0, 90) || element?.description?.slice(0, 90) || "Discover trending insights and ideas."}
                       </p>
 
                       {/* Author Info */}

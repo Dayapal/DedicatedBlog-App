@@ -26,7 +26,7 @@ function UpdateBlog() {
       try {
         const token = localStorage.getItem("jwt");
         const { data } = await axios.get(
-          `https://dedicatedblog-app-1.onrender.com/api/blogs/single-blog/${id}`,
+          `/api/blogs/single-blog/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -96,7 +96,7 @@ function UpdateBlog() {
     try {
       const token = localStorage.getItem("jwt");
       const { data } = await axios.put(
-        `https://dedicatedblog-app-1.onrender.com/api/blogs/update/${id}`,
+        `/api/blogs/update/${id}`,
         formData,
         {
           withCredentials: true,

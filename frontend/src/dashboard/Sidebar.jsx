@@ -27,7 +27,7 @@ function Sidebar({ setComponent }) {
         if (!token) return toast.error("Please log in first");
 
         const { data } = await axios.get(
-          "https://dedicatedblog-app-1.onrender.com/api/user/my-profile",
+          "/api/user/my-profile",
           {
             headers: {
               "Content-Type": "application/json",
@@ -77,7 +77,7 @@ function Sidebar({ setComponent }) {
   const handleLogout = async () => {
     try {
       const { data } = await axios.get(
-        "https://dedicatedblog-app-1.onrender.com/api/user/logout",
+        "/api/user/logout",
         { withCredentials: true }
       );
 

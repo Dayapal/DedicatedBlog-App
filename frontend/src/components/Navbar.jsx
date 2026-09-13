@@ -17,10 +17,11 @@ function Navbar() {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.get("https://dedicatedblog-app-1.onrender.com/api/user/logout", {
+      const { data } = await axios.get("/api/user/logout", {
         withCredentials: true,
       });
       toast.success(data.message);
+      localStorage.removeItem("jwt");
       setIsAuthenticated(false);
       setProfile(null);
       navigate("/login");

@@ -14,7 +14,7 @@ function Detail() {
       try {
         const token = localStorage.getItem("jwt");
         const { data } = await axios.get(
-          `https://dedicatedblog-app-1.onrender.com/api/blogs/single-blog/${id}`,
+          `/api/blogs/single-blog/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -186,7 +186,7 @@ function Detail() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>{(blog?.about?.length || 0) / 200} min read</span>
+                <span>{Math.ceil((blog?.about?.split(/\s+/).filter(Boolean).length || 0) / 200)} min read</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

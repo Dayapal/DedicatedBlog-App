@@ -13,7 +13,7 @@ function Creator() {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          "https://dedicatedblog-app-1.onrender.com/api/user/admins",
+          "/api/user/admins",
           { withCredentials: true }
         );
         setAdmin(data.admins || []);

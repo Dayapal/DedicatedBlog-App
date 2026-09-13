@@ -36,7 +36,7 @@ function Contact() {
     
     try {
       const response = await axios.post(
-        "https://dedicatedblog-app-1.onrender.com/api/contact",
+        "/api/contact",
         {
           name: data.username,
           email: data.email,

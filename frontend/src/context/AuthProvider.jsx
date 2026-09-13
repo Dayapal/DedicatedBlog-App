@@ -10,52 +10,35 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading for demonstration
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-
     const fetchProfile = async () => {
-      console.log("hlks")
       try {
         let token = localStorage.getItem("jwt");
-        console.log(localStorage.getItem("jwt"));
-
         if (token) {
-          const { data } = await axios.get(
-            "https://dedicatedblog-app-1.onrender.com/api/user/my-profile",
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          console.log("User Profile:", data.user);
+          const { data } = await axios.get("/api/user/my-profile", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
           setProfile(data.user);
           setIsAuthenticated(true);
         }
       } catch (error) {
         console.log("Profile fetch error:", error);
         setIsAuthenticated(false);
-        setProfile(null)
+        setProfile(null);
       }
     };
 
     const fetchBlogs = async () => {
       try {
-        const { data } = await axios.get(
-          "https://dedicatedblog-app-1.onrender.com/api/blogs/all-blogs"
-        );
-        console.log("All Blogs:", data);
+        setIsLoading(true);
+        const { data } = await axios.get("/api/blogs/all-blogs");
         setBlogs(data);
       } catch (error) {
-        console.log("Blogs fetch error:", error)
+        console.log("Blogs fetch error:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -67,10 +50,13 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         blogs,
+        setBlogs,
         profile,
         setProfile,
         isAuthenticated,
         setIsAuthenticated,
+        loading: isLoading,
+        isLoading,
       }}
     >
       {children}

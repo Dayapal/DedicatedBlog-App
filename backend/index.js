@@ -13,35 +13,45 @@ import contactRouter from "./routes/contact.route.js";
 
 const app = express();
 
-// const allowedOrigins = [
-//   "http://localhost:5173",
-//   "http://localhost:5174",
-//   "https://dedicatedblog12-c6306a.netlify.app",
-//   "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
-//   "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
-//   "https://dedicatedblog-app-1.onrender.com",
-//   "https://dayapal-portflio-21.netlify.app",
-// ];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "http://localhost:3000",
+  "https://dedicatedblog12-c6306a.netlify.app",
+  "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
+  "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
+  "https://dedicatedblog-app-1.onrender.com",
+  "https://dayapal-portflio-21.netlify.app",
+];
 
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
+if (process.env.FRONTEND_URL) {
+  const envFrontend = process.env.FRONTEND_URL.replace(/\/$/, "");
+  if (!allowedOrigins.includes(envFrontend)) {
+    allowedOrigins.push(envFrontend);
+  }
+}
 
-app.use(cors())
-
-
-// app.options(/.*/, cors());
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app") ||
+        origin.endsWith(".netlify.app") ||
+        origin.endsWith(".onrender.com") ||
+        /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Middleware
 app.use(express.json());
