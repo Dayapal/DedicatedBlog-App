@@ -6,12 +6,21 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 import fileUpload from "express-fileupload";
+import rateLimit from "express-rate-limit";
 
 import userRouter from "./routes/user.route.js";
 import blogRouter from "./routes/blog.route.js";
 import contactRouter from "./routes/contact.route.js";
 
 const app = express();
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // Limit each IP to 50 auth requests per 15 minutes
+  message: { message: "Too many authentication requests, please try again after 15 minutes" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -83,9 +92,20 @@ cloudinary.config({
 });
 
 
+app.use("/api/user/login", authLimiter);
+app.use("/api/user/register", authLimiter);
 app.use("/api/user", userRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/contact", contactRouter);
+
+// Global centralized error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Unhandled server error:", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
 // Start server
 const port = process.env.PORT || 4001;

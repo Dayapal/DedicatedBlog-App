@@ -20,7 +20,7 @@ export const register = async (req, res) => {
         message: "Invalid photo format. Only jpg and png are allowed",
       });
     }
-    const { email, name, role, education, password, phone } = req.body;
+    const { email, name, role, education, password, phone } = req.body || {};
     if (
       !email ||
       !name ||
@@ -80,7 +80,7 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password, role } = req.body;
+  const { email, password, role } = req.body || {};
   try {
     if (!email || !password || !role) {
       return res.status(400).json({ message: "Please fill required fields" });
