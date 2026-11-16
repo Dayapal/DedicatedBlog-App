@@ -17,10 +17,11 @@ function Navbar() {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.get("http://localhost:4001/api/user/logout", {
+      const { data } = await axios.get("/api/user/logout", {
         withCredentials: true,
       });
       toast.success(data.message);
+      localStorage.removeItem("jwt");
       setIsAuthenticated(false);
       setProfile(null);
       navigate("/login");

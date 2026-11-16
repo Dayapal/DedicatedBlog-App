@@ -15,8 +15,8 @@ import { Toaster } from "react-hot-toast";
 import UpdateBlog from "./dashboard/UpdateBlog";
 import Detail from "./pages/Detail";
 import NotFound from "./pages/NotFound";
-import CategoryPage from "./home/CategoryPage";
-// import CategoryPage from '../home/CategoryPage'
+import CreateBlog from "./dashboard/CreateBlog";
+
 function App() {
   const location = useLocation();
   const hideNavbarFooter = ["/dashboard", "/login", "/register"].includes(
@@ -43,7 +43,8 @@ function App() {
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/dashboard" element={<Dashboard />} />
-        <Route path="/category/:categoryName" element={<CategoryPage/>} />
+        <Route exact path="/create-blog" element={<CreateBlog/>} />
+     
 
         <Route exact path="/blogs/:id" element={<Detail />} />
 

@@ -13,7 +13,7 @@ function Creator() {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          "http://localhost:4001/api/user/admins",
+          "/api/user/admins",
           { withCredentials: true }
         );
         setAdmin(data.admins || []);
