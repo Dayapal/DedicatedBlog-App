@@ -1,15 +1,15 @@
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-
-export const isAuthenticated = async (req, res, next) => {
+export const 
+isAuthenticated = async (req, res, next) => {
   try {
     // Get token from either cookies or headers
     let token = req.cookies.jwt;
 
-    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
       token = req.headers.authorization.split(" ")[1];
     }
-
+    console.log("my-token", token)
     if (!token) {
       return res.status(401).json({ error: "User not authenticated" });
     }
