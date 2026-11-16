@@ -1,120 +1,134 @@
 import express from "express";
-import dotenv from "dotenv";
-dotenv.config();
-import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import cors from "cors";
-import { v2 as cloudinary } from "cloudinary";
 import fileUpload from "express-fileupload";
-import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import compression from "compression";
+import morgan from "morgan";
+import os from "os";
 
+// Configurations & Database
+import { env } from "./config/environment.js";
+import { connectDB, closeDB } from "./config/db.js";
+import "./config/cloudinary.js"; // Initialize Cloudinary config
+
+// Middlewares
+import { corsMiddleware } from "./middleware/cors.js";
+import { mongoSanitize } from "./middleware/sanitize.js";
+import { apiLimiter } from "./middleware/rateLimiter.js";
+import { notFound } from "./middleware/notFound.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+
+// Routes
+import apiV1Router from "./routes/index.js";
 import userRouter from "./routes/user.route.js";
 import blogRouter from "./routes/blog.route.js";
 import contactRouter from "./routes/contact.route.js";
+import healthRouter from "./routes/health.route.js";
 
 const app = express();
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // Limit each IP to 50 auth requests per 15 minutes
-  message: { message: "Too many authentication requests, please try again after 15 minutes" },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// 1. Trust proxy for rate limiting & secure cookies behind reverse proxies (Render, Vercel, Nginx)
+app.set("trust proxy", 1);
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "http://localhost:5175",
-  "http://localhost:3000",
-  "https://dedicatedblog12-c6306a.netlify.app",
-  "https://dedicated-blog-71bttldgt-daya-pals-projects.vercel.app",
-  "https://dedicated-blog-app-git-main-daya-pals-projects.vercel.app",
-  "https://dedicatedblog-app-1.onrender.com",
-  "https://dayapal-portflio-21.netlify.app",
-];
-
-if (process.env.FRONTEND_URL) {
-  const envFrontend = process.env.FRONTEND_URL.replace(/\/$/, "");
-  if (!allowedOrigins.includes(envFrontend)) {
-    allowedOrigins.push(envFrontend);
-  }
-}
-
+// 2. Security HTTP headers
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.endsWith(".vercel.app") ||
-        origin.endsWith(".netlify.app") ||
-        origin.endsWith(".onrender.com") ||
-        /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
-      ) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: false, // Keep disabled to allow Cloudinary remote assets
   })
 );
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// 3. Secure CORS configuration (single, unified configuration)
+app.use(corsMiddleware);
+
+// 4. Request Logging (HTTP access log)
+if (env.isDevelopment) {
+  app.use(morgan("dev"));
+} else {
+  app.use(morgan("combined"));
+}
+
+// 5. Performance: gzip / deflate response compression
+app.use(compression());
+
+// 6. Body Parsers & Cookie Parser
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
+
+// 7. NoSQL Query & Body Sanitization
+app.use(mongoSanitize);
+
+// 8. Cross-platform File Uploads (Windows & Linux compatible temp directory)
 app.use(
   fileUpload({
     useTempFiles: true,
-    tempFileDir: "/tmp/",
+    tempFileDir: os.tmpdir(),
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max upload size
+    abortOnLimit: true,
   })
 );
 
-// Root route
+// 9. Root & Health Check Endpoints
 app.get("/", (req, res) => {
-  res.send("✅ Backend is running successfully! hello");
-});
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
-
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URL)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.log(err));
-
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_SECRET_KEY,
+  res.status(200).json({
+    success: true,
+    message: "DedicatedBlog Platform API is running.",
+    version: "v1.0.0",
+    docs: "/api/v1",
+    health: "/health",
+  });
 });
 
+app.use("/health", healthRouter);
 
-app.use("/api/user/login", authLimiter);
-app.use("/api/user/register", authLimiter);
+// 10. General API Rate Limiting
+app.use("/api", apiLimiter);
+
+// 11. Versioned API Routes (/api/v1)
+app.use("/api/v1", apiV1Router);
+
+// 12. Legacy API Routes (for backward compatibility with existing frontend)
 app.use("/api/user", userRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/contact", contactRouter);
 
-// Global centralized error handling middleware
-app.use((err, req, res, next) => {
-  console.error("Unhandled server error:", err);
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
-});
+// 13. 404 Catch-All Handler
+app.use(notFound);
 
-// Start server
-const port = process.env.PORT || 4001;
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Server running on port ${port}`);
-});
+// 14. Centralized Global Error Handler
+app.use(errorHandler);
+
+// 15. Server Initialization & Graceful Shutdown
+const PORT = env.PORT;
+
+const startServer = async () => {
+  await connectDB();
+
+  const server = app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running in ${env.NODE_ENV} mode on port ${PORT}`);
+    console.log(`📡 Healthcheck available at: http://localhost:${PORT}/health`);
+  });
+
+  const handleTermination = async (signal) => {
+    console.log(`\n🛑 Received ${signal}. Starting graceful shutdown...`);
+    server.close(async () => {
+      console.log("HTTP server closed.");
+      await closeDB();
+      process.exit(0);
+    });
+
+    // Force shutdown after 10 seconds if hanging
+    setTimeout(() => {
+      console.error("❌ Forcing shutdown after timeout.");
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on("SIGTERM", () => handleTermination("SIGTERM"));
+  process.on("SIGINT", () => handleTermination("SIGINT"));
+};
+
+startServer();
+
+export default app;
