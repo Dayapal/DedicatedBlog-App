@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FiUser, FiMail, FiPhone, FiAward, FiShield, FiCalendar } from "react-icons/fi";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassBadge } from "../components/ui/GlassBadge";
 
 function MyProfile() {
   const [profile, setProfile] = useState(null);
@@ -9,8 +12,6 @@ function MyProfile() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        console.log("Token:", token);
-
         const { data } = await axios.get("/api/user/my-profile", {
           headers: {
             "Content-Type": "application/json",
@@ -18,8 +19,6 @@ function MyProfile() {
           },
           withCredentials: true,
         });
-
-        console.log("Fetched Profile:", data);
         setProfile(data.user);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -33,64 +32,111 @@ function MyProfile() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-linear-to-br from-blue-100 to-purple-100">
-        <p className="text-lg text-gray-700 animate-pulse">Loading profile...</p>
-      </div>
+      <GlassCard className="h-96 animate-pulse flex items-center justify-center">
+        <p className="text-sm text-[var(--text-muted)]">Loading profile details...</p>
+      </GlassCard>
     );
   }
 
   if (!profile) {
     return (
-      <div className="flex justify-center items-center h-screen bg-linear-to-br from-red-100 to-orange-100">
-        <p className="text-lg text-gray-700">Profile not found 😔</p>
-      </div>
+      <GlassCard className="text-center py-12">
+        <p className="text-sm text-red-500">Profile data could not be retrieved.</p>
+      </GlassCard>
     );
   }
 
-  const profileImage = profile?.photo?.url?.replace("http://", "https://");
+  const profileImage = profile?.photo?.url?.replace("http://", "https://") || "/default-avatar.png";
 
   return (
-    <div className="flex justify-center items-center h-screen bg-linear-to-br from-indigo-100 via-purple-100 to-pink-100">
-      <div className="bg-white shadow-xl rounded-2xl overflow-hidden w-80">
-        {/* Cover Image */}
-        <div className="relative">
-          <img
-            src={profileImage || "https://via.placeholder.com/300x120"}
-            alt="cover"
-            className="w-full h-32 object-cover"
-          />
-          <div className="absolute inset-x-0 bottom-0 transform translate-y-1/2">
-            <img
-              src={profileImage || "https://via.placeholder.com/100"}
-              alt="avatar"
-              className="w-20 h-20 rounded-full mx-auto border-4 border-white shadow-md"
-            />
-          </div>
+    <div className="max-w-3xl space-y-6">
+      {/* Profile Card */}
+      <GlassCard radius="hero" className="!p-0 overflow-hidden shadow-xl">
+        {/* Ambient Gradient Header */}
+        <div className="h-40 sm:h-48 w-full bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2] relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent_70%)]" />
         </div>
 
-        {/* Profile Info */}
-        <div className="px-4 py-6 mt-6 text-center">
-          <h2 className="text-xl font-semibold text-gray-800">{profile?.name}</h2>
-          <p className="text-gray-500 text-sm mt-1">{profile?.email}</p>
+        {/* Profile Content */}
+        <div className="px-6 sm:px-10 pb-10 relative">
+          {/* Avatar floating over banner */}
+          <div className="-mt-16 sm:-mt-20 mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="relative inline-block">
+              <img
+                src={profileImage}
+                alt={profile.name}
+                className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-[var(--bg-app)] shadow-xl"
+              />
+              <span className="absolute bottom-2 right-2 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" />
+            </div>
 
-          <div className="mt-4 text-left space-y-1 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600 font-medium">Phone:</span>
-              <span className="text-gray-800">{profile?.phone}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 font-medium">Education:</span>
-              <span className="text-gray-800">{profile?.education}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 font-medium">Role:</span>
-              <span className="text-indigo-600 font-semibold capitalize">{profile?.role}</span>
+            <div className="flex gap-2">
+              <GlassBadge variant="primary" size="lg">
+                <FiShield />
+                <span className="capitalize">{profile.role || "Author"}</span>
+              </GlassBadge>
             </div>
           </div>
 
-          
+          {/* User Name & Bio */}
+          <div className="space-y-1 mb-8">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">
+              {profile.name}
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
+              Digital creator & contributing author on DedicatedBlog
+            </p>
+          </div>
+
+          {/* User Details Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center shrink-0">
+                <FiMail size={18} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Email Address</p>
+                <p className="text-sm font-medium text-[var(--text-primary)] truncate">{profile.email}</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#69D8F2]/15 text-[#0E7490] dark:text-[#69D8F2] flex items-center justify-center shrink-0">
+                <FiPhone size={18} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Phone</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{profile.phone || "Not specified"}</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#A78BFA]/15 text-[#6D28D9] dark:text-[#A78BFA] flex items-center justify-center shrink-0">
+                <FiAward size={18} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Education</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">{profile.education || "Bachelor Degree"}</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center shrink-0">
+                <FiCalendar size={18} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Account Active Since</p>
+                <p className="text-sm font-medium text-[var(--text-primary)]">
+                  {new Date(profile.createAt || profile.createdAt || Date.now()).toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 }

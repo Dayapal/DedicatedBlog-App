@@ -1,126 +1,153 @@
 import React, { useState } from "react";
-import { useAuth } from "../context/AuthProvider";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { FaSearch } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiSearch, FiLayers, FiArrowRight, FiBookOpen } from "react-icons/fi";
+import { useAuth } from "../context/AuthProvider";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassBadge } from "../components/ui/GlassBadge";
+
+const categories = [
+  "All",
+  "Technology",
+  "Devotional",
+  "Business",
+  "Sports",
+  "Health",
+  "Tourism",
+  "Entertainment",
+];
 
 function CategoryPage() {
   const { blogs } = useAuth();
-  const categories = ["Devotional", "Sports", "Tourism", "Technology", "Entertainment", "Health","Business"];
-  const [selectedCategory, setSelectedCategory] = useState("Devotional");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredBlogs = blogs
-    ?.filter((blog) => blog.category === selectedCategory)
+  const filteredBlogs = (blogs || [])
+    .filter((blog) => (selectedCategory === "All" ? true : blog.category === selectedCategory))
     .filter((blog) =>
-      blog.title.toLowerCase().includes(searchTerm.toLowerCase())
+      searchTerm.trim() === ""
+        ? true
+        : blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          blog.about?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
   return (
-    <section className="min-h-screen bg-linear-to-b from-blue-50 via-white to-blue-100 py-12 px-6 md:px-12 transition-colors">
-      <div className="max-w-7xl mx-auto">
-        {/* Page Header */}
-        <motion.h1
-          className="text-4xl md:text-5xl font-bold text-center text-blue-800 mb-10"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Explore Inspiring Categories
-        </motion.h1>
+    <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="text-center max-w-2xl mx-auto space-y-3 mb-10">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#69D8F2]/15 text-[#0E7490] dark:text-[#69D8F2] text-xs font-semibold uppercase tracking-wider">
+          <FiLayers />
+          <span>Curated Ecosystem</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
+          Explore by Topic
+        </h2>
+        <p className="text-sm text-[var(--text-secondary)]">
+          Filter and discover in-depth articles written by subject specialists
+        </p>
+      </div>
 
-        {/* Category Buttons */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-4 mb-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          {categories.map((cat) => (
-            <motion.button
-              key={cat}
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-6 py-2.5 rounded-full text-sm font-semibold shadow-sm transition-all duration-300 border ${
-                selectedCategory === cat
-                  ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-                  : "bg-white text-gray-700 hover:bg-blue-100 border-gray-200"
-              }`}
-            >
-              {cat}
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Search Box */}
-        <div className="flex justify-center mb-10">
-          <div className="relative w-full max-w-md">
-            <input
-              type="text"
-              placeholder="Search blogs..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-3 pl-10 pr-4 rounded-full border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm placeholder-gray-400"
-            />
-            <FaSearch className="absolute left-3 top-3.5 text-gray-400" />
-          </div>
+      {/* Category Pills & Search Controls */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+        {/* Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-2 md:pb-0 scrollbar-none">
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === cat;
+            return (
+              <GlassBadge
+                key={cat}
+                clickable
+                active={isSelected}
+                size="md"
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </GlassBadge>
+            );
+          })}
         </div>
 
-        {/* Category Info */}
-        <p className="text-center mb-6 text-gray-600 text-lg">
-          Showing blogs in{" "}
-          <span className="font-semibold text-blue-700">
-            {selectedCategory}
-          </span>{" "}
-          category
-        </p>
-
-        {/* Blog Grid */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
-          {filteredBlogs && filteredBlogs.length > 0 ? (
-            filteredBlogs.map((blog, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ y: -6, scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 200 }}
-                className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-100"
-              >
-                <Link to={`/blogs/${blog._id}`}>
-                  <div className="relative">
-                    <img
-                      src={
-                        blog?.blogImage?.url ||
-                        "https://via.placeholder.com/300x200?text=No+Image"
-                      }
-                      alt={blog?.title}
-                      className="w-full h-52 object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4">
-                      <h2 className="text-white text-lg font-semibold">
-                        {blog?.title}
-                      </h2>
-                      <p className="text-gray-200 text-sm">
-                        {blog?.category}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500 text-lg">
-              No blogs found in this category.
-            </div>
-          )}
-        </motion.div>
+        {/* Search Input */}
+        <div className="relative w-full md:w-72 shrink-0">
+          <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-sm pointer-events-none" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search in topics..."
+            className="glass-input w-full py-2 pl-9 pr-4 text-xs sm:text-sm font-normal rounded-full"
+          />
+        </div>
       </div>
+
+      {/* Grid of Topic Cards */}
+      <AnimatePresence mode="popLayout">
+        {filteredBlogs.length > 0 ? (
+          <motion.div
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            {filteredBlogs.map((blog) => (
+              <motion.div
+                key={blog._id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.25 }}
+              >
+                <GlassCard
+                  interactive
+                  radius="lg"
+                  className="!p-4 h-full flex flex-col group cursor-pointer"
+                >
+                  <Link to={`/blogs/${blog._id}`} className="flex flex-col h-full">
+                    <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-3 bg-gray-100 dark:bg-gray-800">
+                      <img
+                        src={blog.blogImage?.url || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"}
+                        alt={blog.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-2.5 left-2.5">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-black/60 text-white backdrop-blur-xs">
+                          {blog.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    <h3 className="font-bold text-sm sm:text-base text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors line-clamp-2 leading-snug mb-1.5">
+                      {blog.title}
+                    </h3>
+
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed mb-4 flex-1">
+                      {blog.about}
+                    </p>
+
+                    <div className="pt-3 border-t border-[var(--glass-border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)] mt-auto">
+                      <span className="truncate max-w-[120px]">By {blog.adminName || "Author"}</span>
+                      <span className="text-[#747FDD] group-hover:translate-x-1 transition-transform flex items-center gap-0.5 font-semibold">
+                        Read <FiArrowRight className="text-[10px]" />
+                      </span>
+                    </div>
+                  </Link>
+                </GlassCard>
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <GlassCard className="text-center py-16 space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center mx-auto text-xl">
+              <FiBookOpen />
+            </div>
+            <h4 className="font-bold text-lg text-[var(--text-primary)]">
+              No matching stories found
+            </h4>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-sm mx-auto">
+              Try adjusting your category selection or search keywords.
+            </p>
+          </GlassCard>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

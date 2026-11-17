@@ -1,9 +1,22 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import ImageCropper from "../components/ImageCropper";
+import GlassCard from "../components/ui/GlassCard";
+import GlassButton from "../components/ui/GlassButton";
+import GlassBadge from "../components/ui/GlassBadge";
 
+const CATEGORIES = [
+  "Technology",
+  "Devotional",
+  "Sports",
+  "Tourism",
+  "Entertainment",
+  "Health",
+  "Business",
+  "Coding",
+];
 
 function UpdateBlog() {
   const navigate = useNavigate();
@@ -12,44 +25,55 @@ function UpdateBlog() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [about, setAbout] = useState("");
-  const [blogImage, setBlogImage] = useState(""); // can be file or URL string
+  const [blogImage, setBlogImage] = useState(""); // file or URL string
   const [blogImagePreview, setBlogImagePreview] = useState("");
-  const [loading, setLoading] = useState(false); // disable button during request
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [activeTab, setActiveTab] = useState("write"); // 'write' | 'preview'
 
-  // cropper modal states
+  // Cropper states
   const [openCrop, setOpenCrop] = useState(false);
-  const [tempImage, setTempImage] = useState(""); // dataURL for cropping
+  const [tempImage, setTempImage] = useState("");
+
+  // Computed metrics
+  const wordCount = about.trim() ? about.trim().split(/\s+/).length : 0;
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
   // Fetch existing blog data
   useEffect(() => {
     const fetchBlog = async () => {
       try {
+        setFetching(true);
         const token = localStorage.getItem("jwt");
-        const { data } = await axios.get(
-          `/api/blogs/single-blog/${id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const { data } = await axios.get(`/api/blogs/single-blog/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         setTitle(data?.title || "");
-        setCategory(data?.category || "");
+        setCategory(data?.category || "Technology");
         setAbout(data?.about || "");
         setBlogImage(data?.blogImage?.url || "");
         setBlogImagePreview(data?.blogImage?.url || "");
       } catch (err) {
         console.error(err);
         toast.error("Failed to fetch blog data. Try again later.");
+      } finally {
+        setFetching(false);
       }
-    }
-    
-    fetchBlog();
+    };
+
+    if (id) fetchBlog();
   }, [id]);
 
   // Handle Image Upload Preview (open crop modal)
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload a valid image (JPEG, PNG, WebP).");
+      return;
+    }
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -59,55 +83,73 @@ function UpdateBlog() {
     };
   };
 
-  // callback from ImageCropper when user saves crop
+  // Crop done callback
   const handleCropDone = (file, previewUrl) => {
-    // file is a File object ready to upload
     setBlogImage(file);
     setBlogImagePreview(previewUrl);
     setTempImage("");
     setOpenCrop(false);
+    toast.success("New cover image cropped & ready!");
+  };
+
+  // Quick formatting insertion
+  const insertFormatting = (prefix, suffix = "") => {
+    const textarea = document.getElementById("update-textarea");
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = about.substring(start, end) || "text";
+    const replacement = `${prefix}${selectedText}${suffix}`;
+
+    const newAbout =
+      about.substring(0, start) + replacement + about.substring(end);
+    setAbout(newAbout);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(
+        start + prefix.length,
+        start + prefix.length + selectedText.length
+      );
+    }, 50);
   };
 
   // Handle Blog Update
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    if (loading) return; // prevent multiple clicks
-    setLoading(true);
+    if (loading) return;
 
-    if (!title || !category || !about) {
+    if (!title.trim() || !category || !about.trim()) {
       toast.error("Please fill all required fields!");
-      setLoading(false);
       return;
     }
 
+    setLoading(true);
+
     const formData = new FormData();
-    formData.append("title", title);
+    formData.append("title", title.trim());
     formData.append("category", category);
-    formData.append("about", about);
+    formData.append("about", about.trim());
 
     if (blogImage instanceof File) {
       formData.append("blogImage", blogImage);
     } else if (typeof blogImage === "string") {
-      // If backend supports receiving URL instead of file:
       formData.append("blogImageURL", blogImage);
     }
 
     try {
       const token = localStorage.getItem("jwt");
-      const { data } = await axios.put(
-        `/api/blogs/update/${id}`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success(data.message || "Blog updated successfully!");
-      navigate("/");
+      const { data } = await axios.put(`/api/blogs/update/${id}`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(data.message || "Story updated successfully!");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || "Failed to update blog.");
@@ -116,8 +158,21 @@ function UpdateBlog() {
     }
   };
 
+  if (fetching) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Loading story for editing...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-9">
+    <div className="w-full max-w-5xl mx-auto py-8 sm:py-12 px-4 sm:px-6">
       {/* Crop modal */}
       {openCrop && tempImage && (
         <ImageCropper
@@ -130,88 +185,321 @@ function UpdateBlog() {
         />
       )}
 
-      <section className="bg-white shadow-lg rounded-2xl max-w-2xl w-full p-8 space-y-6 animate-fade-in">
-        <h1 className="text-3xl font-extrabold text-blue-700 text-center mb-6">
-          Update Blog
-        </h1>
-
-        <form className="space-y-5" onSubmit={handleUpdate}>
-          {/* Category */}
-          <div className="flex flex-col">
-            <label className="mb-2 font-semibold text-gray-700">Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            >
-              <option value="">Select Category</option>
-              <option value="Devotional">Devotional</option>
-              <option value="Sports">Sports</option>
-              <option value="Coding">Coding</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Business">Business</option>
-              <option value="Tourism">Tourism</option>
-              <option value="Technology">Technology</option>
-              <option value="Health">Health</option>
-            </select>
-          </div>
-
-          {/* Title */}
-          <div className="flex flex-col">
-            <label className="mb-2 font-semibold text-gray-700">Blog Title</label>
-            <input
-              type="text"
-              placeholder="Enter main title..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div className="flex flex-col">
-            <label className="mb-2 font-semibold text-gray-700">Blog Image</label>
-            <div className="mb-3">
-              <img
-                src={blogImagePreview || blogImage || "/imgPL.webp"}
-                alt="Blog Preview"
-                className="w-full h-56 object-cover rounded-xl border border-gray-200 shadow-sm"
-              />
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            />
-            <p className="text-sm text-gray-500 mt-2">
-              After selecting file you'll get options to crop, zoom, rotate, and save.
-            </p>
-          </div>
-
-          {/* About */}
-          <div className="flex flex-col">
-            <label className="mb-2 font-semibold text-gray-700">About</label>
-            <textarea
-              rows="6"
-              placeholder="Write something about your blog (at least 200 characters)"
-              value={about}
-              onChange={(e) => setAbout(e.target.value)}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition resize-none"
-            ></textarea>
-          </div>
-
-          {/* Update Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full p-3 rounded-xl text-white font-semibold transition 
-                        ${loading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+      {/* Navigation / Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline mb-2"
           >
-            {loading ? "Updating..." : "Update Blog"}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Update Article
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Refine your story, update the cover imagery, or adjust the category.
+          </p>
+        </div>
+
+        {/* View Switcher: Write vs Preview */}
+        <div className="flex items-center p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-white/60 dark:border-white/10 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setActiveTab("write")}
+            className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+              activeTab === "write"
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            }`}
+          >
+            ✏️ Edit Mode
           </button>
-        </form>
-      </section>
+          <button
+            type="button"
+            onClick={() => setActiveTab("preview")}
+            className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+              activeTab === "preview"
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            }`}
+          >
+            👁️ Preview
+          </button>
+        </div>
+      </div>
+
+      {/* Editor Form */}
+      <form onSubmit={handleUpdate}>
+        {activeTab === "write" ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left 2 Cols: Title, Cover Image, Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Title */}
+              <GlassCard elevation="md" className="p-6">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
+                  Article Title
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter title..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full text-xl sm:text-2xl font-bold bg-transparent border-0 border-b border-gray-200 dark:border-white/10 pb-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition"
+                />
+              </GlassCard>
+
+              {/* Cover Image */}
+              <GlassCard elevation="md" className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Cover Image
+                  </label>
+                  <label className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer">
+                    Replace Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                <div className="relative group rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-md">
+                  <img
+                    src={blogImagePreview || blogImage || "/imgPL.webp"}
+                    alt="Cover Preview"
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <label className="cursor-pointer px-4 py-2 rounded-xl bg-white/90 text-gray-900 text-xs font-semibold hover:bg-white shadow-lg transition">
+                      Choose New Image
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* Content & Markdown Toolbar */}
+              <GlassCard elevation="md" className="p-6">
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-gray-200/60 dark:border-white/10">
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Story Content
+                  </span>
+
+                  {/* Formatting tools */}
+                  <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-xl">
+                    <button
+                      type="button"
+                      title="Bold"
+                      onClick={() => insertFormatting("**", "**")}
+                      className="p-1.5 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      B
+                    </button>
+                    <button
+                      type="button"
+                      title="Italic"
+                      onClick={() => insertFormatting("*", "*")}
+                      className="p-1.5 rounded-lg text-xs italic text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      I
+                    </button>
+                    <button
+                      type="button"
+                      title="Heading"
+                      onClick={() => insertFormatting("\n### ", "\n")}
+                      className="p-1.5 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      H3
+                    </button>
+                    <button
+                      type="button"
+                      title="Quote"
+                      onClick={() => insertFormatting("\n> ", "\n")}
+                      className="p-1.5 rounded-lg text-xs text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      ❝
+                    </button>
+                    <button
+                      type="button"
+                      title="Bullet list"
+                      onClick={() => insertFormatting("\n- ", "\n")}
+                      className="p-1.5 rounded-lg text-xs text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      • List
+                    </button>
+                    <button
+                      type="button"
+                      title="Code block"
+                      onClick={() => insertFormatting("\n```\n", "\n```\n")}
+                      className="p-1.5 rounded-lg text-xs font-mono text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      &lt;/&gt;
+                    </button>
+                  </div>
+                </div>
+
+                <textarea
+                  id="update-textarea"
+                  rows={14}
+                  placeholder="Update your story..."
+                  value={about}
+                  onChange={(e) => setAbout(e.target.value)}
+                  className="w-full bg-transparent border-0 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none text-base leading-relaxed resize-y"
+                />
+
+                <div className="flex items-center justify-between pt-3 mt-3 border-t border-gray-200/60 dark:border-white/10 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-3">
+                    <span>{wordCount} words</span>
+                    <span>•</span>
+                    <span>{about.length} characters</span>
+                  </div>
+                  <span>~{readingTime} min read</span>
+                </div>
+              </GlassCard>
+            </div>
+
+            {/* Right Col: Category & Save */}
+            <div className="space-y-6">
+              {/* Category */}
+              <GlassCard elevation="md" className="p-6">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">
+                  Topic Category
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {CATEGORIES.map((cat) => {
+                    const isSelected = category === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setCategory(cat)}
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition-all ${
+                          isSelected
+                            ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20"
+                            : "bg-black/5 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 border border-gray-200/50 dark:border-white/10"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              {/* Action summary */}
+              <GlassCard elevation="md" className="p-6 space-y-4">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                  Update Actions
+                </h3>
+
+                <div className="space-y-3 text-xs text-gray-600 dark:text-gray-300">
+                  <div className="flex justify-between items-center py-1.5 border-b border-gray-200/50 dark:border-white/5">
+                    <span>Status</span>
+                    <GlassBadge variant="emerald" size="sm">
+                      Published
+                    </GlassBadge>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5 border-b border-gray-200/50 dark:border-white/5">
+                    <span>Target ID</span>
+                    <span className="font-mono text-[10px] text-gray-500">
+                      {id?.slice(-8)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5">
+                    <span>Est. Reading Time</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      {readingTime} min
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex flex-col gap-2">
+                  <GlassButton
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    className="w-full justify-center shadow-lg shadow-indigo-500/25"
+                    loading={loading}
+                  >
+                    💾 Save Changes
+                  </GlassButton>
+                  <GlassButton
+                    type="button"
+                    variant="ghost"
+                    size="md"
+                    className="w-full justify-center"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Cancel
+                  </GlassButton>
+                </div>
+              </GlassCard>
+            </div>
+          </div>
+        ) : (
+          /* Live Preview Mode */
+          <GlassCard elevation="lg" className="p-6 sm:p-10 max-w-3xl mx-auto space-y-6">
+            <div className="flex items-center gap-3">
+              <GlassBadge variant="indigo" size="md">
+                {category || "Uncategorized"}
+              </GlassBadge>
+              <span className="text-xs text-gray-500">
+                {readingTime} min read • Updated Preview
+              </span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white leading-tight">
+              {title || "Untitled Article Title"}
+            </h1>
+
+            {/* Cover image preview */}
+            {(blogImagePreview || blogImage) && (
+              <div className="rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-lg">
+                <img
+                  src={blogImagePreview || blogImage}
+                  alt="Cover"
+                  className="w-full h-80 object-cover"
+                />
+              </div>
+            )}
+
+            {/* Article body */}
+            <div className="prose dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap text-base pt-4">
+              {about || "No story content drafted yet."}
+            </div>
+
+            <div className="pt-6 border-t border-gray-200/60 dark:border-white/10 flex justify-end gap-3">
+              <GlassButton
+                type="button"
+                variant="ghost"
+                size="md"
+                onClick={() => setActiveTab("write")}
+              >
+                Back to Edit
+              </GlassButton>
+              <GlassButton
+                type="submit"
+                variant="primary"
+                size="md"
+                loading={loading}
+              >
+                Save Changes
+              </GlassButton>
+            </div>
+          </GlassCard>
+        )}
+      </form>
     </div>
   );
 }

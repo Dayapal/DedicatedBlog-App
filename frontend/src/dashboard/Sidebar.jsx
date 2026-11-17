@@ -1,191 +1,199 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
+import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { CiMenuBurger } from "react-icons/ci";
-import { BiSolidLeftArrowAlt } from "react-icons/bi";
 import {
-  FaUserCircle,
-  FaSignOutAlt,
-  FaHome,
-  FaPenFancy,
-  FaBookOpen,
-} from "react-icons/fa";
+  FiBookOpen,
+  FiPenTool,
+  FiUser,
+  FiHome,
+  FiLogOut,
+  FiSun,
+  FiMoon,
+  FiMenu,
+  FiX,
+  FiFeather,
+} from "react-icons/fi";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
-function Sidebar({ setComponent }) {
-  const { setIsAuthenticated } = useAuth();
+function Sidebar({ setComponent, currentComponent }) {
+  const { profile, setIsAuthenticated, setProfile } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigateTo = useNavigate();
-  const [show, setShow] = useState(false);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        if (!token) return toast.error("Please log in first");
-
-        const { data } = await axios.get(
-          "/api/user/my-profile",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setProfile(data);
-        setLoading(false);
-      } catch (error) {
-        toast.error("Failed to load profile");
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
-    {
-      label: "My Blogs",
-      icon: FaBookOpen,
-      action: () => setComponent("My Blogs"),
-      color: "from-blue-500 to-blue-600",
-    },
-    {
-      label: "Create Blog",
-      icon: FaPenFancy,
-      action: () => setComponent("Create Blog"),
-      color: "from-blue-600 to-blue-700",
-    },
-    {
-      label: "My Profile",
-      icon: FaUserCircle,
-      action: () => setComponent("My Profile"),
-      color: "from-blue-700 to-blue-800",
-    },
-    {
-      label: "Home",
-      icon: FaHome,
-      action: () => navigateTo("/"),
-      color: "from-gray-600 to-gray-700",
-    },
+    { label: "My Blogs", id: "My Blogs", icon: FiBookOpen },
+    { label: "Create Blog", id: "Create Blog", icon: FiPenTool },
+    { label: "My Profile", id: "My Profile", icon: FiUser },
   ];
 
   const handleLogout = async () => {
     try {
-      const { data } = await axios.get(
-        "/api/user/logout",
-        { withCredentials: true }
-      );
-
-      toast.success(data.message);
+      const { data } = await axios.get("/api/user/logout", { withCredentials: true });
+      toast.success(data.message || "Logged out successfully");
       localStorage.removeItem("jwt");
       setIsAuthenticated(false);
+      setProfile(null);
       navigateTo("/login");
     } catch (error) {
+      console.error(error);
       toast.error("Logout failed");
     }
   };
 
-  return (
-    <>
-      {/* Mobile menu trigger */}
-      <div
-        className="sm:hidden fixed top-2 left-4 z-50 bg-blue-600 text-white p-2 rounded-2xl cursor-pointer"
-        onClick={() => setShow(true)}
-      >
-        <CiMenuBurger className="text-xl" />
-      </div>
-
-      {/* Sidebar container */}
-      <div
-        className={`
-    w-66 h-full fixed top-0 left-0
-    bg-white/70 backdrop-blur-xl
-    border-r border-gray-200 shadow-2xl
-    p-6 transition-transform duration-300
-    sm:translate-x-0 z-20
-
-    /* Prevent scroll on desktop */
-    sm:overflow-y-hidden
-
-    /* Allow scroll only on mobile */
-    overflow-y-auto
-
-    ${show ? "translate-x-0" : "-translate-x-full"}
-  `}
-      >
-        {/* Mobile close button */}
-        <div
-          className="sm:hidden absolute top-3 right-4 text-gray-600 cursor-pointer"
-          onClick={() => setShow(false)}
-        >
-          <BiSolidLeftArrowAlt className="text-3xl" />
-        </div>
-
-        {/* Profile Section */}
-        <div className="text-center  mb-5">
-          {loading ? (
-            <p className="text-gray-500">Loading profile...</p>
-          ) : (
-            <>
-              <img
-                src={profile?.user?.photo?.url || "/default-avatar.png"}
-                className="w-16 h-16 mx-auto rounded-full border-4 border-blue-100 shadow-lg object-cover"
-                alt="Profile"
-              />
-
-              <h2 className="text-lg font-semibold mt-3 text-gray-900">
-                {profile?.user?.name}
-              </h2>
-
-              <p className="text-sm text-gray-500 break-all px-2">
-                {profile?.user?.email}
-              </p>
-            </>
-          )}
-        </div>
-
-        {/* Navigation Buttons */}
-        <div className="space-y-4 pb-10">
-          {navItems.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                item.action();
-                setShow(false);
-              }}
-              className={`
-                w-full flex items-center gap-3 px-5 py-3 rounded-xl
-                text-white font-medium shadow-sm
-                bg-linear-to-r ${item.color}
-                hover:shadow-md hover:scale-[1.02]
-                transition-all duration-200
-              `}
-            >
-              <item.icon className="text-lg" />
-              {item.label}
-            </button>
-          ))}
-
-          {/* Logout Button */}
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full justify-between p-6">
+      {/* Top: Brand & User Identity */}
+      <div className="space-y-6">
+        {/* Brand */}
+        <div className="flex items-center justify-between pb-4 border-b border-[var(--glass-border-subtle)]">
           <button
-            onClick={handleLogout}
-            className="
-              w-full flex items-center gap-3 px-5 py-3 rounded-xl
-              font-medium text-white bg-red-500
-              hover:bg-red-600 hover:shadow-md hover:scale-[1.02]
-              transition-all duration-200
-            "
+            onClick={() => navigateTo("/")}
+            className="flex items-center gap-2 group cursor-pointer text-left"
           >
-            <FaSignOutAlt className="text-lg" />
-            Logout
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#747FDD] to-[#69D8F2] flex items-center justify-center text-white shadow-md shadow-[#747FDD]/30">
+              <FiFeather size={16} />
+            </div>
+            <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">
+              Dedicated<span className="text-[#747FDD]">Blog</span>
+            </span>
+          </button>
+
+          {/* Theme Switcher inside sidebar */}
+          <button
+            onClick={toggleTheme}
+            className="w-8 h-8 rounded-xl flex items-center justify-center glass-panel text-[var(--text-secondary)] hover:text-[#747FDD] transition-colors cursor-pointer"
+            aria-label="Toggle theme"
+          >
+            {isDark ? <FiSun className="text-amber-400" size={15} /> : <FiMoon size={15} />}
           </button>
         </div>
+
+        {/* User Card */}
+        <div className="p-3.5 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-center gap-3">
+          <img
+            src={profile?.photo?.url || "/default-avatar.png"}
+            alt={profile?.name || "Author"}
+            className="w-11 h-11 rounded-2xl object-cover border border-[var(--glass-border)] shadow-sm shrink-0"
+          />
+          <div className="min-w-0 flex-1">
+            <h3 className="font-bold text-xs sm:text-sm text-[var(--text-primary)] truncate">
+              {profile?.name || "Author"}
+            </h3>
+            <p className="text-[11px] text-[var(--text-muted)] truncate">
+              {profile?.email || "author@dedicatedblog.com"}
+            </p>
+            <span className="inline-block mt-1 px-2 py-0.2 rounded-full text-[9px] font-bold uppercase tracking-wider bg-[#747FDD]/15 text-[#747FDD]">
+              {profile?.role || "Author"}
+            </span>
+          </div>
+        </div>
+
+        {/* Navigation Items */}
+        <div className="space-y-1.5 pt-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] px-3 mb-2">
+            Workspace
+          </p>
+          {navItems.map((item) => {
+            const isActive = currentComponent === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setComponent(item.id);
+                  setMobileOpen(false);
+                }}
+                className={`
+                  w-full relative px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-3 transition-all duration-200 cursor-pointer select-none text-left
+                  ${
+                    isActive
+                      ? "text-white shadow-lg shadow-[#747FDD]/25"
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-bg-subtle)]"
+                  }
+                `}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="sidebarActivePill"
+                    className="absolute inset-0 bg-gradient-to-r from-[#747FDD] to-[#454FA8] rounded-2xl -z-10"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <item.icon className="text-base shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Bottom: External Home & Logout */}
+      <div className="pt-6 border-t border-[var(--glass-border-subtle)] space-y-1.5">
+        <button
+          onClick={() => navigateTo("/")}
+          className="w-full px-4 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-bg-subtle)] flex items-center gap-3 transition-colors cursor-pointer"
+        >
+          <FiHome className="text-base" />
+          <span>Public Home</span>
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="w-full px-4 py-2.5 rounded-xl text-xs font-semibold text-rose-500 hover:bg-rose-500/10 flex items-center gap-3 transition-colors cursor-pointer"
+        >
+          <FiLogOut className="text-base" />
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile Floating Trigger Pill */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="w-10 h-10 rounded-2xl glass-panel glass-specular flex items-center justify-center text-[var(--text-primary)] shadow-lg border border-[var(--glass-border)] cursor-pointer"
+          aria-label="Open sidebar"
+        >
+          {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+        </button>
+      </div>
+
+      {/* Desktop Persistent Floating Sidebar */}
+      <aside className="hidden md:block w-72 h-[calc(100vh-2rem)] fixed top-4 left-4 z-40 glass-panel glass-specular rounded-[32px] border border-[var(--glass-border)] shadow-xl overflow-hidden">
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <div className="fixed inset-0 z-50 md:hidden flex">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 350, damping: 35 }}
+              className="relative w-72 max-w-[80vw] h-full glass-panel border-r border-[var(--glass-border)] shadow-2xl z-10"
+            >
+              <SidebarContent />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

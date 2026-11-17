@@ -1,335 +1,189 @@
 import React from "react";
-import { useAuth } from "../context/AuthProvider";
 import { motion } from "framer-motion";
-import { 
-  FaCode, 
-  FaServer, 
-  FaPalette, 
-  FaDatabase, 
-  FaCloud, 
+import {
+  FaCode,
+  FaServer,
+  FaPalette,
+  FaDatabase,
+  FaCloud,
   FaRocket,
   FaGraduationCap,
   FaAward,
   FaHeart,
-  FaUsers,
   FaLightbulb,
   FaFutbol,
-  FaBook,
-  FaLaptopCode
+  FaGithub,
+  FaLinkedin,
+  FaGlobe,
 } from "react-icons/fa";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassBadge } from "../components/ui/GlassBadge";
 
 function About() {
-  const { profile } = useAuth();
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6
-      }
-    }
-  };
-
   const skillCards = [
-    { icon: FaCode, title: "Frontend", skills: "React.js, Next.js, TypeScript", color: "from-blue-500 to-cyan-500" },
-    { icon: FaServer, title: "Backend", skills: "Node.js, Express.js, REST APIs", color: "from-green-500 to-emerald-500" },
-    { icon: FaPalette, title: "Styling", skills: "Tailwind CSS, Material UI, Bootstrap", color: "from-purple-500 to-pink-500" },
-    { icon: FaDatabase, title: "Databases", skills: "MongoDB, MySQL, PostgreSQL", color: "from-orange-500 to-red-500" },
-    { icon: FaCloud, title: "Cloud & DevOps", skills: "Docker, CI/CD, Google Cloud", color: "from-indigo-500 to-blue-500" },
-    { icon: FaRocket, title: "Performance", skills: "Optimization, Caching, Web Vitals", color: "from-teal-500 to-green-500" }
+    { icon: FaCode, title: "Frontend Architecture", skills: "React.js, Next.js, TypeScript, Tailwind CSS", color: "from-[#747FDD] to-[#69D8F2]" },
+    { icon: FaServer, title: "Backend Systems", skills: "Node.js, Express.js, REST APIs, Microservices", color: "from-[#A78BFA] to-[#747FDD]" },
+    { icon: FaPalette, title: "Design Systems", skills: "Material 3 Expressive, Glassmorphism, Responsive UI", color: "from-[#F0A6D8] to-[#A78BFA]" },
+    { icon: FaDatabase, title: "Databases & Caching", skills: "MongoDB, Mongoose, Redis, Schema Indexing", color: "from-[#69D8F2] to-[#747FDD]" },
+    { icon: FaCloud, title: "Cloud & DevOps", skills: "Docker, CI/CD Actions, Cloudinary, Linux/Nginx", color: "from-[#747FDD] to-[#454FA8]" },
+    { icon: FaRocket, title: "Performance & Security", skills: "Web Vitals, Rate Limiting, OWASP, Compression", color: "from-[#A78BFA] to-[#69D8F2]" },
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Hero Section */}
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="inline-flex items-center justify-center w-22 h-22 bg-linear-to-br from-blue-500 to-purple-600 rounded-3xl my-8 shadow-lg">
-            <FaCode className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Hello, I'm <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Daya Pal</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            A passionate <strong className="text-blue-600">Full-Stack Developer</strong> who crafts 
-            digital experiences that are not just functional, but emotionally resonant and 
-            intuitively human-centered.
-          </p>
-        </motion.div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Story & Experience */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Personal Story Card */}
-            <motion.div
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8"
-              variants={itemVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-8 bg-blue-500 rounded-full"></div>
-                <h2 className="text-2xl font-bold text-gray-900">My Journey</h2>
-              </div>
-              <div className="space-y-4 text-gray-700 leading-relaxed">
-                <p>
-                  My path into technology wasn't conventional—it was forged through 
-                  <strong className="text-blue-600"> curiosity</strong> and a deep desire to 
-                  create meaningful solutions. From solving customer problems at Airtel Payments 
-                  to architecting scalable web applications, I've learned that great technology 
-                  serves people first.
-                </p>
-                <p>
-                  I specialize in turning complex challenges into 
-                  <strong className="text-green-600"> elegant, user-centered solutions</strong> 
-                  using modern technologies like React.js, Next.js, and Node.js. Every line of 
-                  code I write is guided by one principle: how can this make someone's life better?
-                </p>
-                <p>
-                  When I'm not coding, you'll find me exploring the latest UI/UX trends, 
-                  contributing to open source, or mentoring aspiring developers—because 
-                  <strong className="text-purple-600"> growth is best when shared</strong>.
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Experience Timeline */}
-            <motion.div
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8"
-              variants={itemVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-8 bg-green-500 rounded-full"></div>
-                <h2 className="text-2xl font-bold text-gray-900">Professional Journey</h2>
-              </div>
-              
-              <div className="space-y-6">
-                {/* Current Role */}
-                <div className="flex gap-4">
-                  <div className="shrink-0 w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                    <FaRocket className="text-green-600 text-lg" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">Frontend Engineer</h3>
-                    <p className="text-blue-600 font-medium">Mark Anthony · Bengaluru</p>
-                    <p className="text-gray-500 text-sm">March 2025 – September 2025</p>
-                    <p className="text-gray-700 mt-2">
-                      Developing and deploying React applications with performance optimization, 
-                      code splitting, and caching strategies that significantly improved Core Web Vitals.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Previous Role */}
-                <div className="flex gap-4">
-                  <div className="shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <FaUsers className="text-blue-600 text-lg" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">Customer Care Executive</h3>
-                    <p className="text-blue-600 font-medium">Adroit Synergies Pvt. Ltd. (Airtel Payments)</p>
-                    <p className="text-gray-700 mt-2">
-                      Learned invaluable skills in problem-solving, clear communication, and 
-                      delivering satisfaction under pressure—foundations that make me a better developer today.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Projects Showcase */}
-            <motion.div
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8"
-              variants={itemVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-8 bg-purple-500 rounded-full"></div>
-                <h2 className="text-2xl font-bold text-gray-900">Featured Projects</h2>
-              </div>
-
-              <div className="space-y-6">
-                <div className="p-6 bg-linear-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-200">
-                  <h3 className="font-semibold text-gray-900 text-lg mb-2">Sattva Web Presence</h3>
-                  <p className="text-gray-700 mb-3">
-                    Built a modern React.js website with Tailwind CSS and lazy loading, 
-                    achieving exceptional 95+ Lighthouse scores and optimal user experience.
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">React</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Tailwind</span>
-                    <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">Performance</span>
-                  </div>
-                </div>
-
-                <div className="p-6 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                  <h3 className="font-semibold text-gray-900 text-lg mb-2">Employee Management System</h3>
-                  <p className="text-gray-700 mb-3">
-                    Designed a comprehensive CRUD application with local storage and 
-                    role-based access control, significantly improving HR operational efficiency.
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">JavaScript</span>
-                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">CRUD</span>
-                    <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">Local Storage</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Right Column - Skills & Personal */}
-          <div className="space-y-8">
-            {/* Skills Grid */}
-            <motion.div
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-8 bg-orange-500 rounded-full"></div>
-                <h2 className="text-xl font-bold text-gray-900">Technical Stack</h2>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                {skillCards.map((skill, index) => (
-                  <motion.div
-                    key={skill.title}
-                    className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all duration-300"
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 bg-linear-to-r ${skill.color} rounded-lg flex items-center justify-center`}>
-                        <skill.icon className="text-white text-sm" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{skill.title}</h3>
-                        <p className="text-sm text-gray-600">{skill.skills}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Education */}
-            <motion.div
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-              variants={itemVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-8 bg-indigo-500 rounded-full"></div>
-                <h2 className="text-xl font-bold text-gray-900">Education & Growth</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <FaGraduationCap className="text-blue-600" />
-                  <div>
-                    <p className="font-semibold text-gray-900">Masai School</p>
-                    <p className="text-sm text-gray-600">Full Stack Web Development</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                  <FaGraduationCap className="text-green-600" />
-                  <div>
-                    <p className="font-semibold text-gray-900">Delhi University</p>
-                    <p className="text-sm text-gray-600">Bachelor of Arts in English</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                  <FaAward className="text-purple-600" />
-                  <div>
-                    <p className="font-semibold text-gray-900">FEA Academy</p>
-                    <p className="text-sm text-gray-600">Employability Skills Certification</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Personal Interests */}
-            <motion.div
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-              variants={itemVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-2 h-8 bg-pink-500 rounded-full"></div>
-                <h2 className="text-xl font-bold text-gray-900">Beyond Code</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <FaPalette className="text-blue-600" />
-                  </div>
-                  <span className="text-gray-700">UI/UX Design Trends</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <FaFutbol className="text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Cricket & Sports</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <FaLightbulb className="text-purple-600" />
-                  </div>
-                  <span className="text-gray-700">Emerging Technologies</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                    <FaHeart className="text-red-600" />
-                  </div>
-                  <span className="text-gray-700">Mentoring & Collaboration</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+    <div className="min-h-screen pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
+      {/* Hero Header */}
+      <GlassCard radius="hero" className="!p-8 sm:!p-12 text-center relative overflow-hidden">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#747FDD] via-[#A78BFA] to-[#69D8F2] flex items-center justify-center text-white text-3xl mx-auto mb-6 shadow-xl shadow-[#747FDD]/30">
+          <FaCode />
         </div>
 
-        {/* Inspirational Quote */}
-        <motion.div 
-          className="text-center mt-16 p-8 bg-linear-to-r from-blue-600 to-purple-600 rounded-2xl text-white"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-        >
-          <FaHeart className="w-8 h-8 text-red-200 mx-auto mb-4" />
-          <p className="text-2xl font-light italic mb-4">
-            "Driven by curiosity, powered by code, and focused on human impact."
-          </p>
-          <p className="text-blue-100">
-            Every project is an opportunity to make technology more human, more accessible, and more meaningful.
-          </p>
-        </motion.div>
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] uppercase tracking-wider mb-4">
+          <span>Full-Stack MERN Developer</span>
+        </div>
+
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-[var(--text-primary)] tracking-tight mb-4">
+          Crafting Digital Products with{" "}
+          <span className="bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2] bg-clip-text text-transparent">
+            Care & Engineering Rigor
+          </span>
+        </h1>
+
+        <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed mb-6">
+          Hello, I'm <strong className="text-[var(--text-primary)] font-semibold">Daya Pal</strong>. I specialize in scalable web applications, thoughtful design systems, and resilient production backends.
+        </p>
+
+        {/* Social Links */}
+        <div className="flex items-center justify-center gap-3">
+          {[
+            { icon: FaGithub, href: "https://github.com/Dayapal", label: "GitHub" },
+            { icon: FaLinkedin, href: "https://www.linkedin.com/in/dayapal/", label: "LinkedIn" },
+            { icon: FaGlobe, href: "https://dayapal-portflio-21.netlify.app/", label: "Portfolio" },
+          ].map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel="noreferrer"
+              className="p-3 rounded-2xl glass-panel text-[var(--text-secondary)] hover:text-[#747FDD] hover:scale-105 transition-all"
+            >
+              <item.icon size={18} />
+            </a>
+          ))}
+        </div>
+      </GlassCard>
+
+      {/* Main Grid: Story + Tech Stack */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Journey & Timeline */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Journey */}
+          <GlassCard radius="panel" className="!p-6 sm:!p-8 space-y-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <span className="w-2.5 h-6 rounded-full bg-[#747FDD]" />
+              Engineering Philosophy
+            </h2>
+            <div className="space-y-4 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+              <p>
+                My path into software engineering is rooted in continuous learning, curiosity, and a deep appreciation for the craft. Having solved high-pressure challenges at Airtel Payments and engineered modern React web presences, I focus on building software that solves genuine human needs.
+              </p>
+              <p>
+                Whether designing a clean 3-tier REST architecture, optimizing MongoDB aggregations, or composing fluid Android 16 glassmorphic interfaces, I prioritize maintainability, clean code, and delightful user experiences.
+              </p>
+            </div>
+          </GlassCard>
+
+          {/* Experience Timeline */}
+          <GlassCard radius="panel" className="!p-6 sm:!p-8 space-y-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <span className="w-2.5 h-6 rounded-full bg-[#69D8F2]" />
+              Professional Experience
+            </h2>
+
+            <div className="space-y-6">
+              {/* Role 1 */}
+              <div className="flex gap-4">
+                <div className="w-10 h-10 rounded-2xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center shrink-0">
+                  <FaRocket />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-base text-[var(--text-primary)]">Frontend Engineer</h3>
+                  <p className="text-xs font-semibold text-[#747FDD]">Mark Anthony • Bengaluru</p>
+                  <p className="text-xs text-[var(--text-muted)]">March 2025 – September 2025</p>
+                  <p className="text-sm text-[var(--text-secondary)] pt-1">
+                    Developed performant React applications with code splitting, caching strategies, and Lighthouse 95+ Core Web Vitals.
+                  </p>
+                </div>
+              </div>
+
+              {/* Role 2 */}
+              <div className="flex gap-4">
+                <div className="w-10 h-10 rounded-2xl bg-[#A78BFA]/15 text-[#6D28D9] dark:text-[#A78BFA] flex items-center justify-center shrink-0">
+                  <FaAward />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-base text-[var(--text-primary)]">Customer Operations & Support</h3>
+                  <p className="text-xs font-semibold text-[#747FDD]">Adroit Synergies (Airtel Payments)</p>
+                  <p className="text-sm text-[var(--text-secondary)] pt-1">
+                    Honed active problem-solving, root-cause diagnostics, and user-first empathy under demanding operational SLAs.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* Right Column: Skills & Growth */}
+        <div className="space-y-8">
+          {/* Tech Stack */}
+          <GlassCard radius="panel" className="!p-6 space-y-4">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <span className="w-2 h-5 rounded-full bg-[#A78BFA]" />
+              Core Capabilities
+            </h2>
+            <div className="space-y-3">
+              {skillCards.map((skill) => (
+                <div
+                  key={skill.title}
+                  className="p-3.5 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] space-y-1"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className={`w-7 h-7 rounded-xl bg-gradient-to-r ${skill.color} text-white flex items-center justify-center text-xs shadow-sm`}>
+                      <skill.icon />
+                    </div>
+                    <h3 className="font-semibold text-xs text-[var(--text-primary)]">{skill.title}</h3>
+                  </div>
+                  <p className="text-[11px] text-[var(--text-secondary)] pl-9">{skill.skills}</p>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+
+          {/* Education */}
+          <GlassCard radius="panel" className="!p-6 space-y-4">
+            <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <span className="w-2 h-5 rounded-full bg-[#F0A6D8]" />
+              Education & Growth
+            </h2>
+
+            <div className="space-y-3 text-xs">
+              <div className="flex items-start gap-3 p-3 rounded-2xl glass-panel border border-[var(--glass-border-subtle)]">
+                <FaGraduationCap className="text-[#747FDD] text-base shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-bold text-[var(--text-primary)]">Masai School</h4>
+                  <p className="text-[var(--text-secondary)]">Full Stack Web Development</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 rounded-2xl glass-panel border border-[var(--glass-border-subtle)]">
+                <FaGraduationCap className="text-[#69D8F2] text-base shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-bold text-[var(--text-primary)]">Delhi University</h4>
+                  <p className="text-[var(--text-secondary)]">Bachelor of Arts in English</p>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
       </div>
     </div>
   );

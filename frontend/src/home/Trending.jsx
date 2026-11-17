@@ -2,15 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Carousel from "react-multi-carousel";
 import { motion } from "framer-motion";
-import { FaEye, FaHeart } from "react-icons/fa";
+import { FiTrendingUp, FiEye, FiHeart, FiArrowRight } from "react-icons/fi";
 import "react-multi-carousel/lib/styles.css";
 import api from "../services/api";
 import { useAuth } from "../context/AuthProvider";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassBadge } from "../components/ui/GlassBadge";
+import { BlogCardSkeleton } from "../components/ui/GlassSkeleton";
+
+const categoryVariantMap = {
+  Technology: "primary",
+  Devotional: "purple",
+  Sports: "cyan",
+  Tourism: "pink",
+  Entertainment: "pink",
+  Health: "cyan",
+  Business: "primary",
+};
 
 function Trending() {
   const { blogs } = useAuth();
   const [trendingBlogs, setTrendingBlogs] = useState([]);
-  const [loadingTrending, setLoadingTrending] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTrending = async () => {
@@ -22,150 +35,149 @@ function Trending() {
           setTrendingBlogs(blogs.slice(0, 8));
         }
       } catch (error) {
+        console.error("Trending fetch error:", error);
         if (blogs && blogs.length > 0) {
           setTrendingBlogs(blogs.slice(0, 8));
         }
       } finally {
-        setLoadingTrending(false);
+        setLoading(false);
       }
     };
 
     fetchTrending();
   }, [blogs]);
 
-  const displayedBlogs =
-    trendingBlogs.length > 0 ? trendingBlogs : (blogs || []).slice(0, 8);
+  const displayedBlogs = trendingBlogs.length > 0 ? trendingBlogs : (blogs || []).slice(0, 8);
 
   const responsive = {
-    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
-    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 4 },
+    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 4 },
+    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 3 },
     tablet: { breakpoint: { max: 1024, min: 640 }, items: 2 },
     mobile: { breakpoint: { max: 640, min: 0 }, items: 1 },
   };
 
   return (
-    <section className="bg-linear-to-b from-blue-50 via-white to-blue-100 py-16">
-      <div className="container mx-auto px-6">
-        {/* Section Heading */}
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: -40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wider mb-3">
-            🔥 Live Data Driven
+    <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#747FDD]/15 text-[#747FDD] text-xs font-semibold uppercase tracking-wider mb-2">
+            <FiTrendingUp />
+            <span>Community Heatmap</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-3">
-            Trending Stories
-          </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Ranked in real-time by reader views, likes, and community discussions.
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
+            Trending Discussions
+          </h2>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+            Articles scored by views, likes, and active comments
           </p>
-        </motion.div>
+        </div>
 
-        {displayedBlogs && displayedBlogs.length > 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Carousel
-              responsive={responsive}
-              infinite
-              autoPlay
-              autoPlaySpeed={2400}
-              transitionDuration={700}
-              containerClass="carousel-container"
-              itemClass="px-3"
-              draggable
-              swipeable
-            >
-              {displayedBlogs.map((element, idx) => (
-                <motion.div
-                  key={element._id || idx}
-                  whileHover={{
-                    scale: 1.03,
-                    y: -4,
-                    boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.12)",
-                  }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover:border-blue-200 cursor-pointer group flex flex-col h-full"
-                >
-                  <Link to={`/blogs/${element._id}`} className="flex flex-col h-full">
-                    {/* Blog Image */}
-                    <div className="relative">
-                      <img
-                        src={
-                          element?.blogImage?.url ||
-                          "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=250&fit=crop"
-                        }
-                        alt={element?.title}
-                        className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute top-3 left-3 bg-blue-600 text-white px-3 py-1 text-xs font-bold rounded-full shadow-md">
-                        {element?.category}
-                      </div>
-
-                      {/* Ranking Badge */}
-                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-xs text-white px-2.5 py-1 text-xs font-extrabold rounded-full">
-                        #{idx + 1}
-                      </div>
-                    </div>
-
-                    {/* Blog Content */}
-                    <div className="p-5 bg-white flex flex-col flex-1 justify-between">
-                      <div>
-                        <h2
-                          className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200"
-                          title={element?.title}
-                        >
-                          {element?.title}
-                        </h2>
-
-                        <p className="text-gray-600 text-xs mb-4 line-clamp-2 leading-relaxed">
-                          {element?.about?.slice(0, 100) || "Discover insights and ideas."}
-                        </p>
-                      </div>
-
-                      {/* Author & Engagement Stats */}
-                      <div className="pt-3 border-t border-gray-100 flex items-center justify-between mt-auto">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={element.adminPhoto || "/default-avatar.png"}
-                            alt={element.adminName}
-                            className="w-8 h-8 rounded-full border border-blue-200 object-cover"
-                          />
-                          <p className="text-gray-800 text-xs font-semibold truncate max-w-[90px]">
-                            {element.adminName || "Author"}
-                          </p>
-                        </div>
-
-                        {/* Views & Likes */}
-                        <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
-                          <span className="flex items-center gap-1">
-                            <FaEye className="text-blue-500 text-xs" />
-                            {element.views || 0}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <FaHeart className="text-red-500 text-xs" />
-                            {element.likes?.length || element.likesCount || 0}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </Carousel>
-          </motion.div>
-        ) : (
-          <div className="flex flex-col items-center justify-center mt-20 text-gray-600">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-400 mb-4"></div>
-            <p className="text-lg font-medium">Loading trending stories...</p>
-          </div>
-        )}
+        <Link
+          to="/blogs"
+          className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#747FDD] hover:text-[#454FA8] transition-colors"
+        >
+          <span>Explore all trending</span>
+          <FiArrowRight />
+        </Link>
       </div>
+
+      {/* Carousel */}
+      {loading && displayedBlogs.length === 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <BlogCardSkeleton />
+          <BlogCardSkeleton />
+          <BlogCardSkeleton />
+        </div>
+      ) : displayedBlogs.length > 0 ? (
+        <div className="-mx-3">
+          <Carousel
+            responsive={responsive}
+            infinite
+            autoPlay
+            autoPlaySpeed={3500}
+            transitionDuration={600}
+            containerClass="pb-4"
+            itemClass="px-3"
+            draggable
+            swipeable
+          >
+            {displayedBlogs.map((element, idx) => (
+              <GlassCard
+                key={element._id || idx}
+                interactive
+                radius="panel"
+                className="!p-4 h-full flex flex-col group cursor-pointer"
+              >
+                <Link to={`/blogs/${element._id}`} className="flex flex-col h-full">
+                  {/* Thumbnail with Rank Badge */}
+                  <div className="relative w-full h-52 rounded-2xl overflow-hidden mb-4 bg-gray-100 dark:bg-gray-800">
+                    <img
+                      src={
+                        element.blogImage?.url ||
+                        "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"
+                      }
+                      alt={element.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
+
+                    {/* Rank Badge */}
+                    <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white flex items-center justify-center font-bold text-xs shadow-md">
+                      #{idx + 1}
+                    </div>
+
+                    {/* Category Chip */}
+                    <div className="absolute top-3 right-3">
+                      <GlassBadge variant={categoryVariantMap[element.category] || "primary"} size="sm">
+                        {element.category}
+                      </GlassBadge>
+                    </div>
+                  </div>
+
+                  {/* Title & Preview */}
+                  <div className="flex-1 space-y-2">
+                    <h3 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors line-clamp-2 leading-snug">
+                      {element.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+                      {element.about}
+                    </p>
+                  </div>
+
+                  {/* Author Strip & Engagement */}
+                  <div className="pt-4 mt-4 border-t border-[var(--glass-border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)]">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={element.adminPhoto || "/default-avatar.png"}
+                        alt={element.adminName || "Author"}
+                        className="w-7 h-7 rounded-full object-cover border border-[var(--glass-border)]"
+                      />
+                      <span className="font-medium text-[var(--text-secondary)] truncate max-w-[90px]">
+                        {element.adminName || "Author"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 font-medium">
+                      <span className="flex items-center gap-1">
+                        <FiEye className="text-[#69D8F2]" /> {element.views || 0}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <FiHeart className="text-rose-400" /> {element.likes?.length || element.likesCount || 0}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </GlassCard>
+            ))}
+          </Carousel>
+        </div>
+      ) : (
+        <GlassCard className="text-center py-12">
+          <p className="text-[var(--text-secondary)]">Loading trending stories...</p>
+        </GlassCard>
+      )}
     </section>
   );
 }

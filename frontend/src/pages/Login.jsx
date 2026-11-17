@@ -1,9 +1,11 @@
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { FiMail, FiLock, FiEye, FiEyeOff, FiFeather, FiArrowRight } from "react-icons/fi";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassButton } from "../components/ui/GlassButton";
 
 function Login() {
   const { setIsAuthenticated, setProfile } = useAuth();
@@ -13,12 +15,12 @@ function Login() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // password visibility toggle
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password || !role) {
-      toast.error("Please fill all fields");
+      toast.error("Please fill all required fields");
       return;
     }
 
@@ -34,104 +36,125 @@ function Login() {
       );
 
       localStorage.setItem("jwt", data.token);
-      toast.success(data.message || "User logged in successfully!", { duration: 3000 });
+      toast.success(data.message || "Welcome back! Logged in successfully.");
 
       setProfile(data.user);
       setIsAuthenticated(true);
-      setEmail("");
-      setPassword("");
-      setRole("");
       navigateTo("/");
-
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed", { duration: 3000 });
+      toast.error(error.response?.data?.message || "Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div className="text-center font-bold text-2xl">
-            Dedicated <span className="text-blue-500">Blog</span>
-          </div>
-          <h1 className="text-xl font-semibold text-center">Login</h1>
-
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option value="">Select Role</option>
-            <option value="user">Reader</option>
-            <option value="admin">Author</option>
-          </select>
-
-          <input
-            type="email"
-            placeholder="Your Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-
-          {/* Password Input with Show/Hide Icon */}
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Your Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
-            />
-            <div
-              className="absolute right-3 top-3 cursor-pointer text-gray-600 hover:text-gray-800"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
-            </div>
-          </div>
-
-          <p className="text-center text-gray-600">
-            New User?{" "}
-            <Link to="/register" className="text-blue-600 hover:underline">
-              Register Now
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 pt-16">
+      <div className="w-full max-w-md">
+        {/* Glass Card Container */}
+        <GlassCard radius="hero" className="!p-8 sm:!p-10 shadow-2xl space-y-6">
+          {/* Logo & Header */}
+          <div className="text-center space-y-2">
+            <Link to="/" className="inline-flex items-center gap-2 mb-2">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#747FDD] via-[#6571D8] to-[#69D8F2] flex items-center justify-center text-white shadow-md shadow-[#747FDD]/30">
+                <FiFeather className="text-xl" />
+              </div>
+              <span className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
+                Dedicated<span className="bg-gradient-to-r from-[#747FDD] to-[#69D8F2] bg-clip-text text-transparent">Blog</span>
+              </span>
             </Link>
-          </p>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+              Sign In to Your Account
+            </h1>
+            <p className="text-xs text-[var(--text-secondary)]">
+              Enter your credentials to access your reading and author dashboard
+            </p>
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full p-3 rounded-md text-white font-semibold flex items-center justify-center
-              ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-700 duration-300"}`}
-          >
-            {loading ? (
-              <svg
-                className="animate-spin h-5 w-5 text-white mr-2"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+          <form onSubmit={handleLogin} className="space-y-4">
+            {/* Role Select */}
+            <div className="space-y-1.5 text-left">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                Account Type
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="glass-input w-full p-3.5 text-sm font-normal rounded-2xl cursor-pointer"
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                ></path>
-              </svg>
-            ) : null}
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+                <option value="" disabled>Select your role</option>
+                <option value="user">Reader / User</option>
+                <option value="admin">Author / Admin</option>
+              </select>
+            </div>
+
+            {/* Email */}
+            <div className="space-y-1.5 text-left">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                Email Address
+              </label>
+              <div className="relative flex items-center">
+                <FiMail className="absolute left-3.5 text-[var(--text-muted)] text-base pointer-events-none" />
+                <input
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="glass-input w-full py-3 pl-10 pr-4 text-sm font-normal rounded-2xl"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1.5 text-left">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                Password
+              </label>
+              <div className="relative flex items-center">
+                <FiLock className="absolute left-3.5 text-[var(--text-muted)] text-base pointer-events-none" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="glass-input w-full py-3 pl-10 pr-10 text-sm font-normal rounded-2xl"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
+                  aria-label="Toggle password visibility"
+                >
+                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <GlassButton
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={loading}
+              loading={loading}
+              iconRight={FiArrowRight}
+              className="w-full mt-2"
+            >
+              Sign In
+            </GlassButton>
+          </form>
+
+          {/* Switch to Register */}
+          <div className="pt-4 border-t border-[var(--glass-border-subtle)] text-center text-xs text-[var(--text-secondary)]">
+            <span>Don't have an account yet? </span>
+            <Link
+              to="/register"
+              className="font-bold text-[#747FDD] hover:underline"
+            >
+              Create Account
+            </Link>
+          </div>
+        </GlassCard>
       </div>
     </div>
   );

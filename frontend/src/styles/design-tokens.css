@@ -1,0 +1,73 @@
+:root {
+  /* Android 16 Expressive & Liquid Glass Palette */
+  --color-primary: #747FDD;
+  --color-primary-dark: #454FA8;
+  --color-primary-light: #A8B0FF;
+  
+  --color-cyan: #69D8F2;
+  --color-purple: #A78BFA;
+  --color-pink: #F0A6D8;
+  
+  /* Backgrounds */
+  --bg-app: #F4F5FC;
+  --bg-gradient: radial-gradient(circle at 12% 15%, rgba(116, 127, 221, 0.16) 0%, transparent 40%),
+                  radial-gradient(circle at 88% 82%, rgba(167, 139, 250, 0.14) 0%, transparent 42%),
+                  radial-gradient(circle at 50% 50%, rgba(105, 216, 242, 0.08) 0%, transparent 50%),
+                  linear-gradient(135deg, #F4F5FC 0%, #EAEFFC 100%);
+
+  /* Glass Surfaces (Light) */
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-bg-hover: rgba(255, 255, 255, 0.72);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.38);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-border-subtle: rgba(255, 255, 255, 0.45);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  
+  /* Shadows & Glows */
+  --glass-shadow: 0 12px 36px -4px rgba(69, 79, 168, 0.08), 0 4px 14px -2px rgba(69, 79, 168, 0.04);
+  --glass-shadow-hover: 0 20px 44px -4px rgba(69, 79, 168, 0.14), 0 8px 20px -3px rgba(69, 79, 168, 0.06);
+  --glow-primary: 0 0 28px rgba(116, 127, 221, 0.32);
+  
+  /* Typography */
+  --text-primary: #15172C;
+  --text-secondary: #484E6D;
+  --text-muted: #7E86AA;
+  
+  /* Radii (Android 16 Expressive Hierarchy) */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-panel: 28px;
+  --radius-hero: 32px;
+  --radius-pill: 9999px;
+  
+  /* Blur */
+  --glass-blur: 20px;
+}
+
+.dark {
+  /* Dark Mode Palette */
+  --bg-app: #0E0F19;
+  --bg-gradient: radial-gradient(circle at 10% 12%, rgba(116, 127, 221, 0.14) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 85%, rgba(167, 139, 250, 0.12) 0%, transparent 45%),
+                  radial-gradient(circle at 50% 40%, rgba(105, 216, 242, 0.06) 0%, transparent 50%),
+                  linear-gradient(135deg, #0E0F19 0%, #151627 100%);
+
+  /* Glass Surfaces (Dark) */
+  --glass-bg: rgba(23, 25, 42, 0.58);
+  --glass-bg-hover: rgba(30, 33, 56, 0.72);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-subtle: rgba(255, 255, 255, 0.06);
+  --glass-highlight: rgba(255, 255, 255, 0.18);
+  
+  /* Shadows & Glows */
+  --glass-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.45), 0 4px 16px -2px rgba(0, 0, 0, 0.3);
+  --glass-shadow-hover: 0 24px 50px -4px rgba(0, 0, 0, 0.6), 0 8px 24px -2px rgba(116, 127, 221, 0.15);
+  --glow-primary: 0 0 32px rgba(116, 127, 221, 0.28);
+  
+  /* Typography */
+  --text-primary: #F4F5FC;
+  --text-secondary: #B8BEE2;
+  --text-muted: #72799F;
+}

@@ -1,0 +1,103 @@
+/* Liquid Glass & Android 16 Material 3 Expressive Effects */
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.glass-panel:hover {
+  border-color: var(--glass-highlight);
+}
+
+.glass-panel-interactive {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel-interactive:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-highlight);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-4px);
+}
+
+/* Glass reflection shine on top-left */
+.glass-reflection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, var(--glass-highlight) 0%, transparent 100%);
+  opacity: 0.12;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Specular border light highlight */
+.glass-specular {
+  border-top: 1px solid var(--glass-highlight);
+  border-left: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border-subtle);
+  border-bottom: 1px solid var(--glass-border-subtle);
+}
+
+/* Subtle ambient pill */
+.glass-pill {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-pill);
+}
+
+/* Inputs */
+.glass-input {
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  transition: all 0.25s ease;
+}
+
+.glass-input:focus {
+  outline: none;
+  background: var(--glass-bg);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(116, 127, 221, 0.18), var(--glow-primary);
+}
+
+.glass-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Fallback for browsers without backdrop-filter */
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .glass-panel,
+  .glass-panel-interactive,
+  .glass-pill,
+  .glass-input {
+    background: #ffffff;
+  }
+  .dark .glass-panel,
+  .dark .glass-panel-interactive,
+  .dark .glass-pill,
+  .dark .glass-input {
+    background: #17192a;
+  }
+}

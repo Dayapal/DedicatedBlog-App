@@ -1,308 +1,513 @@
 import axios from "axios";
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
-import Cropper from "react-easy-crop";
-import getCroppedImg from "../utils/cropUtils";
+import ImageCropper from "../components/ImageCropper";
+import GlassCard from "../components/ui/GlassCard";
+import GlassButton from "../components/ui/GlassButton";
+import GlassBadge from "../components/ui/GlassBadge";
+import { useAuth } from "../context/AuthProvider";
 
+const CATEGORIES = [
+  "Technology",
+  "Devotional",
+  "Sports",
+  "Tourism",
+  "Entertainment",
+  "Health",
+  "Business",
+  "Coding",
+];
 
 function CreateBlog() {
+  const { profile } = useAuth();
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Technology");
   const [about, setAbout] = useState("");
-  const [blogImage, setBlogImage] = useState("");
+  const [blogImage, setBlogImage] = useState(null);
   const [blogImagePreview, setBlogImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("write"); // 'write' | 'preview'
 
-  const [isFocused, setIsFocused] = useState({
-    title: false,
-    category: false,
-    about: false,
-    image: false
-  });
+  // Cropper states
+  const [tempImageSrc, setTempImageSrc] = useState(null);
+  const [isCropOpen, setIsCropOpen] = useState(false);
 
-  // ---------------------- CROP STATES ----------------------
-  const [cropModal, setCropModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [rotation, setRotation] = useState(0);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  // Computed metrics
+  const wordCount = about.trim() ? about.trim().split(/\s+/).length : 0;
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
-  const [aspectRatioKey, setAspectRatioKey] = useState("16:9");
-  const aspectMap = {
-    "1:1": 1 / 1,
-    "4:5": 4 / 5,
-    "16:9": 16 / 9,
-    free: undefined,
-  };
-  const aspect = aspectMap[aspectRatioKey];
-
-  // ----------- Select Image + Open Crop Modal -------------
-  const changePhotoHandler = (e) => {
-    const file = e.target.files[0];
+  // Handle file select
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select a valid image!");
+      toast.error("Please upload a valid image (JPEG, PNG, WebP).");
       return;
     }
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
-
     reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModal(true);
+      setTempImageSrc(reader.result);
+      setIsCropOpen(true);
     };
   };
 
-  // ----------- Crop completion handler ------------
-  const onCropComplete = useCallback((_, croppedAreaPx) => {
-    setCroppedAreaPixels(croppedAreaPx);
-  }, []);
-
-  // ----------- Apply Crop Function ------------
-  const applyCrop = async () => {
-    try {
-      if (!selectedImage || !croppedAreaPixels) {
-        toast.error("No crop area selected!");
-        return;
-      }
-
-      const croppedDataUrl = await getCroppedImg(
-        selectedImage,
-        croppedAreaPixels,
-        rotation
-      );
-
-      setBlogImagePreview(croppedDataUrl);
-
-      // convert to file
-      const blob = await fetch(croppedDataUrl).then((r) => r.blob());
-      const file = new File(
-        [blob],
-        `cropped_${Date.now()}.jpg`,
-        { type: "image/jpeg" }
-      );
-
-      setBlogImage(file);
-
-      // close modal & reset
-      setCropModal(false);
-      setSelectedImage(null);
-      setCrop({ x: 0, y: 0 });
-      setZoom(1);
-      setRotation(0);
-    } catch (err) {
-      console.error(err);
-      toast.error("Crop failed, please try again.");
-    }
+  // Handle crop finish
+  const handleCropComplete = (croppedFile, previewUrl) => {
+    setBlogImage(croppedFile);
+    setBlogImagePreview(previewUrl);
+    setTempImageSrc(null);
+    setIsCropOpen(false);
+    toast.success("Cover image cropped & attached!");
   };
 
-  // -------------- Submit New Blog --------------
+  // Quick formatting toolbar insertion
+  const insertFormatting = (prefix, suffix = "") => {
+    const textarea = document.getElementById("story-textarea");
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = about.substring(start, end) || "text";
+    const replacement = `${prefix}${selectedText}${suffix}`;
+
+    const newAbout =
+      about.substring(0, start) + replacement + about.substring(end);
+    setAbout(newAbout);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(
+        start + prefix.length,
+        start + prefix.length + selectedText.length
+      );
+    }, 50);
+  };
+
+  // Submit handler
   const handleCreateBlog = async (e) => {
     e.preventDefault();
 
     if (loading) return;
 
-    if (!title || !category || !about || !blogImage) {
-      toast.error("Fill all fields & select an image!");
+    if (!title.trim()) {
+      toast.error("Please provide an article title.");
+      return;
+    }
+    if (!category) {
+      toast.error("Please select a topic category.");
+      return;
+    }
+    if (!about.trim()) {
+      toast.error("Please write the story content.");
+      return;
+    }
+    if (!blogImage) {
+      toast.error("Please upload a cover image for your article.");
       return;
     }
 
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("title", title);
+    formData.append("title", title.trim());
     formData.append("category", category);
-    formData.append("about", about);
+    formData.append("about", about.trim());
     formData.append("blogImage", blogImage);
 
     try {
       const token = localStorage.getItem("jwt");
 
-      const { data } = await axios.post(
-        "/api/blogs/create",
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data } = await axios.post("/api/blogs/create", formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      toast.success(data.message || "Blog Published!");
+      toast.success(data.message || "Story published successfully! 🎉");
 
+      // Reset form
       setTitle("");
-      setCategory("");
+      setCategory("Technology");
       setAbout("");
-      setBlogImage("");
+      setBlogImage(null);
       setBlogImagePreview("");
-
+      setActiveTab("write");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong.");
+      console.error("Create blog error:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to publish article. Try again."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen py-8 bg-gray-50">
-      <div className="max-w-2xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto py-6 sm:py-10 px-4 sm:px-6">
+      {/* Cropper Modal */}
+      {isCropOpen && tempImageSrc && (
+        <ImageCropper
+          imageSrc={tempImageSrc}
+          onCancel={() => {
+            setIsCropOpen(false);
+            setTempImageSrc(null);
+          }}
+          onCropDone={handleCropComplete}
+        />
+      )}
 
-        {/* -------- FORM START -------- */}
-        <form onSubmit={handleCreateBlog} className="space-y-6">
+      {/* Editor Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-semibold tracking-wider uppercase text-indigo-600 dark:text-indigo-400">
+              Editorial Studio
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Draft a New Story
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Share your technical insights, tutorials, or perspectives with the community.
+          </p>
+        </div>
 
-          {/* Category */}
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full p-3 border rounded-xl"
-          >
-            <option value="">Select Category</option>
-            <option value="Devotional">Devotional</option>
-            <option value="Sports">Sports</option>
-            <option value="Tourism">Tourism</option>
-            <option value="Technology">Technology</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Health">Health</option>
-          </select>
-
-          {/* Title */}
-          <input
-            type="text"
-            placeholder="Blog Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-3 border rounded-xl"
-          />
-
-          {/* Image Preview */}
-          <img
-            src={blogImagePreview || "/imgPL.webp"}
-            className="w-full h-56 object-cover rounded-xl border"
-            alt=""
-          />
-
-          {/* Upload Button */}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={changePhotoHandler}
-            className="w-full p-3 border rounded-xl"
-          />
-
-          {/* About */}
-          <textarea
-            className="w-full p-3 border rounded-xl"
-            rows="6"
-            value={about}
-            onChange={(e) => setAbout(e.target.value)}
-            placeholder="Write your story..."
-          ></textarea>
-
-          {/* Submit */}
+        {/* Segmented View Switcher: Write vs Preview */}
+        <div className="flex items-center p-1 rounded-2xl bg-black/5 dark:bg-white/5 border border-white/60 dark:border-white/10 self-start sm:self-auto">
           <button
-            disabled={loading}
-            className="w-full p-3 bg-blue-600 text-white rounded-xl"
+            type="button"
+            onClick={() => setActiveTab("write")}
+            className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+              activeTab === "write"
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            }`}
           >
-            {loading ? "Publishing..." : "Publish Blog"}
+            ✏️ Write
           </button>
-        </form>
+          <button
+            type="button"
+            onClick={() => setActiveTab("preview")}
+            className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+              activeTab === "preview"
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            }`}
+          >
+            👁️ Preview
+          </button>
+        </div>
+      </div>
 
-        {/* -------- CROP MODAL -------- */}
-        {cropModal && (
-          <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white p-4 rounded-xl w-full max-w-3xl">
-
-              {/* Header */}
-              <div className="flex justify-between mb-3">
-                <h3 className="text-lg font-bold">Crop Image</h3>
-
-                <div className="flex gap-2">
-                  {["1:1", "4:5", "16:9", "free"].map((ratio) => (
-                    <button
-                      key={ratio}
-                      className={`px-3 py-1 rounded border ${
-                        aspectRatioKey === ratio
-                          ? "bg-blue-600 text-white"
-                          : "bg-white border-gray-300"
-                      }`}
-                      onClick={() => setAspectRatioKey(ratio)}
-                    >
-                      {ratio}
-                    </button>
-                  ))}
-
-                  <button
-                    onClick={() => setCropModal(false)}
-                    className="px-3 py-1 bg-gray-200 rounded"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-
-              {/* Crop Area */}
-              <div className="relative w-full h-[400px] rounded bg-gray-100 overflow-hidden">
-                <Cropper
-                  image={selectedImage}
-                  crop={crop}
-                  zoom={zoom}
-                  rotation={rotation}
-                  aspect={aspect}
-                  onCropChange={setCrop}
-                  onZoomChange={setZoom}
-                  onRotationChange={setRotation}
-                  onCropComplete={onCropComplete}
+      {/* Main Workspace */}
+      <form onSubmit={handleCreateBlog}>
+        {activeTab === "write" ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left 2 Cols: Title, Cover Image, Story Editor */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Story Title */}
+              <GlassCard elevation="md" className="p-6">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
+                  Article Title
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Architecting Scalable Glassmorphism Interfaces with Tailwind CSS"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full text-xl sm:text-2xl font-bold bg-transparent border-0 border-b border-gray-200 dark:border-white/10 pb-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition"
                 />
-              </div>
+              </GlassCard>
 
-              {/* Controls */}
-              <div className="mt-4 grid grid-cols-3 gap-4">
-                <div>
-                  <label className="text-sm">Zoom</label>
-                  <input
-                    type="range"
-                    min={1}
-                    max={3}
-                    step={0.1}
-                    value={zoom}
-                    onChange={(e) => setZoom(Number(e.target.value))}
-                    className="w-full"
-                  />
+              {/* Cover Image Upload Area */}
+              <GlassCard elevation="md" className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Cover Image
+                  </label>
+                  {blogImagePreview && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBlogImage(null);
+                        setBlogImagePreview("");
+                      }}
+                      className="text-xs text-rose-500 hover:underline"
+                    >
+                      Remove Cover
+                    </button>
+                  )}
                 </div>
 
-                <div>
-                  <label className="text-sm">Rotate</label>
-                  <input
-                    type="range"
-                    min={-180}
-                    max={180}
-                    step={1}
-                    value={rotation}
-                    onChange={(e) => setRotation(Number(e.target.value))}
-                    className="w-full"
-                  />
+                {blogImagePreview ? (
+                  <div className="relative group rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-md">
+                    <img
+                      src={blogImagePreview}
+                      alt="Cover Preview"
+                      className="w-full h-64 object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                      <label className="cursor-pointer px-4 py-2 rounded-xl bg-white/90 text-gray-900 text-xs font-semibold hover:bg-white shadow-lg transition">
+                        Replace Cover
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 dark:border-white/15 rounded-2xl cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 bg-black/[0.02] dark:bg-white/[0.02] transition">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-3">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                        Click to upload high-res cover
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        PNG, JPG or WebP (interactive crop enabled)
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </GlassCard>
+
+              {/* Story Content & Markdown Toolbar */}
+              <GlassCard elevation="md" className="p-6">
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-gray-200/60 dark:border-white/10">
+                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    Story Content
+                  </span>
+
+                  {/* Formatting tools */}
+                  <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-1 rounded-xl">
+                    <button
+                      type="button"
+                      title="Bold"
+                      onClick={() => insertFormatting("**", "**")}
+                      className="p-1.5 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      B
+                    </button>
+                    <button
+                      type="button"
+                      title="Italic"
+                      onClick={() => insertFormatting("*", "*")}
+                      className="p-1.5 rounded-lg text-xs italic text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      I
+                    </button>
+                    <button
+                      type="button"
+                      title="Heading"
+                      onClick={() => insertFormatting("\n### ", "\n")}
+                      className="p-1.5 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      H3
+                    </button>
+                    <button
+                      type="button"
+                      title="Quote"
+                      onClick={() => insertFormatting("\n> ", "\n")}
+                      className="p-1.5 rounded-lg text-xs text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      ❝
+                    </button>
+                    <button
+                      type="button"
+                      title="Bullet list"
+                      onClick={() => insertFormatting("\n- ", "\n")}
+                      className="p-1.5 rounded-lg text-xs text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      • List
+                    </button>
+                    <button
+                      type="button"
+                      title="Code block"
+                      onClick={() => insertFormatting("\n```\n", "\n```\n")}
+                      className="p-1.5 rounded-lg text-xs font-mono text-gray-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 transition"
+                    >
+                      &lt;/&gt;
+                    </button>
+                  </div>
                 </div>
 
-                <div className="flex items-end justify-end">
-                  <button
-                    onClick={applyCrop}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                <textarea
+                  id="story-textarea"
+                  rows={12}
+                  placeholder="Tell your story... You can use paragraphs, lists, and markdown formatting to structure your thoughts."
+                  value={about}
+                  onChange={(e) => setAbout(e.target.value)}
+                  className="w-full bg-transparent border-0 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none text-base leading-relaxed resize-y"
+                />
+
+                {/* Footer Metrics */}
+                <div className="flex items-center justify-between pt-3 mt-3 border-t border-gray-200/60 dark:border-white/10 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-3">
+                    <span>{wordCount} words</span>
+                    <span>•</span>
+                    <span>{about.length} characters</span>
+                  </div>
+                  <span>~{readingTime} min read</span>
+                </div>
+              </GlassCard>
+            </div>
+
+            {/* Right Col: Category, Metadata, Publishing Panel */}
+            <div className="space-y-6">
+              {/* Category Card */}
+              <GlassCard elevation="md" className="p-6">
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">
+                  Topic Category
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {CATEGORIES.map((cat) => {
+                    const isSelected = category === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setCategory(cat)}
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition-all ${
+                          isSelected
+                            ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20"
+                            : "bg-black/5 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 border border-gray-200/50 dark:border-white/10"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              {/* Editorial Summary Card */}
+              <GlassCard elevation="md" className="p-6 space-y-4">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                  Publishing Overview
+                </h3>
+
+                <div className="space-y-3 text-xs text-gray-600 dark:text-gray-300">
+                  <div className="flex justify-between items-center py-1.5 border-b border-gray-200/50 dark:border-white/5">
+                    <span>Author</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      {profile?.user?.name || "You"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5 border-b border-gray-200/50 dark:border-white/5">
+                    <span>Status</span>
+                    <GlassBadge variant="indigo" size="sm">
+                      Ready to Publish
+                    </GlassBadge>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5 border-b border-gray-200/50 dark:border-white/5">
+                    <span>Visibility</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      Public (Explore feed)
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5">
+                    <span>Est. Reading Time</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      {readingTime} min
+                    </span>
+                  </div>
+                </div>
+
+                {/* Submit Action Button */}
+                <div className="pt-2">
+                  <GlassButton
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    className="w-full justify-center shadow-lg shadow-indigo-500/25"
+                    loading={loading}
                   >
-                    Apply Crop
-                  </button>
+                    🚀 Publish Story Now
+                  </GlassButton>
                 </div>
-              </div>
-
+              </GlassCard>
             </div>
           </div>
-        )}
+        ) : (
+          /* Live Preview Mode */
+          <GlassCard elevation="lg" className="p-6 sm:p-10 max-w-3xl mx-auto space-y-6">
+            <div className="flex items-center gap-3">
+              <GlassBadge variant="indigo" size="md">
+                {category || "Uncategorized"}
+              </GlassBadge>
+              <span className="text-xs text-gray-500">
+                {readingTime} min read • Preview Mode
+              </span>
+            </div>
 
-      </div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white leading-tight">
+              {title || "Untitled Article Title"}
+            </h1>
+
+            {/* Author bar */}
+            <div className="flex items-center gap-3 pt-2">
+              <img
+                src={profile?.user?.photo?.url || "/imgPL.webp"}
+                alt=""
+                className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500/40"
+              />
+              <div>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                  {profile?.user?.name || "Author Name"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  Published Today • Just now
+                </p>
+              </div>
+            </div>
+
+            {/* Cover image preview */}
+            {blogImagePreview && (
+              <div className="rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-lg">
+                <img
+                  src={blogImagePreview}
+                  alt="Cover"
+                  className="w-full h-80 object-cover"
+                />
+              </div>
+            )}
+
+            {/* Article body */}
+            <div className="prose dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap text-base pt-4">
+              {about || "No story content drafted yet. Switch back to 'Write' to start authoring!"}
+            </div>
+
+            <div className="pt-6 border-t border-gray-200/60 dark:border-white/10 flex justify-end">
+              <GlassButton
+                type="submit"
+                variant="primary"
+                size="md"
+                loading={loading}
+              >
+                Publish This Story
+              </GlassButton>
+            </div>
+          </GlassCard>
+        )}
+      </form>
     </div>
   );
 }

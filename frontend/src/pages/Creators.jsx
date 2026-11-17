@@ -1,80 +1,112 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { FiUsers, FiMail, FiPhone, FiBookOpen, FiAward } from "react-icons/fi";
+import axios from "axios";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassBadge } from "../components/ui/GlassBadge";
 
 function Creators() {
   const [creators, setCreators] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCreators = async () => {
       try {
-        const { data } = await axios.get(
-          "/api/user/admins",
-          { withCredentials: true }
-        );
-        setCreators(data.admins);
+        const { data } = await axios.get("/api/user/admins", { withCredentials: true });
+        setCreators(data.admins || []);
       } catch (error) {
-        console.log(error);
+        console.error("Creators fetch error:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCreators();
   }, []);
 
   return (
-    <section className="bg-linear-to-b from-blue-50 to-white py-20">
-      <div className="container mx-auto px-6">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">
-            👥 Our Creators
-          </h1>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Meet the amazing minds behind the content — passionate storytellers,
-            visionaries, and creators who bring ideas to life.
-          </p>
+    <div className="min-h-screen pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+      {/* Header */}
+      <div className="text-center max-w-3xl mx-auto space-y-4">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] uppercase tracking-wider">
+          <FiUsers />
+          <span>Creators Roster</span>
         </div>
-
-        {/* Creator Cards */}
-        <div className="flex flex-wrap justify-center gap-10">
-          {creators && creators.length > 0 ? (
-            creators.map((creator) => (
-              <motion.div
-                key={creator._id}
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white rounded-2xl shadow-md hover:shadow-2xl overflow-hidden max-w-xs w-full relative border border-gray-100"
-              >
-                {/* Header Background Image */}
-                <div className="relative h-32 bg-linear-to-r from-blue-500 to-indigo-500">
-                  <img
-                    src={creator.photo.url}
-                    alt={creator.name}
-                    className="absolute left-1/2 transform -translate-x-1/2 translate-y-12 w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
-                  />
-                </div>
-
-                {/* Content */}
-                <div className="pt-16 pb-8 px-6 text-center bg-gray-50">
-                  <h2 className="text-xl font-bold text-gray-800">
-                    {creator.name}
-                  </h2>
-                  <p className="text-gray-500 text-sm mt-1">{creator.role}</p>
-                  <div className="mt-4 text-gray-600 text-sm">
-                    <p>{creator.email}</p>
-                    {creator.phone && <p className="mt-1">{creator.phone}</p>}
-                  </div>
-                </div>
-              </motion.div>
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center mt-20 text-gray-600">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-400 mb-4"></div>
-              <p className="text-lg font-medium">Loading creators...</p>
-            </div>
-          )}
-        </div>
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-[var(--text-primary)] tracking-tight">
+          Meet Our Platform Authors
+        </h1>
+        <p className="text-sm sm:text-base text-[var(--text-secondary)]">
+          The developers, writers, and thinkers publishing regular perspectives on DedicatedBlog.
+        </p>
       </div>
-    </section>
+
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <GlassCard key={i} className="h-64 animate-pulse flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-800" />
+            </GlassCard>
+          ))}
+        </div>
+      ) : creators.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {creators.map((creator) => (
+            <GlassCard
+              key={creator._id}
+              interactive
+              radius="panel"
+              className="!p-6 text-center flex flex-col items-center group relative overflow-hidden h-full"
+            >
+              {/* Top ambient color accent */}
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2]" />
+
+              {/* Avatar */}
+              <div className="relative mb-4 mt-2">
+                <img
+                  src={creator.photo?.url || "/default-avatar.png"}
+                  alt={creator.name}
+                  className="w-24 h-24 rounded-3xl object-cover border-2 border-[var(--glass-border)] shadow-lg group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+
+              {/* Name & Role */}
+              <h2 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors mb-1">
+                {creator.name}
+              </h2>
+              <div className="mb-4">
+                <GlassBadge variant="primary" size="sm">
+                  {creator.role}
+                </GlassBadge>
+              </div>
+
+              <div className="w-full space-y-2 text-xs text-[var(--text-secondary)] mb-6">
+                {creator.education && (
+                  <div className="flex items-center justify-center gap-1.5">
+                    <FiAward className="text-[#69D8F2]" />
+                    <span>Degree: {creator.education}</span>
+                  </div>
+                )}
+                {creator.email && (
+                  <div className="flex items-center justify-center gap-1.5 text-[var(--text-muted)] truncate">
+                    <FiMail className="shrink-0" />
+                    <span className="truncate max-w-[200px]">{creator.email}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="mt-auto w-full pt-4 border-t border-[var(--glass-border-subtle)] text-[11px] font-medium text-[var(--color-primary)]">
+                Active Contributor ✨
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+      ) : (
+        <GlassCard className="text-center py-16">
+          <p className="text-[var(--text-secondary)]">No creators found.</p>
+        </GlassCard>
+      )}
+    </div>
   );
 }
 

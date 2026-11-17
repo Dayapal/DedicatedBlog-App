@@ -21,6 +21,9 @@ import {
 } from "react-icons/fa";
 import api from "../services/api";
 import { useAuth } from "../context/AuthProvider";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassBadge } from "../components/ui/GlassBadge";
+import { GlassButton } from "../components/ui/GlassButton";
 
 function Detail() {
   const { id } = useParams();
@@ -84,7 +87,7 @@ function Detail() {
     fetchBlog();
   }, [id, profile?._id]);
 
-  // Handle Like / Unlike
+  // Handle Like / Unlike with optimistic UI
   const handleLike = async () => {
     if (!isAuthenticated) {
       toast.error("Please login to like this story!");
@@ -94,7 +97,6 @@ function Detail() {
     if (likeLoading) return;
     setLikeLoading(true);
 
-    // Optimistic UI update
     const previousIsLiked = isLiked;
     const previousCount = likesCount;
 
@@ -106,10 +108,9 @@ function Detail() {
       setIsLiked(data.isLiked);
       setLikesCount(data.likesCount);
       if (data.isLiked) {
-        toast.success("Added to your liked stories! ❤️");
+        toast.success("Added to liked stories! ❤️");
       }
-    } catch (error) {
-      // Rollback on failure
+    } catch {
       setIsLiked(previousIsLiked);
       setLikesCount(previousCount);
       toast.error("Failed to update like status.");
@@ -155,15 +156,13 @@ function Detail() {
     if (!window.confirm("Are you sure you want to delete this comment?")) return;
 
     try {
-      const { data } = await api.delete(
-        `/api/blogs/comment/${id}/${commentId}`
-      );
+      const { data } = await api.delete(`/api/blogs/comment/${id}/${commentId}`);
       setBlog((prev) => ({
         ...prev,
         comments: data.comments,
       }));
       toast.success("Comment removed.");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete comment.");
     }
   };
@@ -212,7 +211,7 @@ function Detail() {
         return <div key={index} className="h-4" />;
       }
       return (
-        <p key={index} className="mb-4 leading-relaxed text-gray-700">
+        <p key={index} className="mb-4 leading-relaxed text-[var(--text-secondary)] text-base sm:text-lg">
           {paragraph}
         </p>
       );
@@ -221,10 +220,10 @@ function Detail() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-gray-600 bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-        <p className="text-lg font-medium text-gray-700 animate-pulse">
-          Loading story...
+      <div className="flex flex-col items-center justify-center min-h-screen text-[var(--text-secondary)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#747FDD] mb-4" />
+        <p className="text-base font-medium animate-pulse">
+          Crafting story view...
         </p>
       </div>
     );
@@ -232,14 +231,17 @@ function Detail() {
 
   if (!blog) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-gray-600 bg-gray-50">
-        <p className="text-2xl font-bold text-gray-800 mb-3">Blog not found 😢</p>
-        <Link
-          to="/blogs"
-          className="text-blue-600 hover:underline flex items-center gap-2 font-medium"
-        >
-          <FaArrowLeft /> Back to all blogs
-        </Link>
+      <div className="flex flex-col items-center justify-center min-h-screen text-[var(--text-secondary)] px-4">
+        <GlassCard className="text-center p-8 max-w-md">
+          <p className="text-2xl font-bold text-[var(--text-primary)] mb-3">Blog not found 😢</p>
+          <p className="text-sm text-[var(--text-muted)] mb-6">The article you requested might have been moved or archived.</p>
+          <Link
+            to="/blogs"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#747FDD] hover:underline"
+          >
+            <FaArrowLeft /> Back to all stories
+          </Link>
+        </GlassCard>
       </div>
     );
   }
@@ -248,10 +250,10 @@ function Detail() {
   const readTime = Math.ceil(wordCount / 200) || 1;
 
   return (
-    <div className="relative min-h-screen bg-linear-to-b from-blue-50/50 via-white to-gray-50 pt-20 pb-16">
+    <div className="relative min-h-screen pt-24 sm:pt-32 pb-20">
       {/* 🚀 Reading Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-1.5 bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 z-50 transition-all duration-150"
+        className="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2] z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -260,243 +262,231 @@ function Detail() {
         <div className="mb-6">
           <Link
             to="/blogs"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-blue-600 transition-colors"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[var(--text-secondary)] hover:text-[#747FDD] transition-colors"
           >
             <FaArrowLeft className="text-xs" />
-            Back to Stories
+            <span>Back to Stories</span>
           </Link>
         </div>
 
-        {/* Main Article Container */}
-        <motion.article
-          className="bg-white rounded-3xl shadow-xl shadow-blue-500/5 border border-gray-100 overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* Article Header */}
-          <div className="p-6 sm:p-10 pb-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-              <span className="bg-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-                {blog?.category}
-              </span>
+        {/* Main Article Glass Card */}
+        <GlassCard radius="hero" className="!p-6 sm:!p-10 mb-12 shadow-2xl">
+          {/* Category & Meta */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <GlassBadge variant="primary" size="lg">
+              {blog?.category}
+            </GlassBadge>
 
-              {/* Engagement Badges */}
-              <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
-                <span className="flex items-center gap-1.5">
-                  <FaEye className="text-blue-500 text-sm" />
-                  {blog?.views || 1} views
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <FaClock className="text-indigo-500 text-sm" />
-                  {readTime} min read
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <FaCalendarAlt className="text-purple-500 text-sm" />
-                  {new Date(blog?.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
+            {/* Engagement Badges */}
+            <div className="flex items-center gap-4 text-xs font-medium text-[var(--text-muted)]">
+              <span className="flex items-center gap-1.5">
+                <FaEye className="text-[#69D8F2]" />
+                {blog?.views || 1} views
+              </span>
+              <span className="flex items-center gap-1.5">
+                <FaClock className="text-[#A78BFA]" />
+                {readTime} min read
+              </span>
+              <span className="flex items-center gap-1.5">
+                <FaCalendarAlt className="text-[#747FDD]" />
+                {new Date(blog?.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[var(--text-primary)] tracking-tight leading-tight mb-8">
+            {blog?.title}
+          </h1>
+
+          {/* Author Strip & Action Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-5 border-y border-[var(--glass-border-subtle)] mb-8">
+            {/* Author */}
+            <div className="flex items-center gap-3">
+              {blog?.adminPhoto ? (
+                <img
+                  src={blog.adminPhoto}
+                  alt={blog.adminName}
+                  className="w-12 h-12 rounded-2xl object-cover border-2 border-[var(--glass-border)] shadow-sm"
+                />
+              ) : (
+                <FaUserCircle className="w-12 h-12 text-[var(--text-muted)]" />
+              )}
+              <div>
+                <h4 className="font-bold text-[var(--text-primary)] text-sm sm:text-base leading-tight">
+                  {blog?.adminName || "Editorial Team"}
+                </h4>
+                <p className="text-xs text-[#747FDD] font-semibold">Author & Contributor</p>
               </div>
             </div>
 
-            {/* Title */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-8">
-              {blog?.title}
-            </h1>
-
-            {/* Author Strip & Social Share Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-5 border-y border-gray-100 mb-8">
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                {blog?.adminPhoto ? (
-                  <img
-                    src={blog.adminPhoto}
-                    alt={blog.adminName}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-blue-200 shadow-sm"
-                  />
-                ) : (
-                  <FaUserCircle className="w-12 h-12 text-gray-300" />
-                )}
-                <div>
-                  <h4 className="font-bold text-gray-900 leading-tight">
-                    {blog?.adminName || "Editorial Team"}
-                  </h4>
-                  <p className="text-xs text-blue-600 font-medium">Author</p>
-                </div>
-              </div>
-
-              {/* Action Buttons: Like + Share */}
-              <div className="flex items-center gap-2 sm:gap-3">
-                {/* Like Button */}
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  onClick={handleLike}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-all shadow-sm ${
+            {/* Like & Social Sharing */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              {/* Like Button */}
+              <motion.button
+                whileTap={{ scale: 0.92 }}
+                onClick={handleLike}
+                className={`
+                  flex items-center gap-2 px-4 py-2 rounded-2xl font-semibold text-xs sm:text-sm transition-all shadow-sm cursor-pointer border
+                  ${
                     isLiked
-                      ? "bg-red-50 text-red-600 border border-red-200"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
-                  }`}
-                  title={isLiked ? "Unlike" : "Like this story"}
-                >
-                  {isLiked ? (
-                    <FaHeart className="text-red-500 text-base animate-bounce" />
-                  ) : (
-                    <FaRegHeart className="text-gray-500 text-base" />
-                  )}
-                  <span>{likesCount}</span>
-                </motion.button>
+                      ? "bg-rose-500/15 text-rose-500 border-rose-500/30"
+                      : "glass-panel text-[var(--text-secondary)] hover:text-rose-500"
+                  }
+                `}
+                title={isLiked ? "Unlike" : "Like this story"}
+              >
+                {isLiked ? (
+                  <FaHeart className="text-rose-500 text-sm animate-pulse" />
+                ) : (
+                  <FaRegHeart className="text-sm" />
+                )}
+                <span>{likesCount}</span>
+              </motion.button>
 
-                {/* Share Dropdown / Buttons */}
-                <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-full px-2 py-1">
-                  <button
-                    onClick={shareOnTwitter}
-                    className="p-2 text-gray-500 hover:text-sky-500 transition-colors"
-                    title="Share on X (Twitter)"
-                  >
-                    <FaTwitter className="text-sm" />
-                  </button>
-                  <button
-                    onClick={shareOnLinkedIn}
-                    className="p-2 text-gray-500 hover:text-blue-700 transition-colors"
-                    title="Share on LinkedIn"
-                  >
-                    <FaLinkedin className="text-sm" />
-                  </button>
-                  <button
-                    onClick={shareOnWhatsApp}
-                    className="p-2 text-gray-500 hover:text-green-600 transition-colors"
-                    title="Share on WhatsApp"
-                  >
-                    <FaWhatsapp className="text-sm" />
-                  </button>
-                  <button
-                    onClick={copyToClipboard}
-                    className="p-2 text-gray-500 hover:text-gray-900 transition-colors"
-                    title="Copy Article Link"
-                  >
-                    <FaLink className="text-sm" />
-                  </button>
-                </div>
+              {/* Share Buttons */}
+              <div className="flex items-center gap-1 glass-pill p-1">
+                <button
+                  onClick={shareOnTwitter}
+                  className="p-2 text-[var(--text-muted)] hover:text-sky-500 transition-colors cursor-pointer"
+                  title="Share on X"
+                >
+                  <FaTwitter className="text-xs sm:text-sm" />
+                </button>
+                <button
+                  onClick={shareOnLinkedIn}
+                  className="p-2 text-[var(--text-muted)] hover:text-blue-600 transition-colors cursor-pointer"
+                  title="Share on LinkedIn"
+                >
+                  <FaLinkedIn className="text-xs sm:text-sm" />
+                </button>
+                <button
+                  onClick={shareOnWhatsApp}
+                  className="p-2 text-[var(--text-muted)] hover:text-emerald-500 transition-colors cursor-pointer"
+                  title="Share on WhatsApp"
+                >
+                  <FaWhatsapp className="text-xs sm:text-sm" />
+                </button>
+                <button
+                  onClick={copyToClipboard}
+                  className="p-2 text-[var(--text-muted)] hover:text-[#747FDD] transition-colors cursor-pointer"
+                  title="Copy link"
+                >
+                  <FaLink className="text-xs sm:text-sm" />
+                </button>
               </div>
             </div>
           </div>
 
           {/* Featured Image */}
           {blog?.blogImage?.url && (
-            <div className="w-full px-6 sm:px-10 mb-8">
+            <div className="w-full mb-8 rounded-[24px] overflow-hidden border border-[var(--glass-border)] shadow-md bg-gray-100 dark:bg-gray-800">
               <img
                 src={blog.blogImage.url}
                 alt={blog.title}
-                className="w-full max-h-[480px] object-cover rounded-2xl shadow-md border border-gray-100"
+                className="w-full max-h-[480px] object-cover"
               />
             </div>
           )}
 
           {/* Article Body */}
-          <div className="px-6 sm:px-10 pb-12">
-            <div className="prose prose-lg max-w-none text-gray-800 text-lg leading-relaxed space-y-4">
-              {formatBlogContent(blog?.about)}
+          <div className="prose prose-lg max-w-none space-y-4">
+            {formatBlogContent(blog?.about)}
+          </div>
+
+          {/* Bottom Engagement Bar */}
+          <div className="mt-12 pt-6 border-t border-[var(--glass-border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-[var(--text-muted)]">
+            <div className="flex items-center gap-3">
+              <span>{wordCount} words</span>
+              <span>•</span>
+              <span>{readTime} min read</span>
+              <span>•</span>
+              <span>{blog?.comments?.length || 0} comments</span>
             </div>
 
-            {/* Bottom Engagement Bar */}
-            <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span>{wordCount} words</span>
-                <span>•</span>
-                <span>{readTime} min read</span>
-                <span>•</span>
-                <span>{blog?.comments?.length || 0} comments</span>
-              </div>
+            <div className="flex items-center gap-3">
+              <GlassButton
+                variant={isLiked ? "danger" : "secondary"}
+                size="sm"
+                onClick={handleLike}
+                icon={FaHeart}
+              >
+                {isLiked ? "Liked" : "Like this story"} ({likesCount})
+              </GlassButton>
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleLike}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-sm ${
-                    isLiked
-                      ? "bg-red-50 text-red-600 border border-red-200 shadow-red-100"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  <FaHeart
-                    className={isLiked ? "text-red-500" : "text-gray-400"}
-                  />
-                  <span>{isLiked ? "Liked" : "Like this story"} ({likesCount})</span>
-                </button>
-                <button
-                  onClick={copyToClipboard}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-blue-50 text-blue-600 font-semibold text-sm hover:bg-blue-100 transition-colors"
-                >
-                  <FaShareAlt />
-                  Share
-                </button>
-              </div>
+              <GlassButton
+                variant="secondary"
+                size="sm"
+                onClick={copyToClipboard}
+                icon={FaShareAlt}
+              >
+                Share
+              </GlassButton>
             </div>
           </div>
-        </motion.article>
+        </GlassCard>
 
-        {/* 💬 Comments & Discussions Section */}
-        <section className="mt-12 bg-white rounded-3xl shadow-xl shadow-blue-500/5 border border-gray-100 p-6 sm:p-10">
-          <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
+        {/* 💬 Comments Section */}
+        <GlassCard radius="panel" className="!p-6 sm:!p-10 shadow-xl">
+          <div className="flex items-center justify-between mb-8 pb-4 border-b border-[var(--glass-border-subtle)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-2xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center font-bold">
                 <FaComment />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)]">
                 Discussion ({blog?.comments?.length || 0})
               </h2>
             </div>
-            <span className="text-xs text-gray-400">Be respectful and kind</span>
+            <span className="text-xs text-[var(--text-muted)]">Community guidelines apply</span>
           </div>
 
           {/* Comment Form */}
           {isAuthenticated ? (
             <form onSubmit={handleAddComment} className="mb-10">
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 sm:gap-4">
                 <img
                   src={profile?.photo?.url || "/default-avatar.png"}
                   alt={profile?.name || "You"}
-                  className="w-10 h-10 rounded-full object-cover border border-blue-200 mt-1"
+                  className="w-10 h-10 rounded-2xl object-cover border border-[var(--glass-border)] shrink-0"
                 />
-                <div className="flex-1">
+                <div className="flex-1 space-y-3">
                   <textarea
                     rows={3}
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
-                    placeholder="Share your thoughts, questions, or insights on this story..."
-                    className="w-full p-4 rounded-2xl border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none text-gray-800 placeholder-gray-400 transition-all resize-none text-sm"
+                    placeholder="Share your thoughts, feedback, or ideas on this story..."
+                    className="glass-input w-full p-4 text-sm font-normal resize-none rounded-2xl"
                   />
-                  <div className="flex justify-between items-center mt-3">
-                    <span className="text-xs text-gray-400">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-[var(--text-muted)]">
                       {commentText.length}/500 characters
                     </span>
-                    <button
+                    <GlassButton
                       type="submit"
+                      variant="primary"
+                      size="sm"
                       disabled={commentLoading || !commentText.trim()}
-                      className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-600/20 transition-all duration-200"
+                      loading={commentLoading}
+                      icon={FaPaperPlane}
                     >
-                      {commentLoading ? (
-                        "Posting..."
-                      ) : (
-                        <>
-                          <FaPaperPlane className="text-xs" /> Post Comment
-                        </>
-                      )}
-                    </button>
+                      Post Comment
+                    </GlassButton>
                   </div>
                 </div>
               </div>
             </form>
           ) : (
-            <div className="mb-8 p-6 bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl text-center">
-              <p className="text-gray-700 font-medium mb-3">
+            <div className="mb-8 p-6 glass-panel rounded-2xl text-center space-y-3 border border-[var(--glass-border)]">
+              <p className="text-sm text-[var(--text-secondary)] font-medium">
                 Join the conversation! Log in to share your thoughts with the community.
               </p>
               <Link
                 to="/login"
-                className="inline-block px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md transition-all"
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-2xl bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white text-xs font-semibold shadow-md"
               >
                 Log In to Comment
               </Link>
@@ -504,7 +494,7 @@ function Detail() {
           )}
 
           {/* Comments List */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             <AnimatePresence>
               {blog?.comments && blog.comments.length > 0 ? (
                 blog.comments.map((comm) => {
@@ -516,8 +506,7 @@ function Detail() {
                     profile?._id &&
                     (blog.createdBy?.toString() === profile._id.toString() ||
                       blog.createdBy === profile._id);
-                  const canDelete =
-                    isAuthor || isBlogOwner || profile?.role === "admin";
+                  const canDelete = isAuthor || isBlogOwner || profile?.role === "admin";
 
                   return (
                     <motion.div
@@ -525,29 +514,26 @@ function Detail() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="flex items-start gap-4 p-4 rounded-2xl bg-gray-50/70 border border-gray-100"
+                      className="glass-panel !p-4 rounded-2xl border border-[var(--glass-border-subtle)] flex items-start gap-3.5"
                     >
                       <img
                         src={comm.userPhoto || "/default-avatar.png"}
                         alt={comm.userName}
-                        className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0"
+                        className="w-9 h-9 rounded-xl object-cover border border-[var(--glass-border)] shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
-                          <h4 className="font-bold text-gray-900 text-sm truncate">
+                          <h4 className="font-bold text-xs sm:text-sm text-[var(--text-primary)] truncate">
                             {comm.userName}
                           </h4>
-                          <span className="text-xs text-gray-400 shrink-0">
-                            {new Date(comm.createdAt).toLocaleDateString(
-                              "en-US",
-                              {
-                                month: "short",
-                                day: "numeric",
-                              }
-                            )}
+                          <span className="text-[10px] text-[var(--text-muted)] shrink-0">
+                            {new Date(comm.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
                           </span>
                         </div>
-                        <p className="text-gray-700 text-sm leading-relaxed break-words">
+                        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed break-words">
                           {comm.comment}
                         </p>
                       </div>
@@ -555,7 +541,7 @@ function Detail() {
                       {canDelete && (
                         <button
                           onClick={() => handleDeleteComment(comm._id)}
-                          className="text-gray-400 hover:text-red-500 transition-colors p-1.5"
+                          className="p-1.5 text-[var(--text-muted)] hover:text-red-500 transition-colors cursor-pointer"
                           title="Delete comment"
                         >
                           <FaTrash className="text-xs" />
@@ -565,13 +551,13 @@ function Detail() {
                   );
                 })
               ) : (
-                <div className="text-center py-10 text-gray-400 text-sm">
+                <div className="text-center py-8 text-[var(--text-muted)] text-sm">
                   No comments yet. Be the first to start the discussion!
                 </div>
               )}
             </AnimatePresence>
           </div>
-        </section>
+        </GlassCard>
       </div>
     </div>
   );

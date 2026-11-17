@@ -9,116 +9,100 @@ import { Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Dashboard() {
-  const { profile, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [component, setComponent] = useState("My Blogs");
+  const [editingBlogId, setEditingBlogId] = useState(null);
 
   if (!isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
 
-  // Animation variants for page transitions
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: -20 }
-  };
-
-  const pageTransition = {
-    type: "tween",
-    ease: "anticipate",
-    duration: 0.4
-  };
-
-  // Component titles with icons
   const componentTitles = {
-    "My Blogs": "📝 My Stories",
-    "Create Blog": "✨ Create New Story", 
-    "Update Blog": "✏️ Edit Story",
-    "My Profile": "👤 My Profile"
+    "My Blogs": {
+      title: "My Stories",
+      description: "Manage, analyze, and edit all your published articles",
+    },
+    "Create Blog": {
+      title: "Publish New Story",
+      description: "Craft a modern article with rich typography and visual assets",
+    },
+    "Update Blog": {
+      title: "Edit Story",
+      description: "Revise content, update media, and refine metadata",
+    },
+    "My Profile": {
+      title: "Account Settings",
+      description: "Manage your credentials, bio, and author identity",
+    },
+  };
+
+  const currentInfo = componentTitles[component] || {
+    title: component,
+    description: "Manage your workspace",
+  };
+
+  const handleStartEdit = (id) => {
+    setEditingBlogId(id);
+    setComponent("Update Blog");
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
-      <div className="flex flex-col md:flex-row min-h-screen">
-        {/* Sidebar - Fixed for mobile, flexible for desktop */}
-        <div className="md:w-60 w-full bg-white  md:min-h-screen border-r border-gray-200 md:fixed md:left-0 md:top-0 md:h-full z-40">
-          <Sidebar setComponent={setComponent} currentComponent={component} />
-        </div>
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8">
+      {/* Sidebar Component */}
+      <Sidebar setComponent={setComponent} currentComponent={component} />
 
-        {/* Main Content Area - Adjusted for sidebar */}
-        <div className="flex-1 md:ml-80 min-h-screen">
-          <div className="p-6 md:p-8 bg-transparent">
-            {/* Header */}
-            <motion.div 
-              className="mb-8 text-center md:text-left"
-              initial={{ opacity: 0, y: -20 }}
+      {/* Main Content Pane */}
+      <main className="md:ml-80 min-h-[calc(100vh-4rem)] pt-12 md:pt-2">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Header Title */}
+          <motion.div
+            key={component}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="pb-2"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] mb-2">
+              <span>Author Workspace</span>
+              <span>•</span>
+              <span className="text-[var(--text-muted)]">{component}</span>
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
+              {currentInfo.title}
+            </h1>
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+              {currentInfo.description}
+            </p>
+          </motion.div>
+
+          {/* Dynamic Content Panel with Transitions */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={component}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
             >
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                {componentTitles[component] || component}
-              </h1>
-              <p className="text-gray-600 text-lg max-w-2xl">
-                {component === "My Blogs" && "Manage and view all your published stories"}
-                {component === "Create Blog" && "Craft a new inspiring story for your readers"}
-                {component === "Update Blog" && "Refine and improve your existing content"}
-                {component === "My Profile" && "Manage your account settings and preferences"}
-              </p>
+              {component === "My Profile" ? (
+                <MyProfile />
+              ) : component === "Create Blog" ? (
+                <CreateBlog onCreated={() => setComponent("My Blogs")} />
+              ) : component === "Update Blog" ? (
+                <UpdateBlog
+                  blogId={editingBlogId}
+                  onUpdated={() => setComponent("My Blogs")}
+                />
+              ) : (
+                <MyBlogs
+                  onNavigateCreate={() => setComponent("Create Blog")}
+                  onEditBlog={handleStartEdit}
+                />
+              )}
             </motion.div>
-
-            {/* Content with smooth transitions */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={component}
-                initial="initial"
-                animate="in"
-                exit="out"
-                variants={pageVariants}
-                transition={pageTransition}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8"
-              >
-                {component === "My Profile" ? (
-                  <MyProfile />
-                ) : component === "Create Blog" ? (
-                  <CreateBlog />
-                ) : component === "Update Blog" ? (
-                  <UpdateBlog />
-                ) : (
-                  <MyBlogs />
-                )}
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Dashboard Stats Footer */}
-            <motion.div 
-              className="mt-8 text-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
-              <div className="inline-flex items-center gap-6 text-sm text-gray-500 bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-3 border border-gray-200">
-                <div className="text-center">
-                  <div className="font-semibold text-gray-900">Dashboard</div>
-                  <div className="text-xs">Control Center</div>
-                </div>
-                <div className="w-px h-6 bg-gray-300"></div>
-                <div className="text-center">
-                  <div className="font-semibold text-gray-900">Secure</div>
-                  <div className="text-xs">Your Data</div>
-                </div>
-                <div className="w-px h-6 bg-gray-300"></div>
-                <div className="text-center">
-                  <div className="font-semibold text-gray-900">24/7</div>
-                  <div className="text-xs">Available</div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+          </AnimatePresence>
         </div>
-      </div>
-
-      {/* Mobile padding to account for fixed sidebar button */}
-      <div className="h-20 md:h-0"></div>
+      </main>
     </div>
   );
 }

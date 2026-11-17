@@ -1,114 +1,112 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaUserCircle } from "react-icons/fa";
+import { FiUsers, FiMail, FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import axios from "axios";
+import { GlassCard } from "../components/ui/GlassCard";
+import { GlassBadge } from "../components/ui/GlassBadge";
 
 function Creator() {
-  const [admin, setAdmin] = useState([]);
+  const [creators, setCreators] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchAdmins = async () => {
+    const fetchCreators = async () => {
       try {
-        setLoading(true);
-        const { data } = await axios.get(
-          "/api/user/admins",
-          { withCredentials: true }
-        );
-        setAdmin(data.admins || []);
+        const { data } = await axios.get("/api/user/admins", { withCredentials: true });
+        setCreators(data.admins || []);
       } catch (err) {
-        console.error("Error fetching admins:", err);
-        setError("Failed to load creators. Please try again later.");
+        console.error("Creators fetch error:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchAdmins();
+    fetchCreators();
   }, []);
 
   return (
-    <section className="bg-linear-to-b from-blue-50 via-white to-blue-100 py-16 px-6 md:px-12 transition-colors">
-      {/* Section Header */}
-      <motion.div
-        className="text-center mb-12"
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h1 className="text-4xl md:text-5xl font-extrabold text-blue-800 mb-3">
-          Meet Our Creators
-        </h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Explore the brilliant minds sharing ideas, insights, and inspiration across the platform.
-        </p>
-      </motion.div>
-
-      {/* Loading State */}
-      {loading && (
-        <div className="flex flex-col items-center justify-center mt-12 text-gray-500">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-400 mb-4"></div>
-          <p className="text-lg font-medium">Loading creators...</p>
+    <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#A78BFA]/15 text-[#6D28D9] dark:text-[#A78BFA] text-xs font-semibold uppercase tracking-wider mb-2">
+            <FiUsers />
+            <span>Community Voices</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
+            Meet Featured Creators
+          </h2>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+            Storytellers and industry experts contributing regular insights
+          </p>
         </div>
-      )}
 
-      {/* Error Message */}
-      {error && !loading && (
-        <p className="text-center text-red-500 font-medium">{error}</p>
-      )}
-
-      {/* Creator Grid */}
-      {!loading && !error && (
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+        <Link
+          to="/creators"
+          className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#747FDD] hover:text-[#454FA8] transition-colors"
         >
-          {admin && admin.length > 0 ? (
-            admin.slice(0, 8).map((element, index) => (
-              <motion.div
-                key={element._id}
-                whileHover={{
-                  scale: 1.05,
-                  y: -6,
-                  rotate: 0.3,
-                  transition: { type: "spring", stiffness: 200 },
-                }}
-                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-center p-6 border border-gray-100 hover:border-blue-200"
-              >
-                {element?.photo?.url ? (
-                  <motion.img
-                    src={element.photo.url}
-                    alt={element?.name || "Creator"}
-                    className="w-32 h-32 object-cover rounded-full border-4 border-blue-200 shadow-sm mb-4"
-                    whileHover={{ rotate: 5 }}
-                    transition={{ duration: 0.4 }}
-                  />
-                ) : (
-                  <FaUserCircle className="w-32 h-32 text-blue-300 mb-4" />
-                )}
+          <span>All creators</span>
+          <FiArrowRight />
+        </Link>
+      </div>
 
-                <h2 className="text-xl font-semibold text-gray-800 mb-1">
-                  {element?.name || "Unknown"}
-                </h2>
-                <p className="text-blue-500 text-sm font-medium tracking-wide">
-                  {element?.role || "Admin"}
-                </p>
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <GlassCard key={i} className="h-64 animate-pulse flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-800" />
+            </GlassCard>
+          ))}
+        </div>
+      ) : creators.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {creators.slice(0, 4).map((creator) => (
+            <GlassCard
+              key={creator._id}
+              interactive
+              radius="panel"
+              className="!p-6 text-center flex flex-col items-center group relative overflow-hidden"
+            >
+              {/* Decorative top ambient color bar */}
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2]" />
 
-                <div className="mt-4 text-center">
-                  <p className="text-gray-500 text-sm max-w-[200px] mx-auto">
-                    Passionate creator bringing ideas to life ✨
-                  </p>
+              {/* Avatar with Specular Border */}
+              <div className="relative mb-4 mt-2">
+                <img
+                  src={creator.photo?.url || "/default-avatar.png"}
+                  alt={creator.name}
+                  className="w-20 h-20 rounded-2xl object-cover border-2 border-[var(--glass-border)] shadow-md group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-tr from-[#747FDD] to-[#69D8F2] text-white flex items-center justify-center text-xs shadow-sm">
+                  <FiCheckCircle size={13} />
                 </div>
-              </motion.div>
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500 text-lg">
-              No creators found.
-            </div>
-          )}
-        </motion.div>
+              </div>
+
+              {/* Name & Role */}
+              <h3 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors">
+                {creator.name}
+              </h3>
+              <p className="text-xs font-semibold text-[#747FDD] uppercase tracking-wider mb-2">
+                {creator.role}
+              </p>
+
+              <p className="text-xs text-[var(--text-secondary)] mb-4 line-clamp-2">
+                Specializing in {creator.education || "Software Architecture"} and digital content.
+              </p>
+
+              {/* Email Chip */}
+              <div className="mt-auto w-full pt-3 border-t border-[var(--glass-border-subtle)] flex items-center justify-center gap-1.5 text-xs text-[var(--text-muted)]">
+                <FiMail className="shrink-0" />
+                <span className="truncate max-w-[170px]">{creator.email}</span>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+      ) : (
+        <GlassCard className="text-center py-12">
+          <p className="text-[var(--text-secondary)]">No creators found.</p>
+        </GlassCard>
       )}
     </section>
   );
