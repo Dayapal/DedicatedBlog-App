@@ -12,6 +12,18 @@ import { BACKEND_URL } from './config.js'
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = BACKEND_URL;
 
+// Inject JWT bearer header as a fail-safe against modern cross-site cookie restrictions
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("jwt");
+    if (token && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ErrorBoundary>

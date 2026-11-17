@@ -9,7 +9,10 @@ export const generateAuthToken = (userId) => {
 };
 
 export const setAuthCookie = (res, token) => {
-  const isProduction = env.isProduction;
+  const isProduction =
+    env.isProduction ||
+    process.env.RENDER === "true" ||
+    process.env.NODE_ENV === "production";
 
   res.cookie("jwt", token, {
     httpOnly: true,
@@ -22,7 +25,10 @@ export const setAuthCookie = (res, token) => {
 };
 
 export const clearAuthCookie = (res) => {
-  const isProduction = env.isProduction;
+  const isProduction =
+    env.isProduction ||
+    process.env.RENDER === "true" ||
+    process.env.NODE_ENV === "production";
 
   res.clearCookie("jwt", {
     httpOnly: true,

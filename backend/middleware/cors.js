@@ -24,7 +24,9 @@ export const corsMiddleware = cors({
 
     if (
       allowedOrigins.includes(origin) ||
-      /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
+      /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin) ||
+      /\.netlify\.app$/.test(origin) ||
+      /\.vercel\.app$/.test(origin)
     ) {
       return callback(null, true);
     }
