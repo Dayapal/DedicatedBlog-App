@@ -47,12 +47,12 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 flex flex-col md:flex-row gap-6 lg:gap-8 max-w-[1600px] mx-auto">
       {/* Sidebar Component */}
       <Sidebar setComponent={setComponent} currentComponent={component} />
 
       {/* Main Content Pane */}
-      <main className="md:ml-80 min-h-[calc(100vh-4rem)] pt-12 md:pt-2">
+      <main className="flex-1 min-w-0 min-h-[calc(100vh-4rem)] pt-12 md:pt-0">
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Header Title */}
           <motion.div

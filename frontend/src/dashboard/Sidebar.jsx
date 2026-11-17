@@ -46,7 +46,7 @@ function Sidebar({ setComponent, currentComponent }) {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full justify-between p-6">
+    <div className="flex flex-col h-full justify-between p-6 overflow-y-auto">
       {/* Top: Brand & User Identity */}
       <div className="space-y-6">
         {/* Brand */}
@@ -167,7 +167,7 @@ function Sidebar({ setComponent, currentComponent }) {
       </div>
 
       {/* Desktop Persistent Floating Sidebar */}
-      <aside className="hidden md:block w-72 h-[calc(100vh-2rem)] fixed top-4 left-4 z-40 glass-panel glass-specular rounded-[32px] border border-[var(--glass-border)] shadow-xl overflow-hidden">
+      <aside className="hidden md:flex flex-col w-72 shrink-0 sticky top-4 h-[calc(100vh-2rem)] z-30 glass-panel glass-specular rounded-[32px] border border-[var(--glass-border)] shadow-xl overflow-hidden">
         <SidebarContent />
       </aside>
 
