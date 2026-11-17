@@ -62,7 +62,7 @@ function Dashboard() {
             transition={{ duration: 0.3 }}
             className="pb-2"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF] mb-2">
               <span>Author Workspace</span>
               <span>•</span>
               <span className="text-[var(--text-muted)]">{component}</span>

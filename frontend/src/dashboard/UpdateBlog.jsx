@@ -6,6 +6,7 @@ import ImageCropper from "../components/ImageCropper";
 import GlassCard from "../components/ui/GlassCard";
 import GlassButton from "../components/ui/GlassButton";
 import GlassBadge from "../components/ui/GlassBadge";
+import SafeImage from "../components/ui/SafeImage";
 
 const CATEGORIES = [
   "Technology",
@@ -162,7 +163,7 @@ function UpdateBlog() {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-[#332FD0] border-t-transparent rounded-full animate-spin" />
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
             Loading story for editing...
           </p>
@@ -190,7 +191,7 @@ function UpdateBlog() {
         <div>
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF] hover:text-[#FB2576] hover:underline mb-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -212,7 +213,7 @@ function UpdateBlog() {
             onClick={() => setActiveTab("write")}
             className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
               activeTab === "write"
-                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                ? "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white shadow-sm shadow-[#FB2576]/30"
                 : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
@@ -223,7 +224,7 @@ function UpdateBlog() {
             onClick={() => setActiveTab("preview")}
             className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
               activeTab === "preview"
-                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                ? "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white shadow-sm shadow-[#FB2576]/30"
                 : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
@@ -248,7 +249,7 @@ function UpdateBlog() {
                   placeholder="Enter title..."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full text-xl sm:text-2xl font-bold bg-transparent border-0 border-b border-gray-200 dark:border-white/10 pb-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition"
+                  className="w-full text-xl sm:text-2xl font-bold bg-transparent border-0 border-b border-gray-200 dark:border-white/10 pb-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#332FD0] transition"
                 />
               </GlassCard>
 
@@ -258,7 +259,7 @@ function UpdateBlog() {
                   <label className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     Cover Image
                   </label>
-                  <label className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer">
+                  <label className="text-xs text-[#332FD0] dark:text-[#B4B2FF] font-semibold hover:text-[#FB2576] hover:underline cursor-pointer">
                     Replace Image
                     <input
                       type="file"
@@ -270,9 +271,11 @@ function UpdateBlog() {
                 </div>
 
                 <div className="relative group rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-md">
-                  <img
-                    src={blogImagePreview || blogImage || "/imgPL.webp"}
+                  <SafeImage
+                    src={blogImagePreview || blogImage}
                     alt="Cover Preview"
+                    type="cover"
+                    fallbackSrc="/imgPL.webp"
                     className="w-full h-64 object-cover"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -386,7 +389,7 @@ function UpdateBlog() {
                         onClick={() => setCategory(cat)}
                         className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition-all ${
                           isSelected
-                            ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20"
+                            ? "bg-gradient-to-r from-[#3F0071] to-[#332FD0] text-white shadow-md shadow-[#332FD0]/25"
                             : "bg-black/5 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 border border-gray-200/50 dark:border-white/10"
                         }`}
                       >
@@ -429,7 +432,7 @@ function UpdateBlog() {
                     type="submit"
                     variant="primary"
                     size="lg"
-                    className="w-full justify-center shadow-lg shadow-indigo-500/25"
+                    className="w-full justify-center shadow-lg shadow-[#332FD0]/25"
                     loading={loading}
                   >
                     💾 Save Changes
@@ -466,9 +469,11 @@ function UpdateBlog() {
             {/* Cover image preview */}
             {(blogImagePreview || blogImage) && (
               <div className="rounded-2xl overflow-hidden border border-white/20 dark:border-white/10 shadow-lg">
-                <img
+                <SafeImage
                   src={blogImagePreview || blogImage}
                   alt="Cover"
+                  type="cover"
+                  fallbackSrc="/imgPL.webp"
                   className="w-full h-80 object-cover"
                 />
               </div>

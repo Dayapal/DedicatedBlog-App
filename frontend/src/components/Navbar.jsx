@@ -50,11 +50,11 @@ function Navbar() {
             to="/"
             className="flex items-center gap-2 group cursor-pointer select-none"
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-[#747FDD] via-[#6571D8] to-[#69D8F2] flex items-center justify-center text-white shadow-md shadow-[#747FDD]/30 group-hover:scale-105 transition-transform duration-300">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-[#3F0071] via-[#332FD0] to-[#FB2576] flex items-center justify-center text-white shadow-md shadow-[#332FD0]/30 group-hover:scale-105 transition-transform duration-300">
               <FiFeather className="text-lg sm:text-xl" />
             </div>
             <span className="text-lg sm:text-xl font-extrabold tracking-tight text-[var(--text-primary)]">
-              Dedicated<span className="bg-gradient-to-r from-[#747FDD] to-[#69D8F2] bg-clip-text text-transparent">Blog</span>
+              Dedicated<span className="bg-gradient-to-r from-[#FB2576] to-[#332FD0] bg-clip-text text-transparent">Blog</span>
             </span>
           </Link>
 
@@ -82,7 +82,7 @@ function Navbar() {
                   {isActive && (
                     <motion.div
                       layoutId="navActiveIndicator"
-                      className="absolute inset-0 bg-gradient-to-r from-[#747FDD] to-[#454FA8] rounded-full shadow-md shadow-[#747FDD]/35 -z-10"
+                      className="absolute inset-0 bg-gradient-to-r from-[#FB2576] to-[#3F0071] rounded-full shadow-md shadow-[#FB2576]/35 -z-10"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -104,7 +104,7 @@ function Navbar() {
               {isDark ? (
                 <FiSun className="text-amber-400 text-lg" />
               ) : (
-                <FiMoon className="text-[#454FA8] text-lg" />
+                <FiMoon className="text-[#332FD0] text-lg" />
               )}
             </motion.button>
 
@@ -112,7 +112,7 @@ function Navbar() {
             {isAuthenticated && (
               <Link
                 to="/dashboard"
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-semibold uppercase tracking-wider bg-[#747FDD]/15 text-[#747FDD] hover:bg-[#747FDD]/25 border border-[#747FDD]/30 transition-all duration-200"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-wider bg-[#332FD0]/10 dark:bg-[#332FD0]/25 text-[#332FD0] dark:text-[#B4B2FF] hover:bg-[#332FD0]/20 border border-[#332FD0]/30 transition-all duration-200 active:scale-95"
               >
                 <FiLayout className="text-sm" />
                 <span>Dashboard</span>
@@ -123,7 +123,7 @@ function Navbar() {
             {!isAuthenticated ? (
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white shadow-md shadow-[#747FDD]/25 hover:shadow-lg hover:shadow-[#747FDD]/35 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-[#332FD0] to-[#3F0071] text-white shadow-md shadow-[#332FD0]/30 hover:shadow-lg hover:shadow-[#FB2576]/25 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
               >
                 <FiLogIn className="text-sm" />
                 <span>Login</span>
@@ -131,7 +131,7 @@ function Navbar() {
             ) : (
               <button
                 onClick={handleLogout}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-semibold uppercase tracking-wider text-red-500 hover:bg-red-500/10 border border-red-500/25 transition-all duration-200 cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-bold uppercase tracking-wider bg-[#FB2576]/10 dark:bg-[#FB2576]/20 text-[#FB2576] hover:bg-[#FB2576]/20 border border-[#FB2576]/30 transition-all duration-200 cursor-pointer active:scale-95"
               >
                 <FiLogOut className="text-sm" />
                 <span>Logout</span>
@@ -156,59 +156,59 @@ function Navbar() {
           className="fixed top-20 inset-x-4 z-40 md:hidden glass-panel glass-specular rounded-3xl p-6 border border-[var(--glass-border)] shadow-2xl space-y-4 animate-fade-in"
         >
           <nav className="flex flex-col space-y-2">
-              {menuItems.map((item) => {
-                const isActive =
-                  item.path === "/"
-                    ? location.pathname === "/"
-                    : location.pathname.startsWith(item.path);
+            {menuItems.map((item) => {
+              const isActive =
+                item.path === "/"
+                  ? location.pathname === "/"
+                  : location.pathname.startsWith(item.path);
 
-                return (
-                  <Link
-                    key={item.label}
-                    to={item.path}
-                    onClick={() => setShowMobileMenu(false)}
-                    className={`
-                      px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 flex items-center justify-between
-                      ${
-                        isActive
-                          ? "bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white shadow-md shadow-[#747FDD]/25"
-                          : "text-[var(--text-primary)] hover:bg-[var(--glass-bg-subtle)]"
-                      }
-                    `}
-                  >
-                    <span>{item.label}</span>
-                    <span className="text-xs opacity-60">→</span>
-                  </Link>
-                );
-              })}
-
-              {isAuthenticated && (
+              return (
                 <Link
-                  to="/dashboard"
+                  key={item.label}
+                  to={item.path}
                   onClick={() => setShowMobileMenu(false)}
-                  className="px-4 py-3 rounded-2xl text-sm font-semibold bg-[#747FDD]/15 text-[#747FDD] border border-[#747FDD]/30 flex items-center justify-between"
+                  className={`
+                    px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 flex items-center justify-between
+                    ${
+                      isActive
+                        ? "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white shadow-md shadow-[#FB2576]/25"
+                        : "text-[var(--text-primary)] hover:bg-[var(--glass-bg-subtle)]"
+                    }
+                  `}
                 >
-                  <span className="flex items-center gap-2">
-                    <FiLayout /> Dashboard
-                  </span>
-                  <span className="text-xs">→</span>
+                  <span>{item.label}</span>
+                  <span className="text-xs opacity-60">→</span>
                 </Link>
-              )}
+              );
+            })}
 
-              {isAuthenticated && (
-                <button
-                  onClick={(e) => {
-                    handleLogout(e);
-                    setShowMobileMenu(false);
-                  }}
-                  className="w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold text-red-500 hover:bg-red-500/10 flex items-center gap-2 cursor-pointer"
-                >
-                  <FiLogOut /> Logout
-                </button>
-              )}
-            </nav>
-          </div>
-        )}
+            {isAuthenticated && (
+              <Link
+                to="/dashboard"
+                onClick={() => setShowMobileMenu(false)}
+                className="px-4 py-3 rounded-2xl text-sm font-semibold bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] border border-[#332FD0]/30 flex items-center justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <FiLayout /> Dashboard
+                </span>
+                <span className="text-xs">→</span>
+              </Link>
+            )}
+
+            {isAuthenticated && (
+              <button
+                onClick={(e) => {
+                  handleLogout(e);
+                  setShowMobileMenu(false);
+                }}
+                className="w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold text-rose-500 hover:bg-rose-500/10 flex items-center gap-2 cursor-pointer"
+              >
+                <FiLogOut /> Logout
+              </button>
+            )}
+          </nav>
+        </div>
+      )}
     </>
   );
 }

@@ -67,14 +67,14 @@ export default function MobileBottomNav() {
             to={item.to}
             className={`flex flex-col items-center justify-center py-1 px-3 rounded-full transition-all duration-200 relative ${
               item.active
-                ? "text-indigo-600 dark:text-indigo-400 font-bold scale-105"
+                ? "text-[#FB2576] font-bold scale-105"
                 : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
             {item.icon}
             <span className="text-[10px] mt-0.5 tracking-tight">{item.label}</span>
             {item.active && (
-              <span className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-indigo-500" />
+              <span className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-[#FB2576] shadow-sm shadow-[#FB2576]" />
             )}
           </Link>
         ))}

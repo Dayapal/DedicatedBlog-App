@@ -1,73 +1,94 @@
 :root {
-  /* Android 16 Expressive & Liquid Glass Palette */
-  --color-primary: #747FDD;
-  --color-primary-dark: #454FA8;
-  --color-primary-light: #A8B0FF;
-  
-  --color-cyan: #69D8F2;
-  --color-purple: #A78BFA;
-  --color-pink: #F0A6D8;
-  
-  /* Backgrounds */
-  --bg-app: #F4F5FC;
-  --bg-gradient: radial-gradient(circle at 12% 15%, rgba(116, 127, 221, 0.16) 0%, transparent 40%),
-                  radial-gradient(circle at 88% 82%, rgba(167, 139, 250, 0.14) 0%, transparent 42%),
-                  radial-gradient(circle at 50% 50%, rgba(105, 216, 242, 0.08) 0%, transparent 50%),
-                  linear-gradient(135deg, #F4F5FC 0%, #EAEFFC 100%);
+  /* =========================================================================
+     OFFICIAL BRAND PALETTE: Royal Purple × Neon Pink × Electric Indigo × Deep Royal Blue
+     ========================================================================= */
+  --color-royal-purple: #3F0071;
+  --color-neon-pink: #FB2576;
+  --color-electric-indigo: #332FD0;
+  --color-deep-royal: #0002A1;
 
-  /* Glass Surfaces (Light) */
-  --glass-bg: rgba(255, 255, 255, 0.58);
-  --glass-bg-hover: rgba(255, 255, 255, 0.72);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.38);
-  --glass-border: rgba(255, 255, 255, 0.75);
-  --glass-border-subtle: rgba(255, 255, 255, 0.45);
-  --glass-highlight: rgba(255, 255, 255, 0.9);
-  
-  /* Shadows & Glows */
-  --glass-shadow: 0 12px 36px -4px rgba(69, 79, 168, 0.08), 0 4px 14px -2px rgba(69, 79, 168, 0.04);
-  --glass-shadow-hover: 0 20px 44px -4px rgba(69, 79, 168, 0.14), 0 8px 20px -3px rgba(69, 79, 168, 0.06);
-  --glow-primary: 0 0 28px rgba(116, 127, 221, 0.32);
-  
-  /* Typography */
-  --text-primary: #15172C;
-  --text-secondary: #484E6D;
-  --text-muted: #7E86AA;
-  
-  /* Radii (Android 16 Expressive Hierarchy) */
+  /* Semantic Color Aliases */
+  --color-brand: #3F0071;
+  --color-primary: #332FD0;
+  --color-accent: #FB2576;
+  --color-depth: #0002A1;
+
+  /* Official Signature Gradients */
+  --gradient-primary: linear-gradient(135deg, #3F0071 0%, #332FD0 100%);
+  --gradient-secondary: linear-gradient(135deg, #FB2576 0%, #3F0071 100%);
+  --gradient-deep: linear-gradient(135deg, #0002A1 0%, #332FD0 50%, #3F0071 100%);
+  --gradient-accent: linear-gradient(135deg, #3F0071 0%, #FB2576 50%, #332FD0 100%);
+  --gradient-pink-indigo: linear-gradient(135deg, #FB2576 0%, #332FD0 100%);
+
+  /* Backgrounds (Light Mode) */
+  --bg-app: #F7F8FD;
+  --bg-gradient: radial-gradient(circle at 10% 12%, rgba(63, 0, 113, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 90% 85%, rgba(51, 47, 208, 0.07) 0%, transparent 45%),
+                  radial-gradient(circle at 50% 30%, rgba(251, 37, 118, 0.04) 0%, transparent 50%),
+                  linear-gradient(135deg, #F8F9FE 0%, #ECEEFB 100%);
+
+  /* Glass Surfaces (Light Mode) - Purple/Blue Tinted */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-hover: rgba(255, 255, 255, 0.88);
+  --glass-bg-subtle: rgba(63, 0, 113, 0.05);
+  --glass-bg-tint: rgba(63, 0, 113, 0.08);
+  --glass-border: rgba(63, 0, 113, 0.15);
+  --glass-border-subtle: rgba(51, 47, 208, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --glass-pink-reflection: rgba(251, 37, 118, 0.2);
+
+  /* Shadows & Glows (Light Mode) */
+  --glass-shadow: 0 10px 32px -4px rgba(63, 0, 113, 0.1), 0 4px 14px -2px rgba(51, 47, 208, 0.06);
+  --glass-shadow-hover: 0 18px 40px -4px rgba(63, 0, 113, 0.16), 0 8px 20px -3px rgba(251, 37, 118, 0.12);
+  --glow-pink: 0 0 24px rgba(251, 37, 118, 0.35);
+  --glow-indigo: 0 0 28px rgba(51, 47, 208, 0.35);
+  --glow-purple: 0 0 32px rgba(63, 0, 113, 0.25);
+
+  /* High-Contrast Typography (Light Mode) */
+  --text-primary: #0A0A1C;
+  --text-secondary: #2C3054;
+  --text-muted: #535985;
+
+  /* Android 16 Expressive Hierarchy */
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 24px;
   --radius-panel: 28px;
   --radius-hero: 32px;
   --radius-pill: 9999px;
-  
-  /* Blur */
-  --glass-blur: 20px;
+
+  /* Backdrop Blur */
+  --glass-blur: 24px;
 }
 
 .dark {
-  /* Dark Mode Palette */
-  --bg-app: #0E0F19;
-  --bg-gradient: radial-gradient(circle at 10% 12%, rgba(116, 127, 221, 0.14) 0%, transparent 45%),
-                  radial-gradient(circle at 85% 85%, rgba(167, 139, 250, 0.12) 0%, transparent 45%),
-                  radial-gradient(circle at 50% 40%, rgba(105, 216, 242, 0.06) 0%, transparent 50%),
-                  linear-gradient(135deg, #0E0F19 0%, #151627 100%);
+  /* Backgrounds (Dark Mode) - Deep Royal Blue & Navy Depth */
+  --bg-app: #030314;
+  --bg-gradient: radial-gradient(circle at 10% 10%, rgba(63, 0, 113, 0.22) 0%, transparent 45%),
+                  radial-gradient(circle at 90% 85%, rgba(0, 2, 161, 0.24) 0%, transparent 50%),
+                  radial-gradient(circle at 50% 45%, rgba(51, 47, 208, 0.15) 0%, transparent 55%),
+                  radial-gradient(circle at 80% 20%, rgba(251, 37, 118, 0.08) 0%, transparent 40%),
+                  linear-gradient(135deg, #030314 0%, #060824 100%);
 
-  /* Glass Surfaces (Dark) */
-  --glass-bg: rgba(23, 25, 42, 0.58);
-  --glass-bg-hover: rgba(30, 33, 56, 0.72);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-subtle: rgba(255, 255, 255, 0.06);
-  --glass-highlight: rgba(255, 255, 255, 0.18);
-  
-  /* Shadows & Glows */
-  --glass-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.45), 0 4px 16px -2px rgba(0, 0, 0, 0.3);
-  --glass-shadow-hover: 0 24px 50px -4px rgba(0, 0, 0, 0.6), 0 8px 24px -2px rgba(116, 127, 221, 0.15);
-  --glow-primary: 0 0 32px rgba(116, 127, 221, 0.28);
-  
-  /* Typography */
-  --text-primary: #F4F5FC;
-  --text-secondary: #B8BEE2;
-  --text-muted: #72799F;
+  /* Glass Surfaces (Dark Mode) - Purple/Royal Tinted */
+  --glass-bg: rgba(63, 0, 113, 0.16);
+  --glass-bg-hover: rgba(63, 0, 113, 0.25);
+  --glass-bg-subtle: rgba(0, 2, 161, 0.14);
+  --glass-bg-tint: rgba(51, 47, 208, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-subtle: rgba(255, 255, 255, 0.07);
+  --glass-highlight: rgba(255, 255, 255, 0.22);
+  --glass-pink-reflection: rgba(251, 37, 118, 0.25);
+
+  /* Shadows & Glows (Dark Mode) */
+  --glass-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.6), 0 4px 16px -2px rgba(63, 0, 113, 0.3);
+  --glass-shadow-hover: 0 24px 52px -4px rgba(0, 0, 0, 0.75), 0 8px 28px -2px rgba(251, 37, 118, 0.22);
+  --glow-pink: 0 0 28px rgba(251, 37, 118, 0.5);
+  --glow-indigo: 0 0 32px rgba(51, 47, 208, 0.5);
+  --glow-purple: 0 0 36px rgba(63, 0, 113, 0.45);
+
+  /* High-Contrast Typography (Dark Mode) */
+  --text-primary: #FFFFFF;
+  --text-secondary: #CBD0EC;
+  --text-muted: #838AB4;
 }

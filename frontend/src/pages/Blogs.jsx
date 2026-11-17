@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiSearch, FiFilter, FiClock, FiEye, FiHeart, FiCompass, FiSliders } from "react-icons/fi";
+import { FiSearch, FiClock, FiEye, FiHeart, FiCompass, FiSliders } from "react-icons/fi";
 import { useAuth } from "../context/AuthProvider";
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
 import { BlogCardSkeleton } from "../components/ui/GlassSkeleton";
+import SafeImage from "../components/ui/SafeImage";
 
 const categories = [
   "All",
@@ -19,13 +20,13 @@ const categories = [
 ];
 
 const categoryVariantMap = {
-  Technology: "primary",
+  Technology: "indigo",
   Devotional: "purple",
-  Sports: "cyan",
+  Sports: "royal",
   Tourism: "pink",
   Entertainment: "pink",
-  Health: "cyan",
-  Business: "primary",
+  Health: "indigo",
+  Business: "purple",
 };
 
 function Blogs() {
@@ -97,7 +98,7 @@ function Blogs() {
     <div className="min-h-screen pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF] uppercase tracking-wider">
           <FiCompass />
           <span>Curated Publication Stream</span>
         </div>
@@ -123,7 +124,7 @@ function Blogs() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by title, topic, or author..."
-              className="glass-input w-full py-2.5 pl-10 pr-4 text-xs sm:text-sm font-normal rounded-2xl"
+              className="glass-input w-full py-2.5 pl-10 pr-4 text-xs sm:text-sm font-normal rounded-2xl focus:border-[#332FD0]"
             />
           </div>
 
@@ -187,13 +188,15 @@ function Blogs() {
                     <Link to={`/blogs/${blog._id}`} className="flex flex-col h-full">
                       {/* Image */}
                       <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-gray-100 dark:bg-gray-800">
-                        <img
-                          src={blog.blogImage?.url || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"}
+                        <SafeImage
+                          src={blog.blogImage?.url}
                           alt={blog.title}
+                          fallbackSrc="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"
+                          type="cover"
                           loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                         {/* Category badge */}
                         <div className="absolute top-3 left-3">
@@ -210,7 +213,7 @@ function Blogs() {
 
                       {/* Content */}
                       <div className="flex-1 space-y-2">
-                        <h2 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors line-clamp-2 leading-snug">
+                        <h2 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#FB2576] transition-colors line-clamp-2 leading-snug">
                           {blog.title}
                         </h2>
                         <p className="text-xs sm:text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
@@ -221,9 +224,10 @@ function Blogs() {
                       {/* Author & Stats Strip */}
                       <div className="pt-4 mt-4 border-t border-[var(--glass-border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)]">
                         <div className="flex items-center gap-2">
-                          <img
-                            src={blog.adminPhoto || "/default-avatar.png"}
+                          <SafeImage
+                            src={blog.adminPhoto}
                             alt={blog.adminName || "Author"}
+                            type="avatar"
                             className="w-7 h-7 rounded-full object-cover border border-[var(--glass-border)]"
                           />
                           <span className="font-medium text-[var(--text-secondary)] truncate max-w-[85px]">
@@ -236,7 +240,7 @@ function Blogs() {
                             <FiEye /> {blog.views || 0}
                           </span>
                           <span className="flex items-center gap-1">
-                            <FiHeart className="text-rose-400" /> {blog.likes?.length || 0}
+                            <FiHeart className="text-[#FB2576]" /> {blog.likes?.length || 0}
                           </span>
                         </div>
                       </div>
@@ -266,7 +270,7 @@ function Blogs() {
               setSelectedCategory("All");
               setSearchTerm("");
             }}
-            className="text-xs font-semibold text-[#747FDD] underline cursor-pointer"
+            className="text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF] hover:text-[#FB2576] underline cursor-pointer"
           >
             Reset Filters
           </button>

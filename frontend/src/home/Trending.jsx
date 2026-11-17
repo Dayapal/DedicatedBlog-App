@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Carousel from "react-multi-carousel";
-import { motion } from "framer-motion";
 import { FiTrendingUp, FiEye, FiHeart, FiArrowRight } from "react-icons/fi";
 import "react-multi-carousel/lib/styles.css";
 import api from "../services/api";
@@ -9,15 +8,16 @@ import { useAuth } from "../context/AuthProvider";
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
 import { BlogCardSkeleton } from "../components/ui/GlassSkeleton";
+import SafeImage from "../components/ui/SafeImage";
 
 const categoryVariantMap = {
-  Technology: "primary",
+  Technology: "indigo",
   Devotional: "purple",
-  Sports: "cyan",
+  Sports: "royal",
   Tourism: "pink",
   Entertainment: "pink",
-  Health: "cyan",
-  Business: "primary",
+  Health: "indigo",
+  Business: "purple",
 };
 
 function Trending() {
@@ -61,21 +61,21 @@ function Trending() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#747FDD]/15 text-[#747FDD] text-xs font-semibold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FB2576]/10 dark:bg-[#FB2576]/20 text-[#FB2576] border border-[#FB2576]/25 text-xs font-bold uppercase tracking-wider mb-2">
             <FiTrendingUp />
             <span>Community Heatmap</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             Trending Discussions
           </h2>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1">
             Articles scored by views, likes, and active comments
           </p>
         </div>
 
         <Link
           to="/blogs"
-          className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#747FDD] hover:text-[#454FA8] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#332FD0] dark:text-[#B4B2FF] hover:text-[#FB2576] transition-colors px-3 py-1.5 rounded-xl hover:bg-[#332FD0]/10"
         >
           <span>Explore all trending</span>
           <FiArrowRight />
@@ -112,19 +112,18 @@ function Trending() {
                 <Link to={`/blogs/${element._id}`} className="flex flex-col h-full">
                   {/* Thumbnail with Rank Badge */}
                   <div className="relative w-full h-52 rounded-2xl overflow-hidden mb-4 bg-gray-100 dark:bg-gray-800">
-                    <img
-                      src={
-                        element.blogImage?.url ||
-                        "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"
-                      }
+                    <SafeImage
+                      src={element.blogImage?.url}
                       alt={element.title}
+                      fallbackSrc="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"
+                      type="cover"
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 pointer-events-none" />
 
                     {/* Rank Badge */}
-                    <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white flex items-center justify-center font-bold text-xs shadow-md">
+                    <div className="absolute top-3 left-3 w-8 h-8 rounded-full bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white flex items-center justify-center font-bold text-xs shadow-md shadow-[#FB2576]/30">
                       #{idx + 1}
                     </div>
 
@@ -138,7 +137,7 @@ function Trending() {
 
                   {/* Title & Preview */}
                   <div className="flex-1 space-y-2">
-                    <h3 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors line-clamp-2 leading-snug">
+                    <h3 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#FB2576] transition-colors line-clamp-2 leading-snug">
                       {element.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
@@ -149,9 +148,10 @@ function Trending() {
                   {/* Author Strip & Engagement */}
                   <div className="pt-4 mt-4 border-t border-[var(--glass-border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)]">
                     <div className="flex items-center gap-2">
-                      <img
-                        src={element.adminPhoto || "/default-avatar.png"}
+                      <SafeImage
+                        src={element.adminPhoto}
                         alt={element.adminName || "Author"}
+                        type="avatar"
                         className="w-7 h-7 rounded-full object-cover border border-[var(--glass-border)]"
                       />
                       <span className="font-medium text-[var(--text-secondary)] truncate max-w-[90px]">
@@ -161,10 +161,10 @@ function Trending() {
 
                     <div className="flex items-center gap-3 font-medium">
                       <span className="flex items-center gap-1">
-                        <FiEye className="text-[#69D8F2]" /> {element.views || 0}
+                        <FiEye className="text-[#332FD0] dark:text-[#B4B2FF]" /> {element.views || 0}
                       </span>
                       <span className="flex items-center gap-1">
-                        <FiHeart className="text-rose-400" /> {element.likes?.length || element.likesCount || 0}
+                        <FiHeart className="text-[#FB2576]" /> {element.likes?.length || element.likesCount || 0}
                       </span>
                     </div>
                   </div>

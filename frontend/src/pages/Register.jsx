@@ -97,11 +97,11 @@ function Register() {
           {/* Logo & Header */}
           <div className="text-center space-y-2">
             <Link to="/" className="inline-flex items-center gap-2 mb-2">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#747FDD] via-[#6571D8] to-[#69D8F2] flex items-center justify-center text-white shadow-md shadow-[#747FDD]/30">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3F0071] via-[#332FD0] to-[#FB2576] flex items-center justify-center text-white shadow-md shadow-[#332FD0]/30">
                 <FiFeather className="text-xl" />
               </div>
               <span className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                Dedicated<span className="bg-gradient-to-r from-[#747FDD] to-[#69D8F2] bg-clip-text text-transparent">Blog</span>
+                Dedicated<span className="bg-gradient-to-r from-[#FB2576] to-[#332FD0] bg-clip-text text-transparent">Blog</span>
               </span>
             </Link>
             <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
@@ -120,10 +120,10 @@ function Register() {
                   <img
                     src={photoPreview}
                     alt="Preview"
-                    className="w-20 h-20 rounded-3xl object-cover border-2 border-[#747FDD] shadow-md"
+                    className="w-20 h-20 rounded-3xl object-cover border-2 border-[#332FD0] shadow-md"
                   />
                 ) : (
-                  <div className="w-20 h-20 rounded-3xl glass-panel border border-[var(--glass-border)] flex flex-col items-center justify-center text-[var(--text-muted)] group-hover:text-[#747FDD] transition-colors">
+                  <div className="w-20 h-20 rounded-3xl glass-panel border border-[var(--glass-border)] flex flex-col items-center justify-center text-[var(--text-muted)] group-hover:text-[#FB2576] transition-colors">
                     <FiUpload size={22} />
                     <span className="text-[10px] mt-1 font-medium">Photo</span>
                   </div>
@@ -279,7 +279,7 @@ function Register() {
           {/* Switch to Login */}
           <div className="pt-4 border-t border-[var(--glass-border-subtle)] text-center text-xs text-[var(--text-secondary)]">
             <span>Already registered? </span>
-            <Link to="/login" className="font-bold text-[#747FDD] hover:underline">
+            <Link to="/login" className="font-bold text-[#332FD0] dark:text-[#B4B2FF] hover:text-[#FB2576] hover:underline">
               Sign In Instead
             </Link>
           </div>

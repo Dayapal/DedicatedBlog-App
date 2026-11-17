@@ -5,6 +5,7 @@ import ImageCropper from "../components/ImageCropper";
 import GlassCard from "../components/ui/GlassCard";
 import GlassButton from "../components/ui/GlassButton";
 import GlassBadge from "../components/ui/GlassBadge";
+import SafeImage from "../components/ui/SafeImage";
 import { useAuth } from "../context/AuthProvider";
 
 const CATEGORIES = [
@@ -165,8 +166,8 @@ function CreateBlog() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-semibold tracking-wider uppercase text-indigo-600 dark:text-indigo-400">
+            <span className="w-2 h-2 rounded-full bg-[#FB2576] animate-pulse" />
+            <span className="text-xs font-semibold tracking-wider uppercase text-[#332FD0] dark:text-[#B4B2FF]">
               Editorial Studio
             </span>
           </div>
@@ -185,7 +186,7 @@ function CreateBlog() {
             onClick={() => setActiveTab("write")}
             className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
               activeTab === "write"
-                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                ? "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white shadow-sm shadow-[#FB2576]/30"
                 : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
@@ -196,7 +197,7 @@ function CreateBlog() {
             onClick={() => setActiveTab("preview")}
             className={`px-4 py-1.5 text-xs font-semibold rounded-xl transition-all ${
               activeTab === "preview"
-                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                ? "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white shadow-sm shadow-[#FB2576]/30"
                 : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
@@ -221,7 +222,7 @@ function CreateBlog() {
                   placeholder="e.g. Architecting Scalable Glassmorphism Interfaces with Tailwind CSS"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full text-xl sm:text-2xl font-bold bg-transparent border-0 border-b border-gray-200 dark:border-white/10 pb-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 transition"
+                  className="w-full text-xl sm:text-2xl font-bold bg-transparent border-0 border-b border-gray-200 dark:border-white/10 pb-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#332FD0] transition"
                 />
               </GlassCard>
 
@@ -265,9 +266,9 @@ function CreateBlog() {
                     </div>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 dark:border-white/15 rounded-2xl cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 bg-black/[0.02] dark:bg-white/[0.02] transition">
+                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 dark:border-white/15 rounded-2xl cursor-pointer hover:border-[#332FD0] bg-black/[0.02] dark:bg-white/[0.02] transition">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-3">
+                      <div className="w-12 h-12 rounded-2xl bg-[#332FD0]/10 text-[#332FD0] flex items-center justify-center mb-3">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -387,7 +388,7 @@ function CreateBlog() {
                         onClick={() => setCategory(cat)}
                         className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition-all ${
                           isSelected
-                            ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20"
+                            ? "bg-gradient-to-r from-[#3F0071] to-[#332FD0] text-white shadow-md shadow-[#332FD0]/25"
                             : "bg-black/5 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 border border-gray-200/50 dark:border-white/10"
                         }`}
                       >
@@ -437,7 +438,7 @@ function CreateBlog() {
                     type="submit"
                     variant="primary"
                     size="lg"
-                    className="w-full justify-center shadow-lg shadow-indigo-500/25"
+                    className="w-full justify-center shadow-lg shadow-[#332FD0]/25"
                     loading={loading}
                   >
                     🚀 Publish Story Now
@@ -464,14 +465,15 @@ function CreateBlog() {
 
             {/* Author bar */}
             <div className="flex items-center gap-3 pt-2">
-              <img
-                src={profile?.user?.photo?.url || "/imgPL.webp"}
-                alt=""
-                className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500/40"
+              <SafeImage
+                src={profile?.photo?.url || profile?.user?.photo?.url}
+                alt={profile?.name || profile?.user?.name || "Author"}
+                type="avatar"
+                className="w-10 h-10 rounded-full object-cover border-2 border-[#332FD0]/40"
               />
               <div>
                 <p className="text-sm font-bold text-gray-900 dark:text-white">
-                  {profile?.user?.name || "Author Name"}
+                  {profile?.name || profile?.user?.name || "Author Name"}
                 </p>
                 <p className="text-xs text-gray-500">
                   Published Today • Just now

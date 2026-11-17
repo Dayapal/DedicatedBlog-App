@@ -17,6 +17,7 @@ import {
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import SafeImage from "../components/ui/SafeImage";
 
 function Sidebar({ setComponent, currentComponent }) {
   const { profile, setIsAuthenticated, setProfile } = useAuth();
@@ -54,18 +55,18 @@ function Sidebar({ setComponent, currentComponent }) {
             onClick={() => navigateTo("/")}
             className="flex items-center gap-2 group cursor-pointer text-left"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#747FDD] to-[#69D8F2] flex items-center justify-center text-white shadow-md shadow-[#747FDD]/30">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3F0071] via-[#332FD0] to-[#FB2576] flex items-center justify-center text-white shadow-md shadow-[#332FD0]/30">
               <FiFeather size={16} />
             </div>
             <span className="font-extrabold text-base tracking-tight text-[var(--text-primary)]">
-              Dedicated<span className="text-[#747FDD]">Blog</span>
+              Dedicated<span className="text-[#FB2576]">Blog</span>
             </span>
           </button>
 
           {/* Theme Switcher inside sidebar */}
           <button
             onClick={toggleTheme}
-            className="w-8 h-8 rounded-xl flex items-center justify-center glass-panel text-[var(--text-secondary)] hover:text-[#747FDD] transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl flex items-center justify-center glass-panel text-[var(--text-secondary)] hover:text-[#FB2576] transition-colors cursor-pointer"
             aria-label="Toggle theme"
           >
             {isDark ? <FiSun className="text-amber-400" size={15} /> : <FiMoon size={15} />}
@@ -74,9 +75,10 @@ function Sidebar({ setComponent, currentComponent }) {
 
         {/* User Card */}
         <div className="p-3.5 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-center gap-3">
-          <img
-            src={profile?.photo?.url || "/default-avatar.png"}
+          <SafeImage
+            src={profile?.photo?.url}
             alt={profile?.name || "Author"}
+            type="avatar"
             className="w-11 h-11 rounded-2xl object-cover border border-[var(--glass-border)] shadow-sm shrink-0"
           />
           <div className="min-w-0 flex-1">
@@ -86,7 +88,7 @@ function Sidebar({ setComponent, currentComponent }) {
             <p className="text-[11px] text-[var(--text-muted)] truncate">
               {profile?.email || "author@dedicatedblog.com"}
             </p>
-            <span className="inline-block mt-1 px-2 py-0.2 rounded-full text-[9px] font-bold uppercase tracking-wider bg-[#747FDD]/15 text-[#747FDD]">
+            <span className="inline-block mt-1 px-2 py-0.2 rounded-full text-[9px] font-bold uppercase tracking-wider bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF]">
               {profile?.role || "Author"}
             </span>
           </div>
@@ -110,7 +112,7 @@ function Sidebar({ setComponent, currentComponent }) {
                   w-full relative px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold flex items-center gap-3 transition-all duration-200 cursor-pointer select-none text-left
                   ${
                     isActive
-                      ? "text-white shadow-lg shadow-[#747FDD]/25"
+                      ? "text-white shadow-lg shadow-[#FB2576]/25"
                       : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-bg-subtle)]"
                   }
                 `}
@@ -118,7 +120,7 @@ function Sidebar({ setComponent, currentComponent }) {
                 {isActive && (
                   <motion.div
                     layoutId="sidebarActivePill"
-                    className="absolute inset-0 bg-gradient-to-r from-[#747FDD] to-[#454FA8] rounded-2xl -z-10"
+                    className="absolute inset-0 bg-gradient-to-r from-[#FB2576] to-[#3F0071] rounded-2xl -z-10"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}

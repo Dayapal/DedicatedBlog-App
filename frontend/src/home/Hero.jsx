@@ -1,20 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiTrendingUp, FiClock, FiArrowRight, FiEye, FiHeart, FiBookOpen, FiCompass } from "react-icons/fi";
+import { FiClock, FiArrowRight, FiEye, FiHeart, FiBookOpen, FiCompass } from "react-icons/fi";
 import { useAuth } from "../context/AuthProvider";
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
 import { BlogCardSkeleton } from "../components/ui/GlassSkeleton";
+import SafeImage from "../components/ui/SafeImage";
 
 const categoryVariantMap = {
-  Technology: "primary",
+  Technology: "indigo",
   Devotional: "purple",
-  Sports: "cyan",
+  Sports: "royal",
   Tourism: "pink",
   Entertainment: "pink",
-  Health: "cyan",
-  Business: "primary",
+  Health: "indigo",
+  Business: "purple",
 };
 
 function Hero() {
@@ -36,12 +37,14 @@ function Hero() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border border-[var(--glass-border)] text-xs sm:text-sm font-medium text-[var(--color-primary)] shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-[#3F0071]/30 backdrop-blur-xl border border-[#332FD0]/20 dark:border-white/15 text-xs sm:text-sm font-semibold shadow-sm"
         >
-          <span className="w-2 h-2 rounded-full bg-[#69D8F2] animate-pulse" />
-          <span>Android 16 Expressive • Liquid Glass UI</span>
-          <span className="text-[var(--text-muted)]">|</span>
-          <span className="text-[var(--text-secondary)] font-normal">Next-Gen Publishing</span>
+          <span className="w-2 h-2 rounded-full bg-[#FB2576] shadow-[0_0_8px_#FB2576] animate-pulse" />
+          <span className="text-[#3F0071] dark:text-[#E2C7FF]">Android 16 Expressive</span>
+          <span className="text-gray-400 dark:text-white/30">•</span>
+          <span className="text-[#332FD0] dark:text-[#B4B2FF]">Liquid Glass UI</span>
+          <span className="text-gray-400 dark:text-white/30 hidden sm:inline">|</span>
+          <span className="text-gray-600 dark:text-gray-300 font-normal hidden sm:inline">Next-Gen Publishing</span>
         </motion.div>
 
         {/* Hero Headline with Dual Gradient Typography */}
@@ -52,7 +55,7 @@ function Hero() {
           className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.12]"
         >
           Explore Ideas. <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#3F0071] via-[#FB2576] to-[#332FD0] bg-clip-text text-transparent">
             Publish with Clarity.
           </span>
         </motion.h1>
@@ -62,7 +65,7 @@ function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-base sm:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed"
+          className="text-base sm:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed font-normal"
         >
           Immerse yourself in authentic perspectives on engineering, technology, culture, and lifestyle — wrapped in a fluid, translucent glass interface.
         </motion.p>
@@ -76,7 +79,7 @@ function Hero() {
         >
           <Link
             to="/blogs"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#747FDD] via-[#6571D8] to-[#454FA8] text-white font-semibold text-sm sm:text-base shadow-xl shadow-[#747FDD]/30 hover:shadow-[#747FDD]/45 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#332FD0] via-[#3A1CA2] to-[#3F0071] text-white font-semibold text-sm sm:text-base shadow-xl shadow-[#332FD0]/30 hover:shadow-[#FB2576]/25 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             <FiCompass className="text-lg" />
             <span>Start Reading</span>
@@ -85,9 +88,9 @@ function Hero() {
 
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl glass-panel text-[var(--text-primary)] hover:bg-[var(--glass-bg-hover)] font-semibold text-sm sm:text-base border border-[var(--glass-border)] shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl bg-white/85 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-gray-900 dark:text-white font-semibold text-sm sm:text-base border border-gray-300/80 dark:border-white/20 shadow-md hover:shadow-lg hover:border-[#332FD0]/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 backdrop-blur-md"
           >
-            <FiBookOpen className="text-lg" />
+            <FiBookOpen className="text-lg text-[#332FD0] dark:text-[#B4B2FF]" />
             <span>Author Workspace</span>
           </Link>
         </motion.div>
@@ -97,27 +100,27 @@ function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.45 }}
-          className="pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[var(--text-secondary)]"
+          className="pt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
         >
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center text-sm font-bold">
+          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 shadow-xs">
+            <div className="min-w-[34px] px-2 h-7 rounded-xl bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] flex items-center justify-center text-xs font-bold">
               {blogs?.length || 18}
             </div>
-            <span className="text-xs sm:text-sm font-medium">Published Articles</span>
+            <span className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">Published Articles</span>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#69D8F2]/15 text-[#0E7490] dark:text-[#69D8F2] flex items-center justify-center text-sm font-bold">
+          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 shadow-xs">
+            <div className="min-w-[34px] px-2 h-7 rounded-xl bg-[#FB2576]/15 text-[#FB2576] flex items-center justify-center text-xs font-bold">
               7+
             </div>
-            <span className="text-xs sm:text-sm font-medium">Curated Topics</span>
+            <span className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">Curated Topics</span>
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#A78BFA]/15 text-[#6D28D9] dark:text-[#A78BFA] flex items-center justify-center text-sm font-bold">
+          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 shadow-xs">
+            <div className="min-w-[42px] px-2 h-7 rounded-xl bg-[#3F0071]/15 text-[#3F0071] dark:text-[#E2C7FF] flex items-center justify-center text-xs font-bold">
               100%
             </div>
-            <span className="text-xs sm:text-sm font-medium">Real-Time Sync</span>
+            <span className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">Real-Time Sync</span>
           </div>
         </motion.div>
       </div>
@@ -135,7 +138,7 @@ function Hero() {
           </div>
           <Link
             to="/blogs"
-            className="text-xs sm:text-sm font-semibold text-[#747FDD] hover:text-[#454FA8] flex items-center gap-1 transition-colors"
+            className="text-xs sm:text-sm font-semibold text-[#332FD0] dark:text-[#B4B2FF] hover:text-[#FB2576] flex items-center gap-1 transition-colors"
           >
             <span>View all</span>
             <FiArrowRight />
@@ -161,13 +164,15 @@ function Hero() {
                 <Link to={`/blogs/${blog._id}`} className="flex flex-col h-full">
                   {/* Thumbnail */}
                   <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-gray-100 dark:bg-gray-800">
-                    <img
-                      src={blog.blogImage?.url || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"}
+                    <SafeImage
+                      src={blog.blogImage?.url}
                       alt={blog.title}
+                      fallbackSrc="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"
+                      type="cover"
                       loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                     
                     {/* Category Chip */}
                     <div className="absolute top-3 left-3">
@@ -184,7 +189,7 @@ function Hero() {
 
                   {/* Title & Excerpt */}
                   <div className="flex-1 space-y-2">
-                    <h3 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors line-clamp-2 leading-snug">
+                    <h3 className="font-bold text-base sm:text-lg text-[var(--text-primary)] group-hover:text-[#FB2576] transition-colors line-clamp-2 leading-snug">
                       {blog.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
@@ -195,9 +200,10 @@ function Hero() {
                   {/* Author Strip & Engagement */}
                   <div className="pt-4 mt-4 border-t border-[var(--glass-border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)]">
                     <div className="flex items-center gap-2">
-                      <img
-                        src={blog.adminPhoto || "/default-avatar.png"}
+                      <SafeImage
+                        src={blog.adminPhoto}
                         alt={blog.adminName || "Author"}
+                        type="avatar"
                         className="w-7 h-7 rounded-full object-cover border border-[var(--glass-border)]"
                       />
                       <span className="font-medium text-[var(--text-secondary)] truncate max-w-[80px]">
@@ -210,7 +216,7 @@ function Hero() {
                         <FiEye /> {blog.views || 0}
                       </span>
                       <span className="flex items-center gap-1">
-                        <FiHeart className="text-rose-400" /> {blog.likes?.length || 0}
+                        <FiHeart className="text-[#FB2576]" /> {blog.likes?.length || 0}
                       </span>
                     </div>
                   </div>

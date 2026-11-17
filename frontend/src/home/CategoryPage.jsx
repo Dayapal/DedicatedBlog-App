@@ -5,6 +5,7 @@ import { FiSearch, FiLayers, FiArrowRight, FiBookOpen } from "react-icons/fi";
 import { useAuth } from "../context/AuthProvider";
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
+import SafeImage from "../components/ui/SafeImage";
 
 const categories = [
   "All",
@@ -34,14 +35,14 @@ function CategoryPage() {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center max-w-2xl mx-auto space-y-3 mb-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#69D8F2]/15 text-[#0E7490] dark:text-[#69D8F2] text-xs font-semibold uppercase tracking-wider">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FB2576]/10 dark:bg-[#FB2576]/20 text-[#FB2576] border border-[#FB2576]/25 text-xs font-bold uppercase tracking-wider">
           <FiLayers />
           <span>Curated Ecosystem</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
           Explore by Topic
         </h2>
-        <p className="text-sm text-[var(--text-secondary)]">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Filter and discover in-depth articles written by subject specialists
         </p>
       </div>
@@ -74,7 +75,7 @@ function CategoryPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search in topics..."
-            className="glass-input w-full py-2 pl-9 pr-4 text-xs sm:text-sm font-normal rounded-full"
+            className="glass-input w-full py-2 pl-9 pr-4 text-xs sm:text-sm font-normal rounded-full focus:border-[#332FD0]"
           />
         </div>
       </div>
@@ -102,9 +103,11 @@ function CategoryPage() {
                 >
                   <Link to={`/blogs/${blog._id}`} className="flex flex-col h-full">
                     <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-3 bg-gray-100 dark:bg-gray-800">
-                      <img
-                        src={blog.blogImage?.url || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"}
+                      <SafeImage
+                        src={blog.blogImage?.url}
                         alt={blog.title}
+                        fallbackSrc="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"
+                        type="cover"
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -115,7 +118,7 @@ function CategoryPage() {
                       </div>
                     </div>
 
-                    <h3 className="font-bold text-sm sm:text-base text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors line-clamp-2 leading-snug mb-1.5">
+                    <h3 className="font-bold text-sm sm:text-base text-[var(--text-primary)] group-hover:text-[#FB2576] transition-colors line-clamp-2 leading-snug mb-1.5">
                       {blog.title}
                     </h3>
 
@@ -125,7 +128,7 @@ function CategoryPage() {
 
                     <div className="pt-3 border-t border-[var(--glass-border-subtle)] flex items-center justify-between text-xs text-[var(--text-muted)] mt-auto">
                       <span className="truncate max-w-[120px]">By {blog.adminName || "Author"}</span>
-                      <span className="text-[#747FDD] group-hover:translate-x-1 transition-transform flex items-center gap-0.5 font-semibold">
+                      <span className="text-[#332FD0] dark:text-[#B4B2FF] group-hover:text-[#FB2576] group-hover:translate-x-1 transition-all flex items-center gap-0.5 font-semibold">
                         Read <FiArrowRight className="text-[10px]" />
                       </span>
                     </div>
@@ -136,7 +139,7 @@ function CategoryPage() {
           </motion.div>
         ) : (
           <GlassCard className="text-center py-16 space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center mx-auto text-xl">
+            <div className="w-12 h-12 rounded-2xl bg-[#332FD0]/15 text-[#332FD0] flex items-center justify-center mx-auto text-xl">
               <FiBookOpen />
             </div>
             <h4 className="font-bold text-lg text-[var(--text-primary)]">

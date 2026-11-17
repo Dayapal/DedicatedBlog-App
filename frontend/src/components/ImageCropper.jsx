@@ -150,7 +150,7 @@ export default function ImageCropper({ imageSrc, onCancel, onCropDone }) {
                   onClick={() => setAspect(r.value)}
                   className={`px-3 py-1 text-xs font-medium rounded-xl transition-all ${
                     active
-                      ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm"
+                      ? "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white shadow-sm shadow-[#FB2576]/30"
                       : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   }`}
                 >
@@ -190,7 +190,7 @@ export default function ImageCropper({ imageSrc, onCancel, onCropDone }) {
               step={0.05}
               value={zoom}
               onChange={(e) => setZoom(Number(e.target.value))}
-              className="w-full accent-indigo-500 cursor-pointer h-2 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none"
+              className="w-full accent-[#332FD0] cursor-pointer h-2 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none"
             />
           </div>
 
@@ -206,7 +206,7 @@ export default function ImageCropper({ imageSrc, onCancel, onCropDone }) {
               step={1}
               value={rotation}
               onChange={(e) => setRotation(Number(e.target.value))}
-              className="w-full accent-indigo-500 cursor-pointer h-2 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none"
+              className="w-full accent-[#332FD0] cursor-pointer h-2 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none"
             />
           </div>
         </div>

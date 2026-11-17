@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { FiUsers, FiMail, FiPhone, FiBookOpen, FiAward } from "react-icons/fi";
+import { FiUsers, FiMail, FiAward } from "react-icons/fi";
 import axios from "axios";
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
+import SafeImage from "../components/ui/SafeImage";
 
 function Creators() {
   const [creators, setCreators] = useState([]);
@@ -27,7 +27,7 @@ function Creators() {
     <div className="min-h-screen pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] uppercase tracking-wider">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF] uppercase tracking-wider">
           <FiUsers />
           <span>Creators Roster</span>
         </div>
@@ -58,23 +58,24 @@ function Creators() {
               className="!p-6 text-center flex flex-col items-center group relative overflow-hidden h-full"
             >
               {/* Top ambient color accent */}
-              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2]" />
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#3F0071] via-[#FB2576] to-[#332FD0]" />
 
               {/* Avatar */}
               <div className="relative mb-4 mt-2">
-                <img
-                  src={creator.photo?.url || "/default-avatar.png"}
+                <SafeImage
+                  src={creator.photo?.url}
                   alt={creator.name}
+                  type="avatar"
                   className="w-24 h-24 rounded-3xl object-cover border-2 border-[var(--glass-border)] shadow-lg group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
 
               {/* Name & Role */}
-              <h2 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[#747FDD] transition-colors mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] group-hover:text-[#FB2576] transition-colors mb-1">
                 {creator.name}
               </h2>
               <div className="mb-4">
-                <GlassBadge variant="primary" size="sm">
+                <GlassBadge variant="indigo" size="sm">
                   {creator.role}
                 </GlassBadge>
               </div>
@@ -82,7 +83,7 @@ function Creators() {
               <div className="w-full space-y-2 text-xs text-[var(--text-secondary)] mb-6">
                 {creator.education && (
                   <div className="flex items-center justify-center gap-1.5">
-                    <FiAward className="text-[#69D8F2]" />
+                    <FiAward className="text-[#332FD0] dark:text-[#B4B2FF]" />
                     <span>Degree: {creator.education}</span>
                   </div>
                 )}
@@ -95,7 +96,7 @@ function Creators() {
               </div>
 
               {/* Footer */}
-              <div className="mt-auto w-full pt-4 border-t border-[var(--glass-border-subtle)] text-[11px] font-medium text-[var(--color-primary)]">
+              <div className="mt-auto w-full pt-4 border-t border-[var(--glass-border-subtle)] text-[11px] font-medium text-[#332FD0] dark:text-[#B4B2FF]">
                 Active Contributor ✨
               </div>
             </GlassCard>

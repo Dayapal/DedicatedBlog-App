@@ -7,6 +7,7 @@ import { FiEdit2, FiTrash2, FiEye, FiHeart, FiMessageSquare, FiPlus, FiCalendar,
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
 import { GlassButton } from "../components/ui/GlassButton";
+import SafeImage from "../components/ui/SafeImage";
 
 const categoryVariantMap = {
   Technology: "primary",
@@ -81,7 +82,7 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
         <GlassCard radius="lg" className="!p-5 text-left space-y-1">
           <div className="flex items-center justify-between text-[var(--text-muted)] text-xs font-semibold uppercase tracking-wider">
             <span>Stories</span>
-            <FiBookOpen className="text-base text-[#747FDD]" />
+            <FiBookOpen className="text-base text-[#332FD0] dark:text-[#B4B2FF]" />
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.totalStories}
@@ -92,7 +93,7 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
         <GlassCard radius="lg" className="!p-5 text-left space-y-1">
           <div className="flex items-center justify-between text-[var(--text-muted)] text-xs font-semibold uppercase tracking-wider">
             <span>Total Reads</span>
-            <FiEye className="text-base text-[#69D8F2]" />
+            <FiEye className="text-base text-[#332FD0] dark:text-[#B4B2FF]" />
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.totalViews}
@@ -103,7 +104,7 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
         <GlassCard radius="lg" className="!p-5 text-left space-y-1">
           <div className="flex items-center justify-between text-[var(--text-muted)] text-xs font-semibold uppercase tracking-wider">
             <span>Appreciation</span>
-            <FiHeart className="text-base text-rose-400" />
+            <FiHeart className="text-base text-[#FB2576]" />
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.totalLikes}
@@ -114,7 +115,7 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
         <GlassCard radius="lg" className="!p-5 text-left space-y-1">
           <div className="flex items-center justify-between text-[var(--text-muted)] text-xs font-semibold uppercase tracking-wider">
             <span>Feedback</span>
-            <FiMessageSquare className="text-base text-[#A78BFA]" />
+            <FiMessageSquare className="text-base text-[#FB2576]" />
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)]">
             {stats.totalComments}
@@ -159,9 +160,11 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
               <div>
                 {/* Image */}
                 <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-4 bg-gray-100 dark:bg-gray-800">
-                  <img
-                    src={blog.blogImage?.url || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"}
+                  <SafeImage
+                    src={blog.blogImage?.url}
                     alt={blog.title}
+                    fallbackSrc="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&fit=crop"
+                    type="cover"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-2.5 left-2.5">
@@ -204,7 +207,7 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
                   {onEditBlog ? (
                     <button
                       onClick={() => onEditBlog(blog._id)}
-                      className="flex-1 py-2 rounded-xl text-xs font-semibold bg-[#747FDD]/15 text-[#747FDD] hover:bg-[#747FDD]/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="flex-1 py-2 rounded-xl text-xs font-semibold bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] hover:bg-[#332FD0]/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <FiEdit2 size={13} />
                       <span>Edit</span>
@@ -212,7 +215,7 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
                   ) : (
                     <Link
                       to={`/blog/update/${blog._id}`}
-                      className="flex-1 py-2 rounded-xl text-xs font-semibold bg-[#747FDD]/15 text-[#747FDD] hover:bg-[#747FDD]/25 transition-all flex items-center justify-center gap-1.5"
+                      className="flex-1 py-2 rounded-xl text-xs font-semibold bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] hover:bg-[#332FD0]/25 transition-all flex items-center justify-center gap-1.5"
                     >
                       <FiEdit2 size={13} />
                       <span>Edit</span>
@@ -234,7 +237,7 @@ function MyBlogs({ onNavigateCreate, onEditBlog }) {
         </div>
       ) : (
         <GlassCard radius="panel" className="text-center py-16 space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center mx-auto text-2xl">
+          <div className="w-16 h-16 rounded-3xl bg-[#332FD0]/15 text-[#332FD0] flex items-center justify-center mx-auto text-2xl">
             <FiBookOpen />
           </div>
           <div className="space-y-1">

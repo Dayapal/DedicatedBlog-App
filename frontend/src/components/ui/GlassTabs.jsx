@@ -27,7 +27,7 @@ export const GlassTabs = ({ tabs, activeTab, onChange, className = "" }) => {
             {isActive && (
               <motion.div
                 layoutId="activeTabPill"
-                className="absolute inset-0 bg-gradient-to-r from-[#747FDD] to-[#454FA8] rounded-full shadow-md shadow-[#747FDD]/30 -z-10"
+                className="absolute inset-0 bg-gradient-to-r from-[#FB2576] to-[#3F0071] rounded-full shadow-md shadow-[#FB2576]/35 -z-10"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}

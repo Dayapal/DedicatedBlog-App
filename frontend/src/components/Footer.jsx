@@ -37,11 +37,11 @@ const Footer = () => {
           {/* Brand & Newsletter Column */}
           <div className="lg:col-span-2 space-y-5">
             <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#747FDD] via-[#6571D8] to-[#69D8F2] flex items-center justify-center text-white shadow-md shadow-[#747FDD]/30">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3F0071] via-[#332FD0] to-[#FB2576] flex items-center justify-center text-white shadow-md shadow-[#332FD0]/30">
                 <FiFeather className="text-xl" />
               </div>
               <span className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                Dedicated<span className="bg-gradient-to-r from-[#747FDD] to-[#69D8F2] bg-clip-text text-transparent">Blog</span>
+                Dedicated<span className="bg-gradient-to-r from-[#FB2576] to-[#332FD0] bg-clip-text text-transparent">Blog</span>
               </span>
             </Link>
 
@@ -65,7 +65,7 @@ const Footer = () => {
                 <button
                   type="submit"
                   disabled={subscribed}
-                  className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white text-xs font-semibold shadow-md shadow-[#747FDD]/25 hover:shadow-lg transition-all shrink-0 flex items-center gap-1 cursor-pointer"
+                  className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#332FD0] to-[#3F0071] text-white text-xs font-semibold shadow-md shadow-[#332FD0]/30 hover:shadow-lg hover:shadow-[#FB2576]/25 transition-all shrink-0 flex items-center gap-1 cursor-pointer"
                 >
                   {subscribed ? <FiCheck /> : <FiArrowRight />}
                   <span>{subscribed ? "Done" : "Join"}</span>
@@ -84,7 +84,7 @@ const Footer = () => {
                 <li key={cat}>
                   <Link
                     to="/blogs"
-                    className="hover:text-[#747FDD] transition-colors"
+                    className="hover:text-[#FB2576] transition-colors"
                   >
                     {cat}
                   </Link>
@@ -100,27 +100,27 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2.5 text-sm text-[var(--text-secondary)]">
               <li>
-                <Link to="/" className="hover:text-[#747FDD] transition-colors">
+                <Link to="/" className="hover:text-[#FB2576] transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/blogs" className="hover:text-[#747FDD] transition-colors">
+                <Link to="/blogs" className="hover:text-[#FB2576] transition-colors">
                   All Stories
                 </Link>
               </li>
               <li>
-                <Link to="/creators" className="hover:text-[#747FDD] transition-colors">
+                <Link to="/creators" className="hover:text-[#FB2576] transition-colors">
                   Authors & Creators
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-[#747FDD] transition-colors">
+                <Link to="/about" className="hover:text-[#FB2576] transition-colors">
                   About the Engineer
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-[#747FDD] transition-colors">
+                <Link to="/contact" className="hover:text-[#FB2576] transition-colors">
                   Get in Touch
                 </Link>
               </li>
@@ -147,7 +147,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={item.label}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center glass-panel border border-[var(--glass-border)] text-[var(--text-secondary)] hover:text-[#747FDD] hover:scale-105 transition-all"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center glass-panel border border-[var(--glass-border)] text-[var(--text-secondary)] hover:text-[#FB2576] hover:scale-105 transition-all"
                 >
                   <item.icon size={16} />
                 </a>

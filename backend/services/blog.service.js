@@ -268,12 +268,14 @@ export class BlogService {
       throw new ApiError(HTTP_STATUS.NOT_FOUND, "Blog not found");
     }
 
-    const comment = blog.comments.id(commentId);
+    const comment = typeof blog.comments.id === "function"
+      ? blog.comments.id(commentId)
+      : blog.comments.find((c) => c._id?.toString() === commentId.toString());
     if (!comment) {
       throw new ApiError(HTTP_STATUS.NOT_FOUND, "Comment not found");
     }
 
-    const isCommentAuthor = comment.user.toString() === user._id.toString();
+    const isCommentAuthor = comment.user && comment.user.toString() === user._id.toString();
     const isBlogCreator = blog.createdBy && blog.createdBy.toString() === user._id.toString();
     const isAdmin = user.role === "admin";
 

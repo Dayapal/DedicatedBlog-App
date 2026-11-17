@@ -3,15 +3,15 @@ import { motion } from "framer-motion";
 
 const variants = {
   primary:
-    "bg-gradient-to-r from-[#747FDD] via-[#6571D8] to-[#454FA8] text-white shadow-lg shadow-[#747FDD]/25 hover:shadow-[#747FDD]/40 border border-white/20",
+    "bg-gradient-to-r from-[#332FD0] via-[#3A1CA2] to-[#3F0071] text-white shadow-lg shadow-[#332FD0]/30 hover:shadow-[#FB2576]/25 hover:shadow-xl border border-white/20",
   secondary:
-    "glass-panel text-[var(--text-primary)] hover:bg-[var(--glass-bg-hover)] border-[var(--glass-border)] shadow-sm",
+    "glass-panel text-[var(--text-primary)] hover:bg-[var(--glass-bg-hover)] border-[var(--glass-border)] shadow-sm hover:border-[#FB2576]/35",
   accent:
-    "bg-gradient-to-r from-[#69D8F2] to-[#747FDD] text-[#0E0F19] font-semibold shadow-md shadow-[#69D8F2]/20 hover:shadow-[#69D8F2]/35",
+    "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white font-semibold shadow-md shadow-[#FB2576]/30 hover:shadow-[#FB2576]/45 border border-white/20",
   danger:
-    "bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white shadow-md shadow-red-500/20 hover:shadow-red-500/35 border border-white/10",
+    "bg-gradient-to-r from-[#FB2576] to-[#990033] text-white shadow-md shadow-[#FB2576]/25 hover:shadow-[#FB2576]/40 border border-white/10",
   ghost:
-    "bg-transparent hover:bg-[var(--glass-bg-subtle)] text-[var(--text-primary)] border-transparent",
+    "bg-transparent hover:bg-[var(--glass-bg-subtle)] text-[var(--text-primary)] border-transparent hover:text-[#FB2576]",
 };
 
 const sizes = {

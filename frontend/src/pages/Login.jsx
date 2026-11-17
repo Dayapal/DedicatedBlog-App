@@ -56,11 +56,11 @@ function Login() {
           {/* Logo & Header */}
           <div className="text-center space-y-2">
             <Link to="/" className="inline-flex items-center gap-2 mb-2">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#747FDD] via-[#6571D8] to-[#69D8F2] flex items-center justify-center text-white shadow-md shadow-[#747FDD]/30">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3F0071] via-[#332FD0] to-[#FB2576] flex items-center justify-center text-white shadow-md shadow-[#332FD0]/30">
                 <FiFeather className="text-xl" />
               </div>
               <span className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                Dedicated<span className="bg-gradient-to-r from-[#747FDD] to-[#69D8F2] bg-clip-text text-transparent">Blog</span>
+                Dedicated<span className="bg-gradient-to-r from-[#FB2576] to-[#332FD0] bg-clip-text text-transparent">Blog</span>
               </span>
             </Link>
             <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
@@ -149,7 +149,7 @@ function Login() {
             <span>Don't have an account yet? </span>
             <Link
               to="/register"
-              className="font-bold text-[#747FDD] hover:underline"
+              className="font-bold text-[#332FD0] dark:text-[#B4B2FF] hover:text-[#FB2576] hover:underline"
             >
               Create Account
             </Link>

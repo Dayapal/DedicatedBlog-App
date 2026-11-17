@@ -58,7 +58,7 @@ function Contact() {
     <div className="min-h-screen pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] uppercase tracking-wider">
+        <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF] uppercase tracking-wider">
           <FaComment />
           <span>Direct Channel</span>
         </div>
@@ -106,7 +106,7 @@ function Contact() {
             </div>
 
             <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-2xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-2xl bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] flex items-center justify-center shrink-0">
                 <FaMapMarkerAlt />
               </div>
               <div>
@@ -132,7 +132,7 @@ function Contact() {
                   href={item.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-3 rounded-2xl glass-panel text-[var(--text-secondary)] hover:text-[#747FDD] hover:scale-105 transition-all"
+                  className="p-3 rounded-2xl glass-panel text-[var(--text-secondary)] hover:text-[#FB2576] hover:scale-105 transition-all"
                 >
                   <item.icon size={16} />
                 </a>

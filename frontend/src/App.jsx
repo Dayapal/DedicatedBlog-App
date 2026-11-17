@@ -19,6 +19,7 @@ import UpdateBlog from "./dashboard/UpdateBlog";
 
 import AmbientBackground from "./components/ui/AmbientBackground";
 import MobileBottomNav from "./components/MobileBottomNav";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { useAuth } from "./context/AuthProvider";
 
 function App() {
@@ -30,33 +31,35 @@ function App() {
   const token = localStorage.getItem("jwt");
 
   return (
-    <div className="relative min-h-screen text-gray-900 dark:text-gray-100 selection:bg-indigo-500/20 selection:text-indigo-600 dark:selection:text-indigo-400">
+    <div className="relative min-h-screen text-gray-900 dark:text-gray-100 selection:bg-[#FB2576]/20 selection:text-[#FB2576]">
       {/* Global Ambient Depth Lighting */}
       <AmbientBackground />
 
       {/* Floating Glass Navigation */}
       {!hideNavbarFooter && <Navbar />}
 
-      {/* Main Content Router */}
+      {/* Main Content Router with ErrorBoundary */}
       <main className="relative z-10 min-h-screen pb-16 md:pb-0">
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={token || isAuthenticated ? <Home /> : <Navigate to="/login" replace />}
-          />
-          <Route exact path="/blogs" element={<Blogs />} />
-          <Route exact path="/about" element={<About />} />
-          <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="/creators" element={<Creators />} />
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/dashboard" element={<Dashboard />} />
-          <Route exact path="/create-blog" element={<CreateBlog />} />
-          <Route exact path="/blogs/:id" element={<Detail />} />
-          <Route exact path="/blog/update/:id" element={<UpdateBlog />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <ErrorBoundary key={location.pathname}>
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={token || isAuthenticated ? <Home /> : <Navigate to="/login" replace />}
+            />
+            <Route exact path="/blogs" element={<Blogs />} />
+            <Route exact path="/about" element={<About />} />
+            <Route exact path="/contact" element={<Contact />} />
+            <Route exact path="/creators" element={<Creators />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/register" element={<Register />} />
+            <Route exact path="/dashboard" element={<Dashboard />} />
+            <Route exact path="/create-blog" element={<CreateBlog />} />
+            <Route exact path="/blogs/:id" element={<Detail />} />
+            <Route exact path="/blog/update/:id" element={<UpdateBlog />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
       </main>
 
       {/* Android 16 Expressive Mobile Bottom Navigation */}
@@ -69,11 +72,11 @@ function App() {
           duration: 3500,
           style: {
             background: "rgba(255, 255, 255, 0.8)",
-            color: "#1e1e2f",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-            border: "1px solid rgba(255, 255, 255, 0.7)",
-            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+            color: "#0F1026",
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            border: "1px solid rgba(63, 0, 113, 0.15)",
+            boxShadow: "0 10px 25px -5px rgba(63, 0, 113, 0.15), 0 8px 10px -6px rgba(51, 47, 208, 0.1)",
             borderRadius: "1rem",
             fontSize: "0.875rem",
             fontWeight: 500,
@@ -81,13 +84,13 @@ function App() {
           },
           success: {
             iconTheme: {
-              primary: "#747FDD",
+              primary: "#332FD0",
               secondary: "#ffffff",
             },
           },
           error: {
             iconTheme: {
-              primary: "#f43f5e",
+              primary: "#FB2576",
               secondary: "#ffffff",
             },
           },

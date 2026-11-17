@@ -24,6 +24,7 @@ import { useAuth } from "../context/AuthProvider";
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
 import { GlassButton } from "../components/ui/GlassButton";
+import SafeImage from "../components/ui/SafeImage";
 
 function Detail() {
   const { id } = useParams();
@@ -221,7 +222,7 @@ function Detail() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-[var(--text-secondary)]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#747FDD] mb-4" />
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#332FD0] mb-4" />
         <p className="text-base font-medium animate-pulse">
           Crafting story view...
         </p>
@@ -237,7 +238,7 @@ function Detail() {
           <p className="text-sm text-[var(--text-muted)] mb-6">The article you requested might have been moved or archived.</p>
           <Link
             to="/blogs"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#747FDD] hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#332FD0] dark:text-[#B4B2FF] hover:text-[#FB2576] hover:underline"
           >
             <FaArrowLeft /> Back to all stories
           </Link>
@@ -253,7 +254,7 @@ function Detail() {
     <div className="relative min-h-screen pt-24 sm:pt-32 pb-20">
       {/* 🚀 Reading Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2] z-50 transition-all duration-150"
+        className="fixed top-0 left-0 h-1.5 bg-gradient-to-r from-[#3F0071] via-[#FB2576] to-[#332FD0] z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -262,7 +263,7 @@ function Detail() {
         <div className="mb-6">
           <Link
             to="/blogs"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[var(--text-secondary)] hover:text-[#747FDD] transition-colors"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[var(--text-secondary)] hover:text-[#FB2576] transition-colors"
           >
             <FaArrowLeft className="text-xs" />
             <span>Back to Stories</span>
@@ -273,22 +274,22 @@ function Detail() {
         <GlassCard radius="hero" className="!p-6 sm:!p-10 mb-12 shadow-2xl">
           {/* Category & Meta */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-            <GlassBadge variant="primary" size="lg">
+            <GlassBadge variant="indigo" size="lg">
               {blog?.category}
             </GlassBadge>
 
             {/* Engagement Badges */}
             <div className="flex items-center gap-4 text-xs font-medium text-[var(--text-muted)]">
               <span className="flex items-center gap-1.5">
-                <FaEye className="text-[#69D8F2]" />
+                <FaEye className="text-[#332FD0] dark:text-[#B4B2FF]" />
                 {blog?.views || 1} views
               </span>
               <span className="flex items-center gap-1.5">
-                <FaClock className="text-[#A78BFA]" />
+                <FaClock className="text-[#FB2576]" />
                 {readTime} min read
               </span>
               <span className="flex items-center gap-1.5">
-                <FaCalendarAlt className="text-[#747FDD]" />
+                <FaCalendarAlt className="text-[#332FD0]" />
                 {new Date(blog?.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -308,9 +309,10 @@ function Detail() {
             {/* Author */}
             <div className="flex items-center gap-3">
               {blog?.adminPhoto ? (
-                <img
+                <SafeImage
                   src={blog.adminPhoto}
                   alt={blog.adminName}
+                  type="avatar"
                   className="w-12 h-12 rounded-2xl object-cover border-2 border-[var(--glass-border)] shadow-sm"
                 />
               ) : (
@@ -320,7 +322,7 @@ function Detail() {
                 <h4 className="font-bold text-[var(--text-primary)] text-sm sm:text-base leading-tight">
                   {blog?.adminName || "Editorial Team"}
                 </h4>
-                <p className="text-xs text-[#747FDD] font-semibold">Author & Contributor</p>
+                <p className="text-xs text-[#332FD0] dark:text-[#B4B2FF] font-semibold">Author & Contributor</p>
               </div>
             </div>
 
@@ -334,14 +336,14 @@ function Detail() {
                   flex items-center gap-2 px-4 py-2 rounded-2xl font-semibold text-xs sm:text-sm transition-all shadow-sm cursor-pointer border
                   ${
                     isLiked
-                      ? "bg-rose-500/15 text-rose-500 border-rose-500/30"
-                      : "glass-panel text-[var(--text-secondary)] hover:text-rose-500"
+                      ? "bg-[#FB2576]/15 text-[#FB2576] border-[#FB2576]/30"
+                      : "glass-panel text-[var(--text-secondary)] hover:text-[#FB2576]"
                   }
                 `}
                 title={isLiked ? "Unlike" : "Like this story"}
               >
                 {isLiked ? (
-                  <FaHeart className="text-rose-500 text-sm animate-pulse" />
+                  <FaHeart className="text-[#FB2576] text-sm animate-pulse" />
                 ) : (
                   <FaRegHeart className="text-sm" />
                 )}
@@ -362,7 +364,7 @@ function Detail() {
                   className="p-2 text-[var(--text-muted)] hover:text-blue-600 transition-colors cursor-pointer"
                   title="Share on LinkedIn"
                 >
-                  <FaLinkedIn className="text-xs sm:text-sm" />
+                  <FaLinkedin className="text-xs sm:text-sm" />
                 </button>
                 <button
                   onClick={shareOnWhatsApp}
@@ -373,7 +375,7 @@ function Detail() {
                 </button>
                 <button
                   onClick={copyToClipboard}
-                  className="p-2 text-[var(--text-muted)] hover:text-[#747FDD] transition-colors cursor-pointer"
+                  className="p-2 text-[var(--text-muted)] hover:text-[#FB2576] transition-colors cursor-pointer"
                   title="Copy link"
                 >
                   <FaLink className="text-xs sm:text-sm" />
@@ -385,9 +387,10 @@ function Detail() {
           {/* Featured Image */}
           {blog?.blogImage?.url && (
             <div className="w-full mb-8 rounded-[24px] overflow-hidden border border-[var(--glass-border)] shadow-md bg-gray-100 dark:bg-gray-800">
-              <img
+              <SafeImage
                 src={blog.blogImage.url}
                 alt={blog.title}
+                type="cover"
                 className="w-full max-h-[480px] object-cover"
               />
             </div>
@@ -434,7 +437,7 @@ function Detail() {
         <GlassCard radius="panel" className="!p-6 sm:!p-10 shadow-xl">
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-[var(--glass-border-subtle)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-2xl bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] flex items-center justify-center font-bold">
                 <FaComment />
               </div>
               <h2 className="text-2xl font-bold text-[var(--text-primary)]">
@@ -448,9 +451,10 @@ function Detail() {
           {isAuthenticated ? (
             <form onSubmit={handleAddComment} className="mb-10">
               <div className="flex items-start gap-3 sm:gap-4">
-                <img
-                  src={profile?.photo?.url || "/default-avatar.png"}
+                <SafeImage
+                  src={profile?.photo?.url}
                   alt={profile?.name || "You"}
+                  type="avatar"
                   className="w-10 h-10 rounded-2xl object-cover border border-[var(--glass-border)] shrink-0"
                 />
                 <div className="flex-1 space-y-3">
@@ -459,7 +463,7 @@ function Detail() {
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     placeholder="Share your thoughts, feedback, or ideas on this story..."
-                    className="glass-input w-full p-4 text-sm font-normal resize-none rounded-2xl"
+                    className="glass-input w-full p-4 text-sm font-normal resize-none rounded-2xl focus:border-[#332FD0]"
                   />
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-[var(--text-muted)]">
@@ -486,7 +490,7 @@ function Detail() {
               </p>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-2xl bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white text-xs font-semibold shadow-md"
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-2xl bg-gradient-to-r from-[#332FD0] to-[#3F0071] text-white text-xs font-semibold shadow-md shadow-[#332FD0]/30 hover:shadow-[#FB2576]/25 transition-all"
               >
                 Log In to Comment
               </Link>
@@ -516,9 +520,10 @@ function Detail() {
                       exit={{ opacity: 0, scale: 0.95 }}
                       className="glass-panel !p-4 rounded-2xl border border-[var(--glass-border-subtle)] flex items-start gap-3.5"
                     >
-                      <img
-                        src={comm.userPhoto || "/default-avatar.png"}
+                      <SafeImage
+                        src={comm.userPhoto}
                         alt={comm.userName}
+                        type="avatar"
                         className="w-9 h-9 rounded-xl object-cover border border-[var(--glass-border)] shrink-0"
                       />
                       <div className="flex-1 min-w-0">

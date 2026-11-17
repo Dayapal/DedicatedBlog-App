@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import {
   FaCode,
   FaServer,
@@ -9,41 +8,37 @@ import {
   FaRocket,
   FaGraduationCap,
   FaAward,
-  FaHeart,
-  FaLightbulb,
-  FaFutbol,
   FaGithub,
   FaLinkedin,
   FaGlobe,
 } from "react-icons/fa";
 import { GlassCard } from "../components/ui/GlassCard";
-import { GlassBadge } from "../components/ui/GlassBadge";
 
 function About() {
   const skillCards = [
-    { icon: FaCode, title: "Frontend Architecture", skills: "React.js, Next.js, TypeScript, Tailwind CSS", color: "from-[#747FDD] to-[#69D8F2]" },
-    { icon: FaServer, title: "Backend Systems", skills: "Node.js, Express.js, REST APIs, Microservices", color: "from-[#A78BFA] to-[#747FDD]" },
-    { icon: FaPalette, title: "Design Systems", skills: "Material 3 Expressive, Glassmorphism, Responsive UI", color: "from-[#F0A6D8] to-[#A78BFA]" },
-    { icon: FaDatabase, title: "Databases & Caching", skills: "MongoDB, Mongoose, Redis, Schema Indexing", color: "from-[#69D8F2] to-[#747FDD]" },
-    { icon: FaCloud, title: "Cloud & DevOps", skills: "Docker, CI/CD Actions, Cloudinary, Linux/Nginx", color: "from-[#747FDD] to-[#454FA8]" },
-    { icon: FaRocket, title: "Performance & Security", skills: "Web Vitals, Rate Limiting, OWASP, Compression", color: "from-[#A78BFA] to-[#69D8F2]" },
+    { icon: FaCode, title: "Frontend Architecture", skills: "React.js, Next.js, TypeScript, Tailwind CSS", color: "from-[#332FD0] to-[#3F0071]" },
+    { icon: FaServer, title: "Backend Systems", skills: "Node.js, Express.js, REST APIs, Microservices", color: "from-[#FB2576] to-[#3F0071]" },
+    { icon: FaPalette, title: "Design Systems", skills: "Android 16 Expressive, Liquid Glass, Responsive UI", color: "from-[#332FD0] to-[#FB2576]" },
+    { icon: FaDatabase, title: "Databases & Caching", skills: "MongoDB, Mongoose, Redis, Schema Indexing", color: "from-[#0002A1] to-[#332FD0]" },
+    { icon: FaCloud, title: "Cloud & DevOps", skills: "Docker, CI/CD Actions, Cloudinary, Linux/Nginx", color: "from-[#3F0071] to-[#0002A1]" },
+    { icon: FaRocket, title: "Performance & Security", skills: "Web Vitals, Rate Limiting, OWASP, Compression", color: "from-[#FB2576] to-[#332FD0]" },
   ];
 
   return (
     <div className="min-h-screen pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
       {/* Hero Header */}
       <GlassCard radius="hero" className="!p-8 sm:!p-12 text-center relative overflow-hidden">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#747FDD] via-[#A78BFA] to-[#69D8F2] flex items-center justify-center text-white text-3xl mx-auto mb-6 shadow-xl shadow-[#747FDD]/30">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#3F0071] via-[#332FD0] to-[#FB2576] flex items-center justify-center text-white text-3xl mx-auto mb-6 shadow-xl shadow-[#332FD0]/30">
           <FaCode />
         </div>
 
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#747FDD] uppercase tracking-wider mb-4">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full glass-panel border border-[var(--glass-border)] text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF] uppercase tracking-wider mb-4">
           <span>Full-Stack MERN Developer</span>
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-extrabold text-[var(--text-primary)] tracking-tight mb-4">
           Crafting Digital Products with{" "}
-          <span className="bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#3F0071] via-[#FB2576] to-[#332FD0] bg-clip-text text-transparent">
             Care & Engineering Rigor
           </span>
         </h1>
@@ -64,7 +59,8 @@ function About() {
               href={item.href}
               target="_blank"
               rel="noreferrer"
-              className="p-3 rounded-2xl glass-panel text-[var(--text-secondary)] hover:text-[#747FDD] hover:scale-105 transition-all"
+              aria-label={item.label}
+              className="p-3 rounded-2xl glass-panel text-[var(--text-secondary)] hover:text-[#FB2576] hover:scale-105 transition-all"
             >
               <item.icon size={18} />
             </a>
@@ -79,7 +75,7 @@ function About() {
           {/* Journey */}
           <GlassCard radius="panel" className="!p-6 sm:!p-8 space-y-4">
             <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <span className="w-2.5 h-6 rounded-full bg-[#747FDD]" />
+              <span className="w-2.5 h-6 rounded-full bg-[#3F0071]" />
               Engineering Philosophy
             </h2>
             <div className="space-y-4 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
@@ -95,19 +91,19 @@ function About() {
           {/* Experience Timeline */}
           <GlassCard radius="panel" className="!p-6 sm:!p-8 space-y-6">
             <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <span className="w-2.5 h-6 rounded-full bg-[#69D8F2]" />
+              <span className="w-2.5 h-6 rounded-full bg-[#332FD0]" />
               Professional Experience
             </h2>
 
             <div className="space-y-6">
               {/* Role 1 */}
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] flex items-center justify-center shrink-0">
                   <FaRocket />
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-bold text-base text-[var(--text-primary)]">Frontend Engineer</h3>
-                  <p className="text-xs font-semibold text-[#747FDD]">Mark Anthony • Bengaluru</p>
+                  <p className="text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF]">Mark Anthony • Bengaluru</p>
                   <p className="text-xs text-[var(--text-muted)]">March 2025 – September 2025</p>
                   <p className="text-sm text-[var(--text-secondary)] pt-1">
                     Developed performant React applications with code splitting, caching strategies, and Lighthouse 95+ Core Web Vitals.
@@ -117,12 +113,12 @@ function About() {
 
               {/* Role 2 */}
               <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-[#A78BFA]/15 text-[#6D28D9] dark:text-[#A78BFA] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-[#3F0071]/15 text-[#3F0071] dark:text-[#E2C7FF] flex items-center justify-center shrink-0">
                   <FaAward />
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-bold text-base text-[var(--text-primary)]">Customer Operations & Support</h3>
-                  <p className="text-xs font-semibold text-[#747FDD]">Adroit Synergies (Airtel Payments)</p>
+                  <p className="text-xs font-semibold text-[#332FD0] dark:text-[#B4B2FF]">Adroit Synergies (Airtel Payments)</p>
                   <p className="text-sm text-[var(--text-secondary)] pt-1">
                     Honed active problem-solving, root-cause diagnostics, and user-first empathy under demanding operational SLAs.
                   </p>
@@ -137,7 +133,7 @@ function About() {
           {/* Tech Stack */}
           <GlassCard radius="panel" className="!p-6 space-y-4">
             <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <span className="w-2 h-5 rounded-full bg-[#A78BFA]" />
+              <span className="w-2 h-5 rounded-full bg-[#332FD0]" />
               Core Capabilities
             </h2>
             <div className="space-y-3">
@@ -161,13 +157,13 @@ function About() {
           {/* Education */}
           <GlassCard radius="panel" className="!p-6 space-y-4">
             <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <span className="w-2 h-5 rounded-full bg-[#F0A6D8]" />
+              <span className="w-2 h-5 rounded-full bg-[#FB2576]" />
               Education & Growth
             </h2>
 
             <div className="space-y-3 text-xs">
               <div className="flex items-start gap-3 p-3 rounded-2xl glass-panel border border-[var(--glass-border-subtle)]">
-                <FaGraduationCap className="text-[#747FDD] text-base shrink-0 mt-0.5" />
+                <FaGraduationCap className="text-[#332FD0] text-base shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-[var(--text-primary)]">Masai School</h4>
                   <p className="text-[var(--text-secondary)]">Full Stack Web Development</p>
@@ -175,7 +171,7 @@ function About() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-2xl glass-panel border border-[var(--glass-border-subtle)]">
-                <FaGraduationCap className="text-[#69D8F2] text-base shrink-0 mt-0.5" />
+                <FaGraduationCap className="text-[#FB2576] text-base shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-[var(--text-primary)]">Delhi University</h4>
                   <p className="text-[var(--text-secondary)]">Bachelor of Arts in English</p>

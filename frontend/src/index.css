@@ -6,6 +6,8 @@
 
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * {
     border-color: var(--glass-border);
@@ -38,12 +40,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(116, 127, 221, 0.28);
+  background: rgba(51, 47, 208, 0.35);
   border-radius: 9999px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(116, 127, 221, 0.55);
+  background: rgba(251, 37, 118, 0.6);
 }

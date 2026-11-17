@@ -1,9 +1,10 @@
-/* Liquid Glass & Android 16 Material 3 Expressive Effects */
+/* Liquid Glass & Android 16 Material 3 Expressive Effects 
+   Purple × Pink × Electric Blue Design System */
 
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(190%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(190%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -16,8 +17,8 @@
 
 .glass-panel-interactive {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(190%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(190%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -27,7 +28,7 @@
 
 .glass-panel-interactive:hover {
   background: var(--glass-bg-hover);
-  border-color: var(--glass-highlight);
+  border-color: var(--glass-pink-reflection);
   box-shadow: var(--glass-shadow-hover);
   transform: translateY(-4px);
 }
@@ -41,12 +42,12 @@
   right: 0;
   height: 40%;
   background: linear-gradient(180deg, var(--glass-highlight) 0%, transparent 100%);
-  opacity: 0.12;
+  opacity: 0.14;
   pointer-events: none;
   border-radius: inherit;
 }
 
-/* Specular border light highlight */
+/* Specular border light highlight with subtle pink edge */
 .glass-specular {
   border-top: 1px solid var(--glass-highlight);
   border-left: 1px solid var(--glass-border);
@@ -57,8 +58,8 @@
 /* Subtle ambient pill */
 .glass-pill {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   border-radius: var(--radius-pill);
@@ -67,8 +68,8 @@
 /* Inputs */
 .glass-input {
   background: var(--glass-bg-subtle);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   color: var(--text-primary);
   border-radius: var(--radius-md);
@@ -78,8 +79,8 @@
 .glass-input:focus {
   outline: none;
   background: var(--glass-bg);
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(116, 127, 221, 0.18), var(--glow-primary);
+  border-color: var(--color-electric-indigo);
+  box-shadow: 0 0 0 4px rgba(51, 47, 208, 0.2), var(--glow-indigo);
 }
 
 .glass-input::placeholder {
@@ -98,6 +99,6 @@
   .dark .glass-panel-interactive,
   .dark .glass-pill,
   .dark .glass-input {
-    background: #17192a;
+    background: #090a20;
   }
 }

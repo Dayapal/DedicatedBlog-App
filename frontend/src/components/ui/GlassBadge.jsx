@@ -3,12 +3,13 @@ import { motion } from "framer-motion";
 
 const variantStyles = {
   default: "bg-[var(--glass-bg)] text-[var(--text-primary)] border-[var(--glass-border)]",
-  primary: "bg-[#747FDD]/15 text-[#747FDD] border-[#747FDD]/30 dark:bg-[#747FDD]/25 dark:text-[#A8B0FF]",
-  cyan: "bg-[#69D8F2]/15 text-[#0E7490] border-[#69D8F2]/30 dark:bg-[#69D8F2]/20 dark:text-[#69D8F2]",
-  purple: "bg-[#A78BFA]/15 text-[#6D28D9] border-[#A78BFA]/30 dark:bg-[#A78BFA]/20 dark:text-[#C4B5FD]",
-  pink: "bg-[#F0A6D8]/18 text-[#BE185D] border-[#F0A6D8]/35 dark:bg-[#F0A6D8]/20 dark:text-[#F472B6]",
+  primary: "bg-[#332FD0]/15 text-[#332FD0] border-[#332FD0]/30 dark:bg-[#332FD0]/25 dark:text-[#B4B2FF]",
+  indigo: "bg-[#332FD0]/15 text-[#332FD0] border-[#332FD0]/30 dark:bg-[#332FD0]/25 dark:text-[#B4B2FF]",
+  purple: "bg-[#3F0071]/15 text-[#3F0071] border-[#3F0071]/30 dark:bg-[#3F0071]/35 dark:text-[#E2C7FF]",
+  pink: "bg-[#FB2576]/15 text-[#FB2576] border-[#FB2576]/35 dark:bg-[#FB2576]/22 dark:text-[#FB2576] font-semibold",
+  royal: "bg-[#0002A1]/15 text-[#0002A1] border-[#0002A1]/30 dark:bg-[#0002A1]/35 dark:text-[#B5B7FF]",
   success: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400",
-  active: "bg-gradient-to-r from-[#747FDD] to-[#454FA8] text-white border-transparent shadow-md shadow-[#747FDD]/30",
+  active: "bg-gradient-to-r from-[#FB2576] to-[#3F0071] text-white border-transparent shadow-md shadow-[#FB2576]/30",
 };
 
 export const GlassBadge = ({

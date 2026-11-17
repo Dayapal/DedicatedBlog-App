@@ -3,6 +3,7 @@ import axios from "axios";
 import { FiUser, FiMail, FiPhone, FiAward, FiShield, FiCalendar } from "react-icons/fi";
 import { GlassCard } from "../components/ui/GlassCard";
 import { GlassBadge } from "../components/ui/GlassBadge";
+import SafeImage from "../components/ui/SafeImage";
 
 function MyProfile() {
   const [profile, setProfile] = useState(null);
@@ -46,14 +47,12 @@ function MyProfile() {
     );
   }
 
-  const profileImage = profile?.photo?.url?.replace("http://", "https://") || "/default-avatar.png";
-
   return (
     <div className="max-w-3xl space-y-6">
       {/* Profile Card */}
       <GlassCard radius="hero" className="!p-0 overflow-hidden shadow-xl">
         {/* Ambient Gradient Header */}
-        <div className="h-40 sm:h-48 w-full bg-gradient-to-r from-[#747FDD] via-[#A78BFA] to-[#69D8F2] relative">
+        <div className="h-40 sm:h-48 w-full bg-gradient-to-r from-[#3F0071] via-[#332FD0] to-[#FB2576] relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent_70%)]" />
         </div>
 
@@ -62,16 +61,17 @@ function MyProfile() {
           {/* Avatar floating over banner */}
           <div className="-mt-16 sm:-mt-20 mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="relative inline-block">
-              <img
-                src={profileImage}
+              <SafeImage
+                src={profile?.photo?.url}
                 alt={profile.name}
+                type="avatar"
                 className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-[var(--bg-app)] shadow-xl"
               />
               <span className="absolute bottom-2 right-2 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" />
             </div>
 
             <div className="flex gap-2">
-              <GlassBadge variant="primary" size="lg">
+              <GlassBadge variant="indigo" size="lg">
                 <FiShield />
                 <span className="capitalize">{profile.role || "Author"}</span>
               </GlassBadge>
@@ -91,7 +91,7 @@ function MyProfile() {
           {/* User Details Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#747FDD]/15 text-[#747FDD] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#332FD0]/15 text-[#332FD0] dark:text-[#B4B2FF] flex items-center justify-center shrink-0">
                 <FiMail size={18} />
               </div>
               <div className="min-w-0">
@@ -101,7 +101,7 @@ function MyProfile() {
             </div>
 
             <div className="p-4 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#69D8F2]/15 text-[#0E7490] dark:text-[#69D8F2] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#FB2576]/15 text-[#FB2576] flex items-center justify-center shrink-0">
                 <FiPhone size={18} />
               </div>
               <div className="min-w-0">
@@ -111,7 +111,7 @@ function MyProfile() {
             </div>
 
             <div className="p-4 rounded-2xl glass-panel border border-[var(--glass-border-subtle)] flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#A78BFA]/15 text-[#6D28D9] dark:text-[#A78BFA] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#3F0071]/15 text-[#3F0071] dark:text-[#E2C7FF] flex items-center justify-center shrink-0">
                 <FiAward size={18} />
               </div>
               <div className="min-w-0">
